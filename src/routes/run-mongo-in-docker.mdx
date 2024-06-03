@@ -1,0 +1,48 @@
+---
+date: '2021-09-23T22:44:34.000Z'
+draft: true
+title: mongodb 的备份恢复，和docker
+tags:
+- mongodb
+- docker
+---
+
+docker, 好用！
+
+## 建立映射文件夹
+
+```
+mkdir -p mongo/{initdb,datadir,configdb}
+```
+
+#### docker-compose.yaml
+
+```yaml
+version: "3"
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    command: --auth
+    volumes:
+      - ./mongo/initdb:/docker-entrypoint-initdb.d
+      - ./mongo/datadir:/data/db
+      - ./mongo/configdb:/data/configdb
+      - ./temp:/tempstorage
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $(USERNAME)
+      MONGO_INITDB_ROOT_PASSWORD: $(PASSWD)
+      MONGO_INITDB_DATABASE: mongodb
+      TZ: Asia/Shanghai
+```
+
+    docker-compose up -d
+
+container will be start
+
+#### 导入备份数据(bson) with auth：
+
+    mongorestore -u "$(USERNAME)" -p $(PASSWD) ./$(BACKUP FILE PATH)

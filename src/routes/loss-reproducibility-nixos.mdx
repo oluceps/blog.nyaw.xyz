@@ -1,0 +1,68 @@
+---
+date: '2022-11-09T13:56:22.000Z'
+title: home-manager debugging
+tags:
+- NixOS
+- Linux
+- Error
+---
+
+开机的时候`home-manager-${user}` 的service 报error的情况, 但是系统内`rebuild switch` 然后再查看状态又是正常active的, 而且使用没有影响
+
+```
+> journalctl  -f -eu home-manager-riro
+Nov 08 21:08:12 hastur systemd[1]: Starting Home Manager environment for riro...
+Nov 08 21:08:12 hastur hm-activate-riro[1122]: gpg-connect-agent: no running gpg-agent - starting '/nix/store/ws6mv7favvy0x43g1bi01qajrk6kp018-gnupg-2.3.7/bin/gpg-agent'
+Nov 08 21:08:12 hastur hm-activate-riro[1122]: gpg-connect-agent: waiting for the agent to come up ... (5s)
+Nov 08 21:08:12 hastur hm-activate-riro[1122]: gpg-connect-agent: connection to the agent established
+Nov 08 21:08:12 hastur autossh[1148]: starting ssh (count 1)
+Nov 08 21:08:12 hastur autossh[1148]: ssh child pid is 1155
+Nov 08 21:08:12 hastur autossh[1157]: bind on 127.0.0.1:5679: Address already in use
+Nov 08 21:08:12 hastur hm-activate-riro[1107]: Starting Home Manager activation
+Nov 08 21:08:13 hastur hm-activate-riro[1107]: Activating checkFilesChanged
+Nov 08 21:08:13 hastur hm-activate-riro[1107]: Activating checkLinkTargets
+Nov 08 21:08:13 hastur autossh[1148]: ssh exited with error status 255; restarting ssh
+Nov 08 21:08:13 hastur autossh[1148]: starting ssh (count 2)
+Nov 08 21:08:13 hastur autossh[1148]: ssh child pid is 1366
+Nov 08 21:08:13 hastur hm-activate-riro[1107]: Activating writeBoundary
+Nov 08 21:08:13 hastur hm-activate-riro[1107]: Activating installPackages
+Nov 08 21:08:13 hastur hm-activate-riro[1402]: replacing old 'home-manager-path'
+Nov 08 21:08:13 hastur hm-activate-riro[1402]: installing 'home-manager-path'
+Nov 08 21:08:13 hastur hm-activate-riro[1107]: Activating dconfSettings
+Nov 08 21:08:13 hastur hm-activate-riro[1442]: dbus-run-session: failed to execute message bus daemon 'dbus-daemon': No such file or directory
+Nov 08 21:08:13 hastur hm-activate-riro[1440]: dbus-run-session: EOF reading address from bus daemon
+Nov 08 21:08:13 hastur systemd[1]: home-manager-riro.service: Main process exited, code=exited, status=127/n/a
+Nov 08 21:08:13 hastur autossh[1148]: received signal to exit (15)
+Nov 08 21:08:13 hastur systemd[1]: home-manager-riro.service: Failed with result 'exit-code'.
+Nov 08 21:08:13 hastur systemd[1]: Failed to start Home Manager environment for riro.
+```
+
+之后尝试二分commit, 最终发现在本地仓库的 rebuild不行, 远端仓库的rebuild则没有报错,但本地和远端仓库的commit是完全同步的  
+![png](20221109133805.png)  
+本地仓库rebuild使用
+
+```
+sudo nixos-rebuild switch --flake .#hastur
+```
+
+远端仓库rebuild使用
+
+```
+sudo nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
+```
+
+确认过没有问题, 但处在本地仓库的generation rebuild远端仓库或从远端仓库的generation rebuild 本地仓库会出现奇怪的现象
+日志显示 hm-user 的service重启了  
+按照正常情况, 两个完全同步的仓库rebuild出的outpath应该完全相同, 也就不会有服务的更改/重启
+
+在 [NixOS CN](https://t.me/nixos_zhcn) 群友的协助调试下, 发现问题
+
+1. 远端仓库的rebuild 受到 `/root/.cache/nix` 路径内容的不明影响, 把这个目录清空, 远端和本地仓库rebuild出的版本都出现了开机报错的提示.问题转换为符合预期的常规的配置文件错误
+2. 继续采用二分法查找出错的commit, 最后发现出错和正常的版本差别只有flake.lock, 基本可以排除是本地配置文件的错误, 大概率是nixpkgs上游的问题 [对比](https://github.com/oluceps/nixos-config/compare/error-1...last-work?expand=1)
+   执行 `nix flake update` 更新到如分支`last-work` 所示的flake.lock 之后, 问题解决
+
+## 破案
+
+https://github.com/nix-community/home-manager/pull/3405
+
+Thu 1 Jun 02:08:57 CST 2023 update

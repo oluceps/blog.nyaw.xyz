@@ -1,0 +1,97 @@
+---
+title: Vim & Inotify Issue
+date: '2023-05-09T12:46:12.000Z'
+draft: false
+tags:
+- vim
+- inotify
+categories:
+- 记录
+---
+
+> IME has broken on terminal since I turn back to `sway`, had to use English on this article.
+
+Things start as I found [rathole](https://github.com/rapiz1/rathole) has a [weird implementation](https://github.com/rapiz1/rathole/issues/231) on their config hot-reload.
+
+After I made a pr, developer point to another [issue](https://github.com/rapiz1/rathole/pull/122) which explained this is a workaround specifically for vim,
+which not fired `modify` inotify event during modifying.
+
+Let's make an experiment:
+
+Create ./t, then touch file `a`:
+
+```bash
+mkdir t
+cd t
+touch a
+```
+
+We have full control to this dir recursively.
+Then make a inotify watch continuedly:
+
+```
+nix-shell -p inotify-tools
+```
+
+```
+inotifywatch -v -z -t 10 -r t/a
+```
+
+This will watch the inotify event on file a in 10s.
+
+We took some actions:
+
+```bash
+cd t
+vim a
+# wirte something
+
+:wq
+```
+
+Ok, see what catches:
+
+```
+~ ❄️  impure  36s
+> inotifywatch -v -z -t 10 -r t/a
+
+Establishing watches...
+Setting up watch(es) on t/a
+OK, t/a is now being watched.
+Total of 1 watches.
+Finished establishing watches, now collecting statistics.
+Will listen for events for 10 seconds.
+total  access  modify  attrib  close_write  close_nowrite  open  moved_from  moved_to  move_self  create  delete  delete_self  filename
+9      1       0       1       0            2              2     0           0         1          0       0       1            t/a
+```
+
+No modify event, but expect to have that:
+
+```bash
+echo "test" >> a
+```
+
+This action fired modify event successfully as expected:
+
+```
+~ ❄️  impure  6m37s
+> inotifywatch -v -z -t 3 -r t/a
+
+Establishing watches...
+Setting up watch(es) on t/a
+OK, t/a is now being watched.
+Total of 1 watches.
+Finished establishing watches, now collecting statistics.
+Will listen for events for 3 seconds.
+total  access  modify  attrib  close_write  close_nowrite  open  moved_from  moved_to  move_self  create  delete  delete_self  filename
+3      0       1       0       1            0              1     0           0         0          0       0       0            t/a
+```
+
+Take sight back to result of vim modified, here is a `move_self` event, as [this article](https://vi.stackexchange.com/questions/25030/vim-not-firing-inotify-events-when-writing-file) mentioned,
+vim default set `backupcopy=no`, which caused behaviors that the original file is renamed to create a backup and a new file with the original name is created. This would not trigger the `modify` event but the `close_write` of parent directory and `move_self` of itself.
+
+Turn this option to yes means to copy the file to create a backup and then overwrite the original, thus inotify will trigger.
+
+Under my test only vim has this problem, `nano` and `helix` both trigger the event normally.
+
+Is there a more graceful way to watch the file change modified by vim ?

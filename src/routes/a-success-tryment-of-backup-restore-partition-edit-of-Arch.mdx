@@ -1,0 +1,187 @@
+---
+date: '2021-09-17T11:06:34.000Z'
+draft: true
+title: Arch Linux文件系统更换
+tags:
+- ArchOS
+- 备份
+- Linux
+- FileSystem
+---
+
+大纲：  
+1.备份  
+2.分区、建立btrfs和子卷挂载  
+3.恢复备份  
+4.genfstab  
+5.更新修改mkinitcpio并更新内核
+
+> 了解到btrfs逐渐稳定和snapshots的特性，我决定尝试将arch linux迁移至btrfs
+
+## ~~待续~~
+
+## 一、通过tar&pigz or rsync 备份文件系统内的所有文件
+
+```shell
+sudo tar --use-compress-program=pigz -cvpf arch-backup.tgz --exclude=/proc --exclude=/lost+found --exclude=/arch-backup.tgz --exclude=/mnt --exclude=/sys --exclude=/run/media /
+```
+
+rsync掠过。
+
+之后进行一个备份后压缩包的转的移。
+
+## 二、进行正常的Arch Linux 安装活动
+
+期间删除原来的挂载在根目录下的所有分区及根目录分区本身。（废话文学）
+
+在进行至系统分区阶段，将整块完整的剩余空间通过mkfs格式化为整块btrfs分区格式。
+
+```bash
+mkfs.btrfs -L btrfs-arch /dev/{your partition}
+
+mount -o compress=zstd /dev/{your partition} /mnt
+```
+
+然后进行btrfs分区子卷创立和互相挂载的操作。
+
+## 三、btrfs子卷结构
+
+> 并非一定需要使用以下结构，btrfs中子卷概念类似分区，直接整块文件系统挂载根目录也可以使用。
+
+子卷结构参考[寒风凛冽的blog](https://snowfrs.com/2019/08/10/intall-archlinux-with-btrfs.html)https://snowfrs.com/2019/08/10/intall-archlinux-with-btrfs.html
+
+```bash
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@logs
+btrfs subvolume create /mnt/@tmp
+btrfs subvolume create /mnt/@docker
+btrfs subvolume create /mnt/@pkgs
+btrfs subvolume create /mnt/@snapshots
+btrfs subvolume create /mnt/@build
+```
+
+以@作为系统的根。
+
+## 四、开始挂载
+
+```bash
+# 解除挂载
+umount /mnt
+#挂载根目录
+mount -o noatime,nodiratime,compress=zstd,subvol=@ /dev/{your partition} /mnt
+#在该目录下创建文件夹
+mkdir -p /mnt/{btrfs-root,boot/efi,home,var/{log,lib/{docker,build},cache/pacman},tmp,.snapshots}
+#挂载对应子卷至文件夹
+mount -o noatime,nodiratime,compress=zstd,subvol=@home /dev/{your partition} /mnt/home
+mount -o noatime,nodiratime,compress=zstd,subvol=@logs /dev/{your partition} /mnt/var/log
+mount -o noatime,nodiratime,compress=zstd,subvol=@tmp /dev/{your partition} /mnt/tmp
+mount -o noatime,nodiratime,compress=zstd,subvol=@docker /dev/{your partition} /mnt/var/lib/docker
+mount -o noatime,nodiratime,compress=zstd,subvol=@pkgs /dev/{your partition} /mnt/var/cache/pacman
+mount -o noatime,nodiratime,compress=zstd,subvol=@snapshots /dev/{your partition} /mnt/.snapshots
+mount -o noatime,nodiratime,compress=zstd,subvol=@build /dev/{your partition} /mnt/var/lib/build
+
+mount -o noatime,nodiratime,compress=zstd,subvol=/ /dev/{your partition} /mnt/btrfs-root
+```
+
+然后挂载上efi分区。
+
+## 五、进行正常的下一步操作
+
+## 六、配置initramfs参数
+
+```bash
+nvim /etc/mkinitcpio.conf
+```
+
+```bash
+HOOKS=()
+MODULES=()
+# replace fsck with btrfs
+# add btrfs to MODULES
+```
+
+并跳过安装引导步骤。
+
+## 七、手动配置refind引导
+
+由于btrfs子卷特殊性，/etc/fstab和refind.conf文件需要手动检查配置。
+
+以下附上我的分区信息和/etc/fstab文件及部分refind配置。
+
+### blkid 子卷UUID:
+
+```shell
+(base) ➜  ~ blkid
+/dev/nvme0n1p3: LABEL="btrfs-arch" UUID="873cb422-27af-4147-bc04-4110fe42936e" UUID_SUB="fccac01e-b8ee-4405-93c6-a9f05ddfa32e" BLOCK_SIZE="4096" TYPE="btrfs" PARTUUID="24c752b9-26ba-9c47-bb0c-eea6c0b70091"
+/dev/nvme0n1p1: UUID="F680-4A3F" BLOCK_SIZE="512" TYPE="vfat" PARTLABEL="EFI system partition" PARTUUID="12ec21bc-94bd-4f7e-a217-acaf43f1e9e1"
+/dev/nvme0n1p2: BLOCK_SIZE="512" UUID="3A747E036B1FC8F3" TYPE="ntfs" PARTLABEL="Basic data partition" PARTUUID="2f9c11aa-a504-40bf-b54c-82865d9a49d8"
+/dev/sdb2: SEC_TYPE="msdos" LABEL_FATBOOT="VTOYEFI" LABEL="VTOYEFI" UUID="78AD-D3A2" BLOCK_SIZE="512" TYPE="vfat" PARTLABEL="VTOYEFI" PARTUUID="9f53df08-50e3-41ce-ad51-ab796d3f658d"
+/dev/sdb1: LABEL="Ventoy" UUID="4E21-0000" BLOCK_SIZE="512" TYPE="exfat" PTTYPE="dos" PARTLABEL="Ventoy" PARTUUID="abaf96fc-8089-4f92-9a91-4d64cba66e3c"
+/dev/sr0: BLOCK_SIZE="2048" UUID="2021-04-23-09-04-16-00" LABEL="M-eM-^MM-^NM-dM-8M-:M-fM-^IM-^KM-fM-^\M-:M-eM-^JM-)M-fM-^IM-^KM-bM-^@M-^@M-bM-^@M-^@M-bM-^@M-^@M-bM-^@M-^@M-bM-^@M-^@M-bM-^@M-^@M-bM-^@M-^@M-bM-^@M-^@M-bM-^@M-^@M-bM-^@M-^@" TYPE="iso9660" PTTYPE="mac"
+/dev/sdc2: LABEL="PoolZero" UUID="16088199457260971304" UUID_SUB="7813957744251311654" BLOCK_SIZE="4096" TYPE="zfs_member" PARTUUID="3ca0407e-c3f8-4d9c-956a-2b69524fe246"
+```
+
+### fstab文件：
+
+```shell
+# Static information about the filesystems.
+# See fstab(5) for details.
+
+# <file system> <dir> <type> <options> <dump> <pass>
+# /dev/nvme0n1p3 LABEL=btrfs-arch
+UUID=873cb422-27af-4147-bc04-4110fe42936e       /               btrfs           rw,noatime,nodiratime,compress-force=zstd:3,ssd,space_cache,subvolid=256,subvol=/@      0 0
+
+# /dev/nvme0n1p1
+UUID=F680-4A3F          /boot/efi       vfat            rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro   0 2
+
+# /dev/nvme0n1p3 LABEL=btrfs-arch
+UUID=873cb422-27af-4147-bc04-4110fe42936e       /home           btrfs           rw,noatime,nodiratime,compress-force=zstd:3,ssd,space_cache,subvolid=258,subvol=/@home  0 0
+
+# /dev/nvme0n1p3 LABEL=btrfs-arch
+UUID=873cb422-27af-4147-bc04-4110fe42936e       /var/log        btrfs           rw,noatime,nodiratime,compress-force=zstd:3,ssd,space_cache,subvolid=259,subvol=/@logs  0 0
+
+# /dev/nvme0n1p3 LABEL=btrfs-arch
+UUID=873cb422-27af-4147-bc04-4110fe42936e       /tmp            btrfs           rw,noatime,nodiratime,compress-force=zstd:3,ssd,space_cache,subvolid=260,subvol=/@tmp   0 0
+
+# /dev/nvme0n1p3 LABEL=btrfs-arch
+UUID=873cb422-27af-4147-bc04-4110fe42936e       /var/lib/docker btrfs           rw,noatime,nodiratime,compress-force=zstd:3,ssd,space_cache,subvolid=261,subvol=/@docker        0 0
+
+# /dev/nvme0n1p3 LABEL=btrfs-arch
+UUID=873cb422-27af-4147-bc04-4110fe42936e       /var/cache/pacman       btrfs           rw,noatime,nodiratime,compress-force=zstd:3,ssd,space_cache,subvolid=262,subvol=/@pkgs  0 0
+
+
+# /dev/nvme0n1p3 LABEL=btrfs-arch
+UUID=873cb422-27af-4147-bc04-4110fe42936e       /var/lib/build  btrfs           rw,noatime,nodiratime,compress-force=zstd:3,ssd,space_cache,subvolid=264,subvol=/@build 0 0
+
+# /dev/nvme0n1p3 LABEL=btrfs-arch
+UUID=873cb422-27af-4147-bc04-4110fe42936e       /btrfs-root     btrfs           rw,noatime,nodiratime,compress-force=zstd:3,ssd,space_cache,subvolid=5,subvol=/ 0 0
+
+~
+~
+```
+
+### refind配置文件 archlinux相关
+
+```shell
+menuentry "Arch Linux" {
+    icon     /EFI/refind/themes/rEFInd-minimal/icons/os_arch.png
+    volume   24C752B9-26BA-9C47-BB0C-EEA6C0B70091
+    loader   /@/boot/vmlinuz-linux
+    initrd   /@/boot/initramfs-linux.img
+    options  "root=PARTUUID=24c752b9-26ba-9c47-bb0c-eea6c0b70091 rootflags=subvol=@ rw rd.driver.blacklist=nouveau nvidia-drm.modeset=1"
+
+    submenuentry "Boot using fallback initramfs" {
+        initrd /@/boot/initramfs-linux-fallback.img
+    }
+    submenuentry "Boot to terminal" {
+        add_options "systemd.unit=multi-user.target"
+    }
+
+
+}
+```
+
+仅作备忘。
+
+2021-12-10-23：48：59

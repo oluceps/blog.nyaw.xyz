@@ -1,0 +1,154 @@
+---
+description: 来了hugo 走了hugo
+date: '2024-04-30T17:36:45.000Z'
+draft: false
+extra:
+  math: true
+title: 写了个博客好耶
+tags:
+- 坑
+categories:
+- 记录
+---
+
+## 为什么
+
+看到了 moi-mo 的[博客](https://moi-mo.github.io/)用tmaize作主题，但是用的jeklly(ruby)。所以为了避免使用过气技术打算在hugo重写一个，很久之前hugo只用现成的主题还用不明白。也只有五一附近太闲了才有空弄这个w
+
+所以就基本复刻了一下，不做dark适配，主题色选了我比较喜欢的裹柳拿来调色。目前还差RSS订阅不过我感觉我没什么必要弄了，没什么内容而且和写博客的初衷违背。关于这个
+
+分类可能还要弄一下。
+
+然后还有关于精神状态的问题，我觉得写点东西可能会好点，有些东西对自己说但是不能广而告知，但是 microblog fediverse 什么的那种社交平台就容易别人一关注就你发东西立刻收到推送，很无聊也没发现有没有给对方取关的功能
+
+那不就等于直接和别人说话了嘛所以说无聊 没法写点自己的东西。
+
+为什么再启用博客,主要是两点,~~但是感觉今天事情好多还没有睡觉 还是歇会先。~~
+
+为什么用hugo, 因为我以前也用hugo 然后hugo听说快。但是吧它有很恶心的地方。
+
+话说真的好久没有写博客了啊，上一次都是去年八月份了，一眨眼六个月 半个一年，我还有多少个一年呢
+
+有个小问题是以后写的东西多了 可能要做个分页什么的,现在整页控制在20K出头 还是挺小的
+
+## 选型
+
+技术栈选用了 `TailwindCSS` 和 `Hugo`，通过hugo的postcss pipe（奇妙）来进行转换
+
+---
+
+### 语法
+
+hugo的模板语法（go-html-template），用起来有点杂乱。而且后缀也 `html`，这真的算吗？但是看lookup order又有优先找 `html.html`，这又是什么
+
+```html
+<main class="flex-1 ml-4 mx-10 w-5/6 md:w-3/5">
+  {{- $age := 9000 -}} {{- range (.Site.GetPage "posts").Pages -}} {{- if not
+  .Draft -}} {{- $iyear := (time.AsTime .Date).Year | int -}} {{- if lt $iyear
+  $age -}}
+  <div class="text-lg font-mono">{{- $iyear -}}</div>
+  {{- $age = $iyear -}} {{- end -}}
+  <article class="text-sprout-700 pt-1 mt-1 pl-2 rounded-sm flex w-full">
+    <a
+      href="{{ .Permalink }}"
+      class="flex w-full md:mx-2 md:px-3 flex-1 font-mono sm:text-base text-sm"
+    >
+      {{ $t := time.AsTime .Date }} {{ replace ($t.Format "01-02") "-" "/" }}
+      <div
+        class="max-w-3/4 overflow-x-hidden px-1 py-1/2 hover:transition-all hover:duration-300 hover:rounded-sm hover:bg-sprout-300 hover:text-white ml-5 whitespace-nowrap"
+      >
+        {{ .Title }}
+      </div>
+    </a>
+  </article>
+  <div class="flex justify-end items-end min-h-4 w-full">
+    <div
+      class="text-sm text-sprout-600 justify-self-end text-nowrap whitespace-nowrap"
+    >
+      {{ .Params.Categories }}
+    </div>
+  </div>
+  {{- end -}} {{ end }}
+</main>
+```
+
+我的语法高亮也不认它是html 笑死
+
+### 开发体验
+
+`hugo server` 这个命令我预期是能做到像vite那样跟踪所有code的变动并实时更新，但实际上并不是所有内容都能触发有效的页面元素更新，有时候改动一处要^C再重新运行才可以生效，还会卡住。
+
+另外hugo存在一个隐式的 [lookup order](https://gohugo.io/templates/lookup-order/) 查找模板，非常，非常奇怪的设计，坑。有种想降低门槛提高便利但是自己用力过猛收不住滑下坡的感觉。
+
+同时一个不知道是hugo还是twcss的锅: class里面放了格式错误的东西，它不会报错而是直接失效。有一段时间给我整懵了，因为一直在改一个前缀不对的东西的参数，然后疯狂^C这个hugo 如此反复，然后看一看网页诶怎么还是没变化。==
+
+还有关于responsible layout的问题，你们前端真的是，，复杂的情况不如手动再写一遍方便，不然代码处于一种很粘着的状态，就是告诉你这个地方在屏幕多大的时候要怎样，但是挤在一起。没眼看
+
+### 与tailwind的兼容性
+
+暂时没发现非常严重的问题，不过引入twcss后默认的h1标签有点太大了，折腾了一下。
+
+在某些手机浏览器上prose的块中的链接会溢出屏幕。
+
+## 优点
+
+快？然后确实降低了一点写blog的门槛，对于只用来写博客的人来说可能性价比是比学一个前端框架好的，因为正常的前端框架还真不太好处理md渲染的问题。
+
+## TODO
+
+- [ ] ~~分页？~~ 没必要。主页大多数都是可以复用的内容，控制在20K左右，继续增加100条blog都不一定能到30K。
+- [x] categories
+- [x] tags
+- [x] 公式？ $$ E = mc^2 $$
+
+---
+
+# Zola
+
+Thu 23 May 17:29:42 UTC 2024
+
+从hugo换到zola了。一个重要的原因是rust, 还没有lookup order的设定，感觉很好理解。
+
+说说区别吧
+
+- 对tailwindcss的处理: 通过postcss cli先编译出css文件然后再正常使用，隔壁hugo pipe应该也差不多。变动追踪需要开pnpm和zola两个cli的watch，但样式变动能正常变，赢hugo太多。
+- 语法难度: 用的tera模板，对比隔壁的hugo go template模板 至少有+-\*/可以用了，不要用奇怪的函数。模板功能上大差不差 有点像jinja2，reformatter也可以兼容，但是相比hugo少了一些好用的内置函数比如日期的操作，可能是zola自己的锅。
+- 兼容: frontmatter 有限定的field,多的只能放到extra里面不然好像会读不到，以及taxonimies必须单独归一类，某种程度上更规整了不过可能有时候有一次性的麻烦。
+- 开发体验: 再也没有莫名其妙的卡住。用下来思维很顺畅。
+- 语法高亮: 用的legacy的sublime text tmtheme格式，懒得配了，现有的够用。
+- 平台部署: cf page上要开unstable特性好像 不过用着没什么问题。
+- 迁移难度: 花了半天。
+
+
+# SolidJS
+
+
+Mon  3 Jun 09:16:16 UTC 2024
+
+没想到吧。还有第三弹
+
+为了用mdx实现一些有趣小效果 还有一些动态特性，打算用solidjs重写一下。
+
+---
+
+Thu  6 Jun 09:29:46 UTC 2024
+
+整体框架弄好了, 得益于前端框架的动态性，实现了一些以前没法实现的功能，比如切换目录的视图不需要重新加载一个静态页面，还有比较方便的添加样式。但是吧，有些小问题
+
++ 高亮只生效了一部分
++ blockquote 和code标签的样式和这里的不一致，即使css都是一样的。可能是MDX编译器的神秘妙妙问题
+
+鉴于这两个问题比较影响阅读体验，不部署上去了。以后没事可以再改改，等生态成熟了。github上这个技术栈组合的搜不到几个。
+
+---
+
+Fri  7 Jun 15:21:26 UTC 2024
+
+
+部署上去了，即目前的呈现。最后才发现  Solidjs 的 Next Doc 是用的类似的技术栈，不过我这里也手动实现了一点。。 [这个](https://github.com/solidjs/solid-docs-next/blob/a8dfef041695e484b87fa2773bb26632ba1ade7d/src/app.tsx#L44) 是未来很好的参考。
+
+基本完成了，之后的更改也只是无关紧要的锦上添花。
+
+有个问题折磨了我一整天，我不想要dark mode 但是即使没有做dark mode的适配，字体也会在darkmode的状态自动切换成浅色，导致我的字体和背景在darkmode全都是浅色，无法看清。
+
+后来和solidjs next doc反复对比 偶然注释掉了一行require daisyui。我去，好家伙坑我这么久。。

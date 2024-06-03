@@ -1,0 +1,60 @@
+---
+title: VBIOS compatiblity issue
+date: '2020-03-15T16:55:26.000Z'
+tags:
+- 坑
+- vbios
+categories:
+- 记录
+---
+
+问题主要体现在主机按下开机键到windows系统登陆界面亮起的阶段，正常情况应该显示主板厂商的商标之后win10窗口转圈圈，但是这个问题会使登录界面亮起前的开机过程中屏幕完全黑屏，即没有信号输入显示器，最大的问题就是无法进入BIOS和无法选择多系统启动项
+
+笔者的问题只在HDMI连接显示器的情况下出现，如果显卡输出HDMI转接VGA再接入显示器则显示正常，但是不能使用freesync。
+
+##### 参考硬件信息：
+
+- CPU AMD RYZEN7 2700
+- GPU AMD 蓝宝石RX580 8G
+- 显示器 三星S24R35X
+
+笔者查看过网络上大部分关于这类问题的资料，大部分问题都出在三星显示器和AMD显卡的搭配组合上。
+
+这种情况需要满足两种条件才可以解决：
+
+1. 显卡支持UEFI启动，大部分近年的显卡都支持。
+2. 主板需要支持并启用纯UEFI启动。
+3. 确认磁盘分区表类型为GPT，以便于使用纯UEFI启动。
+
+如果使用Windows系统，确认系统以UEFI引导方式安装，以防止更改为纯UEFI引导后发生windows引导错误的情况。
+
+解决问题可以分为几个步骤：
+
+###### 1.打开GPU-Z查看显卡是否支持UEFI。
+
+![GPUZ](https://static.chiphell.com/forum/201505/28/093639ayhzfdml7dm32uwz.gif)
+(图片来自网络，注意BIOS VERSION那行最后的UEFI，打勾的支持UEFI)
+
+###### 2.打开BIOS找到windows启动管理（可能叫别的名，有的厂商开启WHQL驱动支持就可以)
+
+里面有启动选项，如果是[CSM](https://baike.baidu.com/item/CSM/10240408)就将其改为UEFI启动。_可能会遇到兼容性问题，但是一般还可以加快启动速度_  
+完成以上步骤之后重启就完事。**不出意外已经可以正常显示自检界面**。
+
+---
+
+#### 极端情况
+
+完成以上步骤后，启动过程中如果长时间黑屏后提示**There is no GOP support detected in this card**或者类似的文字并尝试让你重新使用CSM启动。
+
+在**保证显卡支持UEFI的情况下**就只可能是**显卡的VGA BIOS版本太低**，与显示器不兼容。  
+这种情况就需要重新刷显卡的BIOS
+
+1. 打开GPUZ。在BIOS version后面有一个分享图标，点击并把显卡的bios备份一份，如果对自己有信心可以省略这一步。
+2. 下载[ATIFLASH](http://us1-dl.techpowerup.com/files/xC20_fhK4G237lLjJBEwtA/1584261831/atiflash_293.zip)并打开。可能仅适用AMD显卡
+3. 找到并下载你的显卡BIOS最新版本，后缀是rom，可以在 https://www.techpowerup.com/vgabios/ 查找。
+4. 打开AITFLASH，点击载入图像![](https://img-blog.csdnimg.cn/20190107225831698.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzMxODA1ODIx,size_16,color_FFFFFF,t_70)
+5. 选择你下载的rom文件，再点*程序*以刷入。
+
+#### 一般完成后重启用HDMI连接就可以正常显示自检，如果不幸翻车，可以刷回备份的BIOS。
+
+2020.3.15.18:02 updated.

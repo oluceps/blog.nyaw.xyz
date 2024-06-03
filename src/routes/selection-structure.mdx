@@ -1,0 +1,46 @@
+---
+categorys: programming
+date: '2020-02-24T00:59:03.000Z'
+title: 分支
+draft: true
+tags:
+- 编程
+- 高亮测试
+---
+
+由 \* 编辑于2020年02.24
+
+## 输入直角坐标系中点P的坐标(x,y)，若P点落在图中的阴影区域内，输出阴影部分面积，否则输出数据0
+
+```python
+from math import pi#import the math model
+from math import sqrt
+x = int(input("input the value of x"))
+y = int(input("value of y"))
+R=4;r=2
+S = pi*(R**2-r**2)
+Distance = sqrt(x**2+y**2)
+if Distance>2 and Distance<4:
+    print(S)
+else:
+    print(0)
+```
+
+```cpp
+#include <iostream>
+using namespace std;
+int x,y;
+int main() {
+float dist;
+int R = 4, r = 2;
+cin >> x, y;
+dist = sqrt(pow(x, 2) + pow(y, 2));
+if ((dist < R) && (dist > r)) {
+    cout << pi * (pow(R, 2) - pow(r, 2)) << endl;
+}
+else {
+    cout << 0 << endl;
+}
+return 0;
+}
+```

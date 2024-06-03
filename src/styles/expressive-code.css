@@ -1,0 +1,82 @@
+.expressive-code-overrides .expressive-code {
+	@apply font-mono my-4;
+}
+
+.expressive-code-overrides .expressive-code .frame {
+	@apply rounded-xl shadow-none ring-1 ring-slate-300/10;
+}
+
+.expressive-code-overrides .expressive-code .frame.is-terminal .header {
+	@apply border-solid border-b border-x-0 border-t-0 border-slate-600/20;
+}
+
+html .expressive-code-overrides .expressive-code pre {
+	@apply rounded-xl border-[1.5px];
+}
+
+/* Copy Button */
+.expressive-code-overrides .expressive-code .copy button::before {
+	@apply border-blue-900 opacity-30;
+}
+
+.expressive-code-overrides .expressive-code .copy button {
+	@apply rounded-lg bg-transparent transition-all;
+}
+
+.expressive-code-overrides .expressive-code .copy button::after {
+	@apply bg-blue-950/70;
+}
+html .expressive-code-overrides .expressive-code .copy button div {
+	@apply bg-blue-300/60;
+}
+.expressive-code-overrides .expressive-code .copy .feedback {
+	@apply bg-blue-500 transition-all tracking-wide;
+	font-family: var(--font-geist-mono);
+}
+
+.expressive-code-overrides .expressive-code .copy .feedback::after {
+	@apply border-l-blue-500 transition-all;
+}
+
+/* Title */
+.expressive-code-overrides .expressive-code .frame {
+	--tab-border-radius: 0.75rem;
+	--header-border-radius: 0.75rem;
+}
+
+/* Line Highlight*/
+.expressive-code-overrides .expressive-code .ec-line.mark {
+	--tmLineBgCol: hsl(213.75deg 33.36% 81.73% / 69%);
+	--tmLineBrdCol: hsl(222.77deg 38.21% 51.76% / 55.57%);
+}
+
+/* Scroll bar */
+html.windows
+	.expressive-code-overrides
+	.expressive-code
+	pre::-webkit-scrollbar-track {
+	@apply bg-transparent;
+}
+
+html.windows
+	.expressive-code-overrides
+	.expressive-code
+	pre::-webkit-scrollbar {
+	@apply w-5 h-5 bg-slate-200/80 rounded-xl border-[6px] border-solid border-transparent;
+	background-clip: content-box;
+}
+
+html.windows
+	.expressive-code-overrides
+	.expressive-code
+	pre::-webkit-scrollbar-thumb {
+	@apply bg-slate-600/70 rounded-xl border-[6px] border-solid border-transparent;
+	background-clip: content-box;
+}
+
+html.windows
+	.expressive-code-overrides
+	.expressive-code
+	pre::-webkit-scrollbar-thumb:hover {
+	@apply bg-slate-600;
+}

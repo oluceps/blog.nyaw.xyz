@@ -1,0 +1,112 @@
+---
+title: 使用 FIDO2 进行 Git 签名
+date: '2023-07-16T22:53:00.000Z'
+description: 拜拜GPG
+draft: false
+extra:
+  toc: true
+tags:
+- gpg
+- crypto
+- fido2
+- security
+- openssh
+- morden
+categories:
+- 记录
+---
+
+主要介绍一下使用 Yubikey FIDO2 进行 Git code signing。
+
+# 为什么要替换掉GPG
+
+关于两者的对比见 https://github.com/FiloSottile/age/discussions/432
+以及GPG目前的问题 https://latacora.micro.blog/2019/07/16/the-pgp-problem.html
+
+在我的使用场景下（日常的加密文件、代码签名）GPG也显得有些过于复杂。
+
+之前的方案是使用 Yubikey GPG Smartcard 储存 GPG Ed25519 密钥，然后使用 [resign](https://github.com/NickCao/resign) 和一些[特殊的配置](https://github.com/oluceps/nixos-config/commit/e995efe90c34031c1a9135fe23d8a80dacec287b) 来直接用 GPG 进行 SSH 签名。但是有裙友发现了更好的方案， 据说 Fido2 几乎就是 SSH Smartcard 于是参考[这篇文章](https://developers.yubico.com/SSH/Securing_SSH_with_FIDO2.html) 弄了一下。原文介绍得超详细！
+
+# 使用 SSH 和 FIDO 安全密钥保护 Git
+
+Git 是当前最流行的版本控制系统。它同时支持 HTTPS 和 SSH 来访问远程存储库。出于方便安全的原因大家都选Git！
+
+由于 OpenSSH 支持 FIDO 安全密钥，而 Git 支持 SSH，因此可以有效地通过他们提高 Git 仓库的安全性。
+
+本文描述了：
+
+- 如何使用安全密钥保护对存储库的 SSH 访问
+- 如何使用安全密钥保护的 SSH 密钥签署 Git 提交和标记。
+
+（另外请注意本文发布的日期，文章有效的概率与你使用的OpenSSH版本发布日期挂钩。通常需要 8.3 +
+
+前置条件:
+
+- A Yubikey
+- Morden Linux PC
+- Brain
+
+当使用带有 SSH 的 Git 作为其传输协议时， FIDO 安全密钥验证 Git 操作的工作原理与为任何其他 SSH 连接设置 SSH 时完全相同。按照[分步配置说明](https://developers.yubico.com/SSH/Securing_SSH_with_FIDO2.html)为您的客户机启用带有 YubiKey 和 FIDO2的 SSH 身份验证。
+
+如果您自己托管远程 Git 存储库，则需要安装和配置支持 FIDO 的 OpenSSH 服务器。默认安装可以正常工作，只要确保启用了 SSH 公共密钥认证即可。如果你正在使用像 Github 或 Gitlab 这样的云服务，可能要手动添加公钥到服务商。
+
+## Git tag & 提交签名
+
+因为 Git 的提交者名字很好伪装，所以签名代码是很有必要的。传统的方法是使用GPG, 也可以使用 [Yubikey + GPG](https://developers.yubico.com/PGP/Git_signing.html) （本文无关，都什么年代）
+
+但是使用 SSH 更简单，因为版本2.34 Git 也支持签名标记和使用 SSH key 提交。这意味着可以使用由 FIDO 安全密钥支持的 SSH 密钥。
+
+### 从 Yubikey 生成凭据
+
+resident 选项决定是否生成 Discoverable 的凭据（详见[这个](https://developers.yubico.com/SSH/Securing_SSH_with_FIDO2.html)）, 概括来说就是 resident 凭据可以通过 `ssh-keygen -K` 来从硬件密钥中导出密钥（？），没有resident的话如果在其它设备上使用硬件Key签名需要先把生成的私钥（实际上是指向硬件密钥的引用）手动挪过去。这里出于方便的原因使用 resident 凭据。`application=ssh:$(date +%s)`凭个人喜好设置，是用来标记用途的。我这里弄成时间戳。
+
+```
+cd ~/.ssh
+ssh-keygen -t ed25519-sk -O resident -O application=ssh:$(date +%s) -O verify-required
+```
+
+根据提示进行设置，完成后可以在`~/.ssh`可以找到 id_ed25519_sk 和它的pub。
+
+之后可以通过
+
+```
+ykman fido credentials list
+```
+
+查看凭据。
+
+### 配置Git客户端
+
+设置gpg 签名格式为ssh。在需要生效的仓库中执行。或者也可以加 `--global` 改全局设置。
+
+```
+git config gpg.format ssh
+```
+
+```
+git config user.signingKey ~/.ssh/id_ed25519_sk
+```
+
+就好了。
+
+# 使用
+
+```
+$ git commit -S -m'initial import'
+[main (root-commit) 519ccdd] initial import
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 README
+```
+
+```
+$ git log --oneline --show-signature
+519ccdd (HEAD -> main) Good "git" signature for user@example.com with ED25519-SK key SHA256:FpybChVXHU/MnwIvOszDxV2yFSbDp9ZkYXxjQ2E+8x0
+initial import
+```
+
+就算正确签名啦。在网络仓库使用的话需要手动把公钥放上去。
+具体还可以看 https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification
+
+update: 这样会导致每次签名都需要触摸密钥，好像有点麻烦 特别是 rebase 的时候。
+
+update: 用回ssh key了, 一下感觉 rebase 好快

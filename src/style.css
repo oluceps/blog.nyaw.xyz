@@ -1,0 +1,111 @@
+@import "./styles/prism.css";
+@import "./styles/expressive-code.css";
+@import "./styles/fonts.css";
+@import url("https://cdn.jsdelivr.net/npm/misans@4.0.0/lib/Normal/MiSans-Regular.min.css");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+a {
+  @apply underline-offset-4;
+}
+
+@layer base {
+	html {
+		color-scheme: light;
+	}
+
+	html.dark {
+		color-scheme: dark;
+	}
+
+	* Scroll bar
+
+	html,
+	.custom-scrollbar {
+		scroll-behavior: smooth;
+		scroll-padding-top: 6rem;
+
+		scrollbar-color: #778292 #e7ecf2;
+		scrollbar-width: thin;
+	}
+
+	/**
+	 * Note: Whenever chrome stops supporting custom scrollbars (the `::-webkit-scrollbar-*` selectors)
+	 * remove the following rule and all `::-webkit-scrollbar-*` selectors
+	 * */
+	html.windows:not(.firefox),
+	html.windows:not(.firefox) .custom-scrollbar,
+
+	html.windows .custom-scrollbar::-webkit-scrollbar-track {
+		@apply bg-transparent;
+	}
+
+	html.windows .custom-scrollbar::-webkit-scrollbar {
+		@apply w-5 h-5 bg-slate-200/80 rounded-xl border-[6px] border-solid border-transparent;
+		background-clip: content-box;
+	}
+	html.windows .custom-scrollbar::-webkit-scrollbar-thumb {
+		@apply bg-slate-600/70 rounded-xl border-[6px] border-solid border-transparent;
+		background-clip: content-box;
+	}
+
+	html.windows .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+		@apply bg-slate-600;
+	}
+
+	html.windows [inert] ::-webkit-scrollbar {
+		display: none;
+	}
+
+	.prose h1,
+	.prose h2 {
+		@apply mt-0;
+	}
+
+	img {
+		@apply rounded-xl;
+	}
+}
+
+@layer components {
+	.shiki.material-theme-ocean {
+		background-color: transparent !important;
+	}
+}
+
+@layer utilities {
+	.heading {
+		@apply shadow-none text-slate-900 !important;
+	}
+
+	.heading:hover::after {
+		@apply opacity-80;
+		content: " #";
+	}
+}
+
+.navigation_collapsible {
+	overflow: hidden;
+	animation: slideUp 300ms ease-out;
+}
+.navigation_collapsible[data-expanded] {
+	animation: slideDown 300ms ease-out;
+}
+@keyframes slideDown {
+	from {
+		height: 0;
+	}
+	to {
+		height: var(--kb-collapsible-content-height);
+	}
+}
+@keyframes slideUp {
+	from {
+		height: var(--kb-collapsible-content-height);
+	}
+	to {
+		height: 0;
+	}
+}

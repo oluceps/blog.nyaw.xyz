@@ -1,0 +1,290 @@
+---
+date: '2024-05-06T05:21:32.000Z'
+draft: false
+title: Multidev bcachefs on NixOS
+tags:
+- Linux
+- NixOS
+- NAS
+- bcachefs
+categories:
+- 记录
+---
+
+Compared to building a standard PC platform, setting up a network-attached server with NixOS doesn't require additional effort.
+
+I've transitioned from `TrueNAS` to `NixOS` over the past few months, and it appears to be working well.
+
+## Hardware Specifications
+
+```
+Motherboard: ASUS P9D-MX (C222)
+CPU:         Intel E3 1230-v3
+DRAM:        16GB ECC
+HDD:         HGST 3TB x 4
+SSD:         nvme-INTEL_MEMPEK1J016GAH_PHBT82920C53016N & SanDisk drive
+```
+
+## Core Configuration
+
+Given the need for tiered storage, and the fact that `zfs` (previously used in `TrueNAS`) is overly complex and difficult to maintain, I decided to experiment with `bcachefs`. Coincidentally, `bcachefs` was integrated into the Linux kernel in version 6.7, which was released around the same time.
+
+I'm using `colmena` for deployment, and I've created a colmena machine [config](https://github.com/oluceps/nixos-config/tree/trival/hosts/eihort):
+
+```nix
+{
+  lib,
+  inputs,
+  user,
+  ...
+}:
+{
+  deployment = {
+    targetHost = "10.0.1.6";
+    targetPort = 22;
+    targetUser = user;
+    privilegeEscalationCommand = [
+      "doas"
+      "--"
+    ];
+  };
+
+  imports = lib.sharedModules ++ [
+
+    ./hardware.nix
+    ./network.nix
+    ./rekey.nix
+    ./spec.nix
+
+    ../../srv     # not nas-specific config, could be emitted
+    ../../age.nix
+    ../../packages.nix
+    ../../misc.nix
+    ../../users.nix
+
+    inputs.disko.nixosModules.default
+  ];
+}
+```
+
+part of this config relying on entire structure.
+
+### hardware config
+
+I'm using `disko` for disk partition management. However, due to an ongoing [issue](https://github.com/systemd/systemd/issues/8234) where `disko` does not handle `bcachefs` subvolumes effectively, we only define the SSD where the system is installed.
+
+```nix
+{
+  disko = {
+    devices = {
+      disk.main = {
+        device = "/dev/disk/by-id/ata-SanDisk_SD8SBAT032G_153873411000";
+        type = "disk";
+        content = {
+          type = "gpt";
+          partitions = {
+            boot = {
+              size = "1M";
+              type = "EF02"; # for grub MBR
+              priority = 0;
+            };
+
+            ESP = {
+              name = "ESP";
+              size = "512M";
+              type = "EF00";
+              priority = 1;
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/efi";
+                mountOptions = [
+                  "fmask=0077"
+                  "dmask=0077"
+                ];
+              };
+            };
+
+            root = {
+              size = "100%";
+              content = {
+                type = "btrfs";
+                extraArgs = [
+                  "-f"
+                  "--csum xxhash64"
+                ];
+                subvolumes = {
+                  "root" = {
+                    mountpoint = "/";
+                    mountOptions = [
+                      "compress-force=zstd:1"
+                      "noatime"
+                      "discard=async"
+                      "space_cache=v2"
+                      "nosuid"
+                      "nodev"
+                    ];
+                  };
+                  "home" = {
+                    mountOptions = [
+                      "compress-force=zstd:1"
+                      "noatime"
+                      "discard=async"
+                      "space_cache=v2"
+                      "nosuid"
+                      "nodev"
+                    ];
+                    mountpoint = "/home";
+                  };
+                  "nix" = {
+                    mountOptions = [
+                      "compress-force=zstd:1"
+                      "noatime"
+                      "discard=async"
+                      "space_cache=v2"
+                      "nosuid"
+                      "nodev"
+                    ];
+                    mountpoint = "/nix";
+                  };
+                  "var" = {
+                    mountOptions = [
+                      "compress-force=zstd:1"
+                      "noatime"
+                      "discard=async"
+                      "space_cache=v2"
+                      "nosuid"
+                      "nodev"
+                    ];
+                    mountpoint = "/var";
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+  };
+}
+```
+
+enable the kernel config for bcachefs:
+
+```nix
+{
+boot.supportedFilesystems = [ "bcachefs" ];
+}
+```
+
+while I'm using a SAS Card for connecting multiply HDD, appending the corresponding initrd kernel module config:
+
+```nix
+{
+  boot.initrd = {
+      compressor = "zstd";
+      compressorArgs = [
+        "-19"
+        "-T0"
+      ];
+      systemd.enable = true;
+      availableKernelModules = [
+        "nvme"
+        "xhci_pci"
+        "ahci"
+        "usb_storage"
+        "usbhid"
+        "sd_mod"
+        "mpt3sas"
+      ];
+      kernelModules = [
+        "tpm"
+        "tpm_tis"
+        "tpm_crb"
+        "mpt3sas" # IMPORTANT
+      ];
+    };
+  kernelPackages = pkgs.linuxPackages_latest;
+}
+```
+
+The configuration mentioned above should allow the machine to boot and recognize devices at startup. Now, we move on to the step of creating a `bcachefs` filesystem from multiple devices.
+
+We'll take a relaxed approach with the tiered feature:
+
+```
+bcachefs format \
+    --label=ssd.ssd1 /dev/sdA \
+    --label=hdd.hdd1 /dev/sdC \
+    --label=hdd.hdd2 /dev/sdD \
+    --label=hdd.hdd3 /dev/sdE \
+    --label=hdd.hdd4 /dev/sdF \
+    --replicas=2 \
+    --foreground_target=ssd \
+    --promote_target=ssd \
+    --background_target=hdd
+```
+
+Command from [Arch wiki](https://wiki.archlinux.org/title/Bcachefs)
+
+This will waste more space (avaliable 6T) than btrfs raid5 (9T) but far more safe maybe.
+
+### Sharp Edge
+
+Systemd not support bcachefs multidev mount syntax yet (05,2024), to implement multidevice automatic mounting at system startup we need a hand-written systemd service:
+
+```nix
+{
+  systemd.services.mount-three = {
+    description = "mount pool 3";
+    script =
+      let
+        diskId = map (n: "/dev/disk/by-id/" + n) [
+          "nvme-INTEL_MEMPEK1J016GAH_PHBT82920C53016N"
+          "wwn-0x5000cca05838bc98"
+          "wwn-0x5000cca0583a5e34"
+          "wwn-0x5000cca04608e534"
+          "wwn-0x5000cca0583880c4"
+        ];
+      in
+      # chain call
+      toString (
+        lib.getExe (
+          pkgs.nuenv.writeScriptBin {
+            name = "mount";
+            script =
+              let
+                mount = "/run/current-system/sw/bin/mount --onlyonce -o noatime,nodev,nosuid -t bcachefs ${lib.concatStringsSep ":" diskId} /three";
+              in
+              ''
+                do { ${mount} } | complete
+              '';
+          }
+        )
+      );
+    wantedBy = [ "multi-user.target" ];
+  };
+}
+```
+
+And for storage services required the fs mounted first, add extra unit config, e.g.:
+
+```nix
+  systemd.services.minio.unitConfig.RequiresMountsFor = "LABEL=THREE";
+```
+
+finally simply enable some storage service:
+
+```nix
+{
+    services.minio = {
+      enable = true;
+      region = "ap-east-1";
+      rootCredentialsFile = config.age.secrets.minio.path;
+      dataDir = [ "/three/bucket/data" ];
+    };
+    # ...etc
+}
+```
+
+All set.

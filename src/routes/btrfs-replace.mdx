@@ -1,0 +1,34 @@
+---
+date: '2023-06-25T14:54:29.000Z'
+description: 快捷替换btrfs文件系统的所在设备
+draft: false
+title: Btrfs Quick Migrate
+tags:
+- fs
+- linux
+categories:
+- 记录
+---
+
+Btrfs（B-Tree文件系统）是一个稍微有点现代的文件系统，基于COW机制，
+当对文件进行修改时，Btrfs不会直接在原始数据上进行写操作，
+而是将修改的数据复制到新的位置。这种方式确保了数据的完整性，
+并提供了高效的快照和回滚功能.
+
+我轻度使用了有两三年，出现过一次文件损坏的情况，
+最后删除掉出错的chrome缓存修好了，
+感觉目前它的可靠性还是可以满足日常使用的 (应该
+
+`btrfs`有一个比较新的命令可以在挂载状态将文件系统所在的`device`替换，
+最近加了一块硬盘正好体验了一下：
+
+```bash
+doas btrfs replace start /dev/nvme1n1p2 /dev/nvme0n1p2 /nix -f
+```
+
+`/dev/nvme1n1p2` 为挂载的原分区，`/dev/nvme0n1p2` 为替换后使用的分区，
+`/dev/nvme1n1p2` 体积小等于`/dev/nvme0n1p2`，如果大于的话可能要先resize
+
+等一会就完成了，再执行 `doas btrfs f u /nix` 已经是目标设备的信息。
+然后需要执行 `doas btrfs filesystem resize 1:max /nix` 让文件系统伸展到整个设备,
+`uuid`/`partuuid` 都和原先的状态一致，只有设备更换了。到这里就算完成啦。
