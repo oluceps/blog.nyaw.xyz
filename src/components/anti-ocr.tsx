@@ -113,72 +113,125 @@ const AntiOCR = () => {
   });
 
   return (
-    <div>
-      <div style="float: left">
+    <div class="flex flex-col items-center p-4">
+      <div class="w-full max-w-lg mb-4">
         <textarea
           id="txt"
-          style={{ width: '400px', height: '500px' }}
+          class="w-full h-64 p-2 border rounded"
           value={txt()}
           onInput={(e) => setTxt((e.target as HTMLTextAreaElement).value)}
         />
       </div>
-      <div>
-        <label>字体大小:</label>
-        <input size="4" id="fontSize" value={fontSize()} onInput={(e) => setFontSize(parseInt((e.target as HTMLInputElement).value))} />
-        px
-        <label>字体精细:</label>
-        <select id="fontWeight" value={fontWeight()} onChange={(e) => setFontWeight((e.target as HTMLSelectElement).value)}>
-          <option value="normal">正常</option>
-          <option value="bold">粗</option>
-        </select>
-        <label>每行显示:</label>
-        <input size="4" id="len" value={len()} onInput={(e) => setLen(parseInt((e.target as HTMLInputElement).value))} />
-        个字
-        <p>
-          文字颜色:<span id="fontcolor">{fontColor()}</span>
-          <canvas id="fontcolor_c" width="20" height="20"></canvas>
-        </p>
-        <p>
-          Red：
-          <input type="range" id="fontcolor_red" min="0" max="255" value="0" onInput={() => changeColor('fontcolor')} />
-        </p>
-        <p>
-          Green：
-          <input type="range" id="fontcolor_green" min="0" max="255" value="0" onInput={() => changeColor('fontcolor')} />
-        </p>
-        <p>
-          Blue：
-          <input type="range" id="fontcolor_blue" min="0" max="255" value="0" onInput={() => changeColor('fontcolor')} />
-        </p>
-        <p>
-          背景颜色:<span id="backcolor">{backColor()}</span>
-          <canvas id="backcolor_c" width="20" height="20"></canvas>
-        </p>
-        <p>
-          Red：
-          <input type="range" id="backcolor_red" min="0" max="255" value="255" onInput={() => changeColor('backcolor')} />
-        </p>
-        <p>
-          Green：
-          <input type="range" id="backcolor_green" min="0" max="255" value="255" onInput={() => changeColor('backcolor')} />
-        </p>
-        <p>
-          Blue：
-          <input type="range" id="backcolor_blue" min="0" max="255" value="255" onInput={() => changeColor('backcolor')} />
-        </p>
-        <label>線條粗細:</label>
-        <input size="4" id="lineSize" value={lineSize()} onInput={(e) => setLineSize(parseInt((e.target as HTMLInputElement).value))} />
-        <label>畫點大小:</label>
-        <input size="4" id="pointSize" value={pointSize()} onInput={(e) => setPointSize(parseInt((e.target as HTMLInputElement).value))} />
-        <label>畫點密度:</label>
-        <input type="range" id="points" min="0" max="20" value={points()} onInput={(e) => setPoints(parseInt((e.target as HTMLInputElement).value))} />
-        <button onClick={textToImg}>生成图片</button>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <label class="block mb-2">字体大小:</label>
+          <input
+            type="number"
+            size="4"
+            id="fontSize"
+            class="input input-bordered w-full mb-4"
+            value={fontSize()}
+            onInput={(e) => setFontSize(parseInt((e.target as HTMLInputElement).value))}
+          />
+          <label class="block mb-2">字体精细:</label>
+          <select
+            id="fontWeight"
+            class="select select-bordered w-full mb-4"
+            value={fontWeight()}
+            onChange={(e) => setFontWeight((e.target as HTMLSelectElement).value)}
+          >
+            <option value="normal">正常</option>
+            <option value="bold">粗</option>
+          </select>
+          <label class="block mb-2">每行显示:</label>
+          <input
+            type="number"
+            size="4"
+            id="len"
+            class="input input-bordered w-full mb-4"
+            value={len()}
+            onInput={(e) => setLen(parseInt((e.target as HTMLInputElement).value))}
+          />
+          <label class="block mb-2">線條粗細:</label>
+          <input
+            type="number"
+            size="4"
+            id="lineSize"
+            class="input input-bordered w-full mb-4"
+            value={lineSize()}
+            onInput={(e) => setLineSize(parseInt((e.target as HTMLInputElement).value))}
+          />
+          <label class="block mb-2">畫點大小:</label>
+          <input
+            type="number"
+            size="4"
+            id="pointSize"
+            class="input input-bordered w-full mb-4"
+            value={pointSize()}
+            onInput={(e) => setPointSize(parseInt((e.target as HTMLInputElement).value))}
+          />
+          <label class="block mb-2">畫點密度:</label>
+          <input
+            type="range"
+            id="points"
+            class="w-full mb-4"
+            min="0"
+            max="20"
+            value={points()}
+            onInput={(e) => setPoints(parseInt((e.target as HTMLInputElement).value))}
+          />
+        </div>
+        <div>
+          <p class="mb-2">
+            文字颜色: <span id="fontcolor">{fontColor()}</span>
+            <canvas id="fontcolor_c" width="20" height="20"></canvas>
+          </p>
+          <div class="mb-4">
+            <label class="block mb-2">Red:</label>
+            <input type="range" id="fontcolor_red" min="0" max="255" value="0" class="w-full" onInput={() => changeColor('fontcolor')} />
+          </div>
+          <div class="mb-4">
+            <label class="block mb-2">Green:</label>
+            <input type="range" id="fontcolor_green" min="0" max="255" value="0" class="w-full" onInput={() => changeColor('fontcolor')} />
+          </div>
+          <div class="mb-4">
+            <label class="block mb-2">Blue:</label>
+            <input type="range" id="fontcolor_blue" min="0" max="255" value="0" class="w-full" onInput={() => changeColor('fontcolor')} />
+          </div>
+          <p class="mb-2">
+            背景颜色: <span id="backcolor">{backColor()}</span>
+            <canvas id="backcolor_c" width="20" height="20"></canvas>
+          </p>
+          <div class="mb-4">
+            <label class="block mb-2">Red:</label>
+            <input type="range" id="backcolor_red" min="0" max="255" value="255" class="w-full" onInput={() => changeColor('backcolor')} />
+          </div>
+          <div class="mb-4">
+            <label class="block mb-2">Green:</label>
+            <input type="range" id="backcolor_green" min="0" max="255" value="255" class="w-full" onInput={() => changeColor('backcolor')} />
+          </div>
+          <div class="mb-4">
+            <label class="block mb-2">Blue:</label>
+            <input type="range" id="backcolor_blue" min="0" max="255" value="255" class="w-full" onInput={() => changeColor('backcolor')} />
+          </div>
+        </div>
       </div>
-      <canvas ref={canvas} style={{ display: 'block' }} width="0" height="0"></canvas>
-      <div>
-        <img ref={img} style={{ border: '1px solid' }} />
+      <button class="btn btn-primary mt-4" onClick={textToImg}>
+        生成图片
+      </button>
+      <canvas ref={canvas!} class="w-0 h-0"></canvas>
+      <div class="mt-4">
+        <img ref={img!} class="border" />
       </div>
-      <a href="https://github.com/yuzu233/anti-ocr">Github</a> | <a href="https://twitter.com/yuzuqwq">Author's Twitter</a>
+      <div class="mt-4">
+        <a href="https://github.com/yuzu233/anti-ocr" class="link">
+          Github
+        </a>{' '}
+        |{' '}
+        <a href="https://twitter.com/yuzuqwq" class="link">
+          Author's Twitter
+        </a>
+      </div>
     </div>
   );
 };
