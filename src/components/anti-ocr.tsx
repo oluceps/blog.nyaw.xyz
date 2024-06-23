@@ -113,122 +113,198 @@ const AntiOCR = () => {
   });
 
   return (
-    <div class="flex flex-col items-center p-4">
-      <div class="w-full max-w-lg mb-4">
+    <div class="flex flex-col items-center p-4 space-y-4">
+      <div class="w-full max-w-2xl flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
         <textarea
           id="txt"
-          class="w-full h-64 p-2 border rounded"
+          class="textarea textarea-bordered w-full h-64 md:w-1/2"
           value={txt()}
           onInput={(e) => setTxt((e.target as HTMLTextAreaElement).value)}
         />
-      </div>
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div>
-          <label class="block mb-2">字体大小:</label>
-          <input
-            type="number"
-            size="4"
-            id="fontSize"
-            class="input input-bordered w-full mb-4"
-            value={fontSize()}
-            onInput={(e) => setFontSize(parseInt((e.target as HTMLInputElement).value))}
-          />
-          <label class="block mb-2">字体精细:</label>
-          <select
-            id="fontWeight"
-            class="select select-bordered w-full mb-4"
-            value={fontWeight()}
-            onChange={(e) => setFontWeight((e.target as HTMLSelectElement).value)}
-          >
-            <option value="normal">正常</option>
-            <option value="bold">粗</option>
-          </select>
-          <label class="block mb-2">每行显示:</label>
-          <input
-            type="number"
-            size="4"
-            id="len"
-            class="input input-bordered w-full mb-4"
-            value={len()}
-            onInput={(e) => setLen(parseInt((e.target as HTMLInputElement).value))}
-          />
-          <label class="block mb-2">線條粗細:</label>
-          <input
-            type="number"
-            size="4"
-            id="lineSize"
-            class="input input-bordered w-full mb-4"
-            value={lineSize()}
-            onInput={(e) => setLineSize(parseInt((e.target as HTMLInputElement).value))}
-          />
-          <label class="block mb-2">畫點大小:</label>
-          <input
-            type="number"
-            size="4"
-            id="pointSize"
-            class="input input-bordered w-full mb-4"
-            value={pointSize()}
-            onInput={(e) => setPointSize(parseInt((e.target as HTMLInputElement).value))}
-          />
-          <label class="block mb-2">畫點密度:</label>
-          <input
-            type="range"
-            id="points"
-            class="w-full mb-4"
-            min="0"
-            max="20"
-            value={points()}
-            onInput={(e) => setPoints(parseInt((e.target as HTMLInputElement).value))}
-          />
+        <div class="w-full md:w-1/2 space-y-4">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">字体大小</span>
+            </label>
+            <input
+              type="number"
+              id="fontSize"
+              class="input input-bordered"
+              value={fontSize()}
+              onInput={(e) => setFontSize(parseInt((e.target as HTMLInputElement).value))}
+            />
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">字体精细</span>
+            </label>
+            <select
+              id="fontWeight"
+              class="select select-bordered"
+              value={fontWeight()}
+              onChange={(e) => setFontWeight((e.target as HTMLSelectElement).value)}
+            >
+              <option value="normal">正常</option>
+              <option value="bold">粗</option>
+            </select>
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">每行显示</span>
+            </label>
+            <input
+              type="number"
+              id="len"
+              class="input input-bordered"
+              value={len()}
+              onInput={(e) => setLen(parseInt((e.target as HTMLInputElement).value))}
+            />
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">線條粗細</span>
+            </label>
+            <input
+              type="number"
+              id="lineSize"
+              class="input input-bordered"
+              value={lineSize()}
+              onInput={(e) => setLineSize(parseInt((e.target as HTMLInputElement).value))}
+            />
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">畫點大小</span>
+            </label>
+            <input
+              type="number"
+              id="pointSize"
+              class="input input-bordered"
+              value={pointSize()}
+              onInput={(e) => setPointSize(parseInt((e.target as HTMLInputElement).value))}
+            />
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">畫點密度</span>
+            </label>
+            <input
+              type="range"
+              id="points"
+              class="range range-primary"
+              min="0"
+              max="20"
+              value={points()}
+              onInput={(e) => setPoints(parseInt((e.target as HTMLInputElement).value))}
+            />
+          </div>
         </div>
-        <div>
-          <p class="mb-2">
-            文字颜色: <span id="fontcolor">{fontColor()}</span>
+      </div>
+
+      <div class="flex flex-wrap justify-around w-full max-w-2xl">
+        <div class="w-full md:w-1/2 space-y-4">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">文字颜色: <span id="fontcolor">{fontColor()}</span></span>
+            </label>
             <canvas id="fontcolor_c" width="20" height="20"></canvas>
-          </p>
-          <div class="mb-4">
-            <label class="block mb-2">Red:</label>
-            <input type="range" id="fontcolor_red" min="0" max="255" value="0" class="w-full" onInput={() => changeColor('fontcolor')} />
+            <label class="label">
+              <span class="label-text">Red:</span>
+            </label>
+            <input
+              type="range"
+              id="fontcolor_red"
+              class="range range-primary"
+              min="0"
+              max="255"
+              value="0"
+              onInput={() => changeColor('fontcolor')}
+            />
+            <label class="label">
+              <span class="label-text">Green:</span>
+            </label>
+            <input
+              type="range"
+              id="fontcolor_green"
+              class="range range-primary"
+              min="0"
+              max="255"
+              value="0"
+              onInput={() => changeColor('fontcolor')}
+            />
+            <label class="label">
+              <span class="label-text">Blue:</span>
+            </label>
+            <input
+              type="range"
+              id="fontcolor_blue"
+              class="range range-primary"
+              min="0"
+              max="255"
+              value="0"
+              onInput={() => changeColor('fontcolor')}
+            />
           </div>
-          <div class="mb-4">
-            <label class="block mb-2">Green:</label>
-            <input type="range" id="fontcolor_green" min="0" max="255" value="0" class="w-full" onInput={() => changeColor('fontcolor')} />
-          </div>
-          <div class="mb-4">
-            <label class="block mb-2">Blue:</label>
-            <input type="range" id="fontcolor_blue" min="0" max="255" value="0" class="w-full" onInput={() => changeColor('fontcolor')} />
-          </div>
-          <p class="mb-2">
-            背景颜色: <span id="backcolor">{backColor()}</span>
+        </div>
+        <div class="w-full md:w-1/2 space-y-4">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">背景颜色: <span id="backcolor">{backColor()}</span></span>
+            </label>
             <canvas id="backcolor_c" width="20" height="20"></canvas>
-          </p>
-          <div class="mb-4">
-            <label class="block mb-2">Red:</label>
-            <input type="range" id="backcolor_red" min="0" max="255" value="255" class="w-full" onInput={() => changeColor('backcolor')} />
-          </div>
-          <div class="mb-4">
-            <label class="block mb-2">Green:</label>
-            <input type="range" id="backcolor_green" min="0" max="255" value="255" class="w-full" onInput={() => changeColor('backcolor')} />
-          </div>
-          <div class="mb-4">
-            <label class="block mb-2">Blue:</label>
-            <input type="range" id="backcolor_blue" min="0" max="255" value="255" class="w-full" onInput={() => changeColor('backcolor')} />
+            <label class="label">
+              <span class="label-text">Red:</span>
+            </label>
+            <input
+              type="range"
+              id="backcolor_red"
+              class="range range-primary"
+              min="0"
+              max="255"
+              value="255"
+              onInput={() => changeColor('backcolor')}
+            />
+            <label class="label">
+              <span class="label-text">Green:</span>
+            </label>
+            <input
+              type="range"
+              id="backcolor_green"
+              class="range range-primary"
+              min="0"
+              max="255"
+              value="255"
+              onInput={() => changeColor('backcolor')}
+            />
+            <label class="label">
+              <span class="label-text">Blue:</span>
+            </label>
+            <input
+              type="range"
+              id="backcolor_blue"
+              class="range range-primary"
+              min="0"
+              max="255"
+              value="255"
+              onInput={() => changeColor('backcolor')}
+            />
           </div>
         </div>
       </div>
-      <button class="btn btn-primary mt-4" onClick={textToImg}>
+
+      <button class="btn btn-primary" onClick={textToImg}>
         生成图片
       </button>
-      <canvas ref={canvas!} class="w-0 h-0"></canvas>
+      <canvas ref={canvas!} class="hidden"></canvas>
       <div class="mt-4">
         <img ref={img!} class="border" />
       </div>
       <div class="mt-4">
-        <a href="https://github.com/yuzu233/anti-ocr" class="link">
+        <a href="https://github.com/yuzu233/anti-ocr" class="link link-primary">
           Github
         </a>{' '}
         |{' '}
-        <a href="https://twitter.com/yuzuqwq" class="link">
+        <a href="https://twitter.com/yuzuqwq" class="link link-primary">
           Author's Twitter
         </a>
       </div>
