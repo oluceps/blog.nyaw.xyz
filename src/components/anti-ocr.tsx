@@ -225,7 +225,7 @@ const AntiOCR = () => {
         </div>
       </div>
 
-      <div class="grid md:grid-cols-2">
+      <div class="grid md:grid-cols-2 w-full gap-3">
         <div class="w-full py-2 flex flex-col">
           <div class={`px-1.5 flex items-center justify-center font-bold text-[${fontColorHex()}]`}>
             文字颜色
