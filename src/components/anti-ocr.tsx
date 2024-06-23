@@ -116,9 +116,8 @@ const AntiOCR = () => {
     <div class="flex flex-col w-full h-full justify-center items-center">
       <div class="grid grid-cols-2 grid-rows-2 w-full h-full gap-3">
         <div class="w-full h-full">
-          <input
+          <textarea class="textarea textarea-bordered w-full h-full p-2" placeholder="在这儿输入文字"
             id="txt"
-            class="input input-bordered input-lg w-full max-w-xs h-full"
             value={txt()}
             onInput={(e) => setTxt((e.target as unknown as HTMLTextAreaElement).value)}
           />
@@ -208,10 +207,7 @@ const AntiOCR = () => {
           <canvas id="fontcolor_c" class="hidden"></canvas>
         </div>
 
-
-
-        <div class="w-full h-full flex flex-col">
-
+        <div class="w-full py-2 flex flex-col">
           <label class="label">
             <span class="label-text">Red:</span>
           </label>
@@ -253,11 +249,7 @@ const AntiOCR = () => {
 
 
         </div>
-        <div class="w-full h-full flex flex-col">
-
-          <label class="label">
-            <span class="label-text">背景颜色: <span id="backcolor">{backColor()}</span></span>
-          </label>
+        <div class="w-full py-2 flex flex-col">
           <canvas id="backcolor_c" class="hidden"></canvas>
           <label class="label">
             <span class="label-text">Red:</span>
@@ -298,14 +290,15 @@ const AntiOCR = () => {
             onInput={() => changeColor('backcolor')}
           />
         </div>
-      </div>
 
+        <label class="label">
+          <span class="label-text">背景颜色: <span id="backcolor">{backColor()}</span></span>
+        </label>
+      </div>
 
       <button class="btn" onClick={textToImg}>
         生成图片
       </button>
-
-
       <canvas ref={canvas!} class="hidden"></canvas>
 
       <div class="mt-4">
