@@ -201,13 +201,13 @@ const AntiOCR = () => {
         </div>
       </div>
 
-      <div class="w-full max-w-4xl flex flex-wrap space-y-4">
+      <div class="w-full max-w-4xl flex flex-wrap space-y-4 space-x-3">
         <div class="w-full md:w-1/2 space-y-4">
           <div class="form-control">
             <label class="label">
               <span class="label-text">文字颜色: <span id="fontcolor">{fontColor()}</span></span>
             </label>
-            <canvas id="fontcolor_c" class="border" width="20" height="20"></canvas>
+            <canvas id="fontcolor_c" class="hidden"></canvas>
             <label class="label">
               <span class="label-text">Red:</span>
             </label>
@@ -251,7 +251,7 @@ const AntiOCR = () => {
             <label class="label">
               <span class="label-text">背景颜色: <span id="backcolor">{backColor()}</span></span>
             </label>
-            <canvas id="backcolor_c" class="border" width="20" height="20"></canvas>
+            <canvas id="backcolor_c" class="hidden"></canvas>
             <label class="label">
               <span class="label-text">Red:</span>
             </label>
@@ -270,7 +270,7 @@ const AntiOCR = () => {
             <input
               type="range"
               id="backcolor_green"
-              class="range range-primary"
+              class="range"
               min="0"
               max="255"
               value="255"
@@ -282,7 +282,7 @@ const AntiOCR = () => {
             <input
               type="range"
               id="backcolor_blue"
-              class="range range-primary"
+              class="range"
               min="0"
               max="255"
               value="255"
@@ -292,7 +292,7 @@ const AntiOCR = () => {
         </div>
       </div>
 
-      <button class="btn btn-primary" onClick={textToImg}>
+      <button class="btn" onClick={textToImg}>
         生成图片
       </button>
       <canvas ref={canvas!} class="hidden"></canvas>
