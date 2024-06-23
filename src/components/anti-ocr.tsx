@@ -113,15 +113,15 @@ const AntiOCR = () => {
   });
 
   return (
-    <div class="flex flex-col items-center p-4 space-y-4">
-      <div class="w-full max-w-2xl flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+    <div class="flex flex-col items-center p-4 space-y-6">
+      <div class="w-full max-w-4xl flex flex-col md:flex-row space-y-4 md:space-x-6 md:space-y-0">
         <textarea
           id="txt"
           class="textarea textarea-bordered w-full h-64 md:w-1/2"
           value={txt()}
           onInput={(e) => setTxt((e.target as HTMLTextAreaElement).value)}
         />
-        <div class="w-full md:w-1/2 space-y-4">
+        <div class="w-full md:w-1/2 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="form-control">
             <label class="label">
               <span class="label-text">字体大小</span>
@@ -184,7 +184,7 @@ const AntiOCR = () => {
               onInput={(e) => setPointSize(parseInt((e.target as HTMLInputElement).value))}
             />
           </div>
-          <div class="form-control">
+          <div class="form-control col-span-2">
             <label class="label">
               <span class="label-text">畫點密度</span>
             </label>
@@ -201,13 +201,13 @@ const AntiOCR = () => {
         </div>
       </div>
 
-      <div class="flex flex-wrap justify-around w-full max-w-2xl">
+      <div class="w-full max-w-4xl flex flex-wrap space-y-4">
         <div class="w-full md:w-1/2 space-y-4">
           <div class="form-control">
             <label class="label">
               <span class="label-text">文字颜色: <span id="fontcolor">{fontColor()}</span></span>
             </label>
-            <canvas id="fontcolor_c" width="20" height="20"></canvas>
+            <canvas id="fontcolor_c" class="border" width="20" height="20"></canvas>
             <label class="label">
               <span class="label-text">Red:</span>
             </label>
@@ -251,7 +251,7 @@ const AntiOCR = () => {
             <label class="label">
               <span class="label-text">背景颜色: <span id="backcolor">{backColor()}</span></span>
             </label>
-            <canvas id="backcolor_c" width="20" height="20"></canvas>
+            <canvas id="backcolor_c" class="border" width="20" height="20"></canvas>
             <label class="label">
               <span class="label-text">Red:</span>
             </label>
