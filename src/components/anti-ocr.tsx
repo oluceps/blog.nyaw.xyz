@@ -6,7 +6,7 @@ const AntiOCR = () => {
   let canvas: HTMLCanvasElement;
   let img: HTMLImageElement;
 
-  const [txt, setTxt] = createSignal('這是一段測試文本～\n哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈\n喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵');
+  const [txt, setTxt] = createSignal('這是一段測試文本～\n喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵');
   const [fontSize, setFontSize] = createSignal(16);
   const [fontWeight, setFontWeight] = createSignal('normal');
   const [len, setLen] = createSignal(40);
@@ -114,16 +114,14 @@ const AntiOCR = () => {
 
   return (
     <div class="flex flex-col w-full h-full justify-center items-center">
-      <div class="grid grid-cols-2 grid-rows-2 w-full h-full">
-        <div class="w-full h-full flex-col py-2">
-
+      <div class="grid grid-cols-2 grid-rows-2 w-full h-full gap-3">
+        <div class="w-full h-full">
           <input
             id="txt"
-            class="input input-bordered input-lg w-full max-w-xs"
+            class="input input-bordered input-lg w-full max-w-xs h-full"
             value={txt()}
             onInput={(e) => setTxt((e.target as unknown as HTMLTextAreaElement).value)}
           />
-
         </div>
 
 
