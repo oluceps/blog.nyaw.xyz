@@ -1,4 +1,4 @@
-import { Component, JSXElement, ParentComponent, Show } from "solid-js";
+import { Component, JSXElement, ParentComponent, Show, createEffect } from "solid-js";
 
 import { createSignal, onCleanup, onMount } from 'solid-js';
 
@@ -15,7 +15,9 @@ const AntiOCR = () => {
     const r = parseInt(parts[0]);
     const g = parseInt(parts[1]);
     const b = parseInt(parts[2]);
-    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    const rt = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b)
+    console.log(rt)
+    return rt;
   }
 
 
@@ -28,7 +30,15 @@ const AntiOCR = () => {
   const [points, setPoints] = createSignal(1);
   const [fontColor, setFontColor] = createSignal('rgb(0,0,0)');
   const [backColor, setBackColor] = createSignal('rgb(255,255,255)');
+  const [fontColorHex, setFontColorHex] = createSignal('');
+  const [backColorHex, setBackColorHex] = createSignal('');
 
+  createEffect(() => {
+    setFontColorHex(rgbToHex(fontColor()))
+  })
+  createEffect(() => {
+    setBackColorHex(rgbToHex(backColor()))
+  })
   const random = (min: number, max: number) => {
     return Math.round(Math.random() * (max - min)) + min;
   };
@@ -216,7 +226,7 @@ const AntiOCR = () => {
         </div>
 
         <div class="w-full py-2 flex flex-col">
-          <div class={`px-1.5 flex items-center justify-center font-bold text-[${rgbToHex(fontColor())}]`}>
+          <div class={`px-1.5 flex items-center justify-center font-bold text-[${fontColorHex()}]`}>
             文字颜色
           </div>
           <canvas id="fontcolor_c" class="hidden"></canvas>
@@ -263,9 +273,9 @@ const AntiOCR = () => {
         </div>
         <div class="w-full py-2 flex flex-col">
           <canvas id="backcolor_c" class="hidden"></canvas>
-          <label class="label">
-            <span class="label-text">背景颜色: <span id="backcolor">{backColor()}</span></span>
-          </label>
+          <div class={`px-1.5 flex items-center justify-center font-bold text-[${backColorHex()}]`}>
+            背景颜色
+          </div>
           <label class="label">
             <span class="label-text">Red:</span>
           </label>
