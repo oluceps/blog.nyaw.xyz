@@ -1,0 +1,226 @@
+---
+date: 2024-08-15T06:23:26.995762940+08:00
+description: 自签 AVB 并在获取 root 后锁定Bootloader
+categories:
+  - 记录
+tags:
+  - avbroot
+  - security
+  - pixel
+toc: true
+title: Pixel AVB 自签名
+---
+本文描述使用 [avbroot](https://github.com/chenxiaolong/avbroot) 和自己的密钥对 Pixel 的OTA包进行patch，以及刷入 AVB custom key 的过程。
+
+这些步骤旨在：
+
++ 提升安全性，使用自己的证书进行签名，减少攻击面。
++ 在bootloader上锁的状态下依然可以刷入做了更改的OTA包。方便实现如 上锁BL并保留root 的操作。
+
+作为代价，之后将会：
+
++ 不能通过高阶系统完整性校验，或许可以用奇技淫巧修复。主要在 Google Wallet 等应用中显露出影响。(可逆)
+
+本文参考avbroot文档撰写。
+
+文中未修改的OTA包路径用 `OTA_FILE.zip` 指代。
+
+# 生成密钥
+
+先在电脑上安装 [avbroot](https://github.com/chenxiaolong/avbroot)。
+
+avbroot 在修补 OTA zip 文件时会对几个组件进行签名：
+
+* 引导镜像 (boot image)
+* vbmeta 镜像
+* OTA payload
+* OTA zip 文件本身
+
+前两个组件使用 AVB 密钥进行签名，而后两个组件使用 OTA 密钥进行签名。它们可以是相同的密钥，但以下步骤将展示如何生成两个独立的密钥。
+
+在为多个设备修补 OTA 时，强烈建议为每个设备生成唯一的密钥，因为这可以防止错误的设备 OTA 被意外刷入。
+
+1. 生成 AVB 和 OTA 签名密钥。
+
+```bash
+avbroot key generate-key -o avb.key
+avbroot key generate-key -o ota.key
+```
+
+2. 将 AVB 签名密钥的公钥部分转换为 AVB 公钥元数据格式。这是引导加载程序在设置自定义信任根时所需的格式。
+
+```bash
+avbroot key extract-avb -k avb.key -o avb_pkmd.bin
+```
+
+3. 为 OTA 签名密钥生成自签名证书。恢复模式会使用此证书来验证 OTA 更新（在 sideloading 时）。
+
+```bash
+avbroot key generate-cert -k ota.key -o ota.crt
+```
+
+以上命令仅为方便起见提供。avbroot 与任何标准 PKCS#8 编码的 4096 位 RSA 私钥和 PEM 编码的 X509 证书兼容，与 openssl 生成的相同。
+
+如果丢失了 AVB 或 OTA 签名密钥，将无法签署新的 OTA zip 文件。你将需要生成新的签名密钥并重新解锁引导加载程序（触发数据擦除）。
+
+# 准备
+
+从[这里](https://developers.google.com/android/ota)下载OTA更新包
+
+## 解压ota包
+假设ota包(.zip)在当前目录，
+```console
+mkdir build
+avbroot extract -i ./OTA_FILE --boot-only --directory build/
+```
+
+## [可选] 替换内核为 KernelSU Patched
+
+这章是为了安装KernelSU，没需要就跳过本节。
+
+### 下载并解压 KernelSU Anykernel 压缩包
+
+下载 [anykernel kernelsu](https://github.com/tiann/KernelSU/releases/)
+
+对应的KMI版本参照 [Android 文档](https://source.android.com/docs/setup/build/building-pixel-kernels?hl=zh-cn) 和 [KernelSU 文档](https://kernelsu.org/guide/installation.html#kmi) 来选择。
+
+为了从中提取GKI内核镜像并替换OTA包中的那个。
+
+```console
+# 这里的链接是示例，根据设备不同 KMI版本也不同
+http get "https://github.com/tiann/KernelSU/releases/download/v1.0.1/AnyKernel3-android14-5.15.148_2024-05.zip" | save ksu.zip
+mkdir build
+ouch d ksu.zip # 或者其它解压软件
+mv ksu/Image build/
+rm ksu.zip ksu -r
+```
+
+### 下载并解压 Magisk.apk 提取 `libmagiskboot.so`
+
+下载 [magisk apk](https://github.com/topjohnwu/Magisk/releases/download/v27.0/Magisk-v27.0.apk), 后续步骤需要其中的工具。
+
+这个动态链接库可以通过shell执行来操作 `boot.img`，进行对内核镜像的替换和重新打包。
+
+以下使用nushell。意思到了就好。
+
+```console
+ouch d magisk.zip
+let arch = uname | get machine
+mv $"magisk/lib/($arch)/libmagiskboot.so" build/
+chmod +x build/libmagiskboot.so
+rm -r ./magisk*
+```
+
+### 重新打包 boot.img
+
+```
+cd build
+mv Image kernel
+./libmagiskboot.so repack boot.img
+```
+
+
+## Patch OTA Package
+
+如果执行以上可选步骤，`/build` 目录应该有 `new-boot.img`。是后续需要替换入原装的OTA升级包的boot镜像。
+
+以下命令中的 key 和证书是 [上文](#生成密钥) 中生成的。怕你忘了
+
+```console
+(avbroot ota patch
+    --key-avb ./avb.key
+    --key-ota ./ota.key
+    --cert-ota ./ota.crt
+    --input ./OTA_FILE.zip  # 原装的OTA包
+    --prepatched build/new-boot.img) # 如果不需要 KernelSU, 即没有执行上文的可选步骤，可以将这行替换成 --rootless
+```
+
+执行完成以后会在当前目录生成 `OTA_FILE.zip.patched` 文件。
+
+# 设备初始化
+
+1. 确保 fastboot 版本为 34 或更高版本。旧版本存在 bug，可能导致后续的 `fastboot flashall` 命令无法正常工作。
+
+```bash
+fastboot --version
+```
+
+2. 重启到 fastboot 模式并解锁引导加载程序（如果尚未解锁）。这将触发数据擦除。
+
+```bash
+fastboot flashing unlock
+```
+
+3. 在首次设置时，设备必须已经运行正确的操作系统。如果需要，刷入原始未修补的 OTA。
+
+4. 从修补过的 OTA 中提取与原始版本不同的分区镜像。
+```bash
+avbroot ota extract \
+    --input /path/to/ota.zip.patched \
+    --directory extracted \
+    --fastboot
+```
+
+如果你希望为了安全起见提取并刷入所有操作系统分区，可以传入 `--all` 参数。
+
+5. 刷入提取的分区镜像。
+
+```bash
+ANDROID_PRODUCT_OUT=extracted fastboot flashall --skip-reboot
+```
+<Emph type="tips">这一步手机将会重启，控制台可能显示waitting for device字段，不需要理会，等待他自动进行下一步操作。全部完成之后会正常退出。</Emph>
+请注意，这只刷入了操作系统分区。由于 fastboot 的限制，bootloader 和 modem/radio 分区未被更改。如果它们尚未更新或不确定，请在 fastboot 完成后，按照 [更新](#如果-更新) 的步骤刷入修补后的 OTA。一旦进行 OTA 刷入，始终可以确保所有分区都是最新的。
+对于 Pixel 设备，你也可以通过从工厂镜像运行 `flash-base.sh` 来更新 bootloader 和 modem。
+
+6. 依据需求可fastbootd 重启到 bootloader 后，设置自定义 AVB 公钥。
+
+```bash
+fastboot reboot-bootloader
+fastboot erase avb_custom_key
+fastboot flash avb_custom_key /path/to/avb_pkmd.bin
+```
+
+7. **[可选]** 在锁定引导加载程序之前，先重启到 Android 系统以确认所有内容均已正确签名。
+
+安装 Magisk 或 KernelSU 应用程序并运行以依据需求可：
+
+```bash
+adb shell su -c 'dmesg | grep libfs_avb'
+```
+
+如果 AVB 工作正常，应打印出以下消息：
+
+```bash
+init: [libfs_avb]Returning avb_handle with status: Success
+```
+
+8. 再次重启到 fastboot 模式并锁定引导加载程序。这将再次触发数据擦除。
+
+```bash
+fastboot flashing lock
+```
+
+通过按下音量减键和电源键来确认，然后重启设备。
+
+<Emph type="warn">记住：**不要取消勾选 `OEM unlocking`！**</Emph>
+
+<div class="h-4"/>
+
+<Emph type="warn">如果你刷入 CalyxOS，设置向导会自动[关闭](https://github.com/CalyxOS/platform_packages_apps_SetupWizard/blob/7d2df25cedcbff83ddb608e628f9d97b38259c26/src/org/lineageos/setupwizard/SetupWizardApp.java#L135-L140) `OEM unlocking` 开关。请确保从 Android 的开发者设置中手动重新启用它。考虑使用 `OEMUnlockOnBoot` [模块](https://github.com/chenxiaolong/OEMUnlockOnBoot) 来确保每次启动时 OEM 解锁已启用。</Emph>
+
+9. 完成！要安装未来的操作系统或 KernelSU 更新，请参阅下一部分。
+
+
+# [如果] 更新
+
+如果有新的OTA更新，需要重新手动下载OTA包，按照[初始设置](#初始设置) 章节重新patch ota包，然后使用`adb sideload` 在fastbootd刷入。
+
+更新可以使用 [写好的justfile](https://github.com/oluceps/autopatchota)
+
+# [如果] 恢复原装rom
+
+进入bootloader并解锁，
+```bash
+fastboot erase avb_custom_key
+```
+然后使用线刷包刷入完整rom。

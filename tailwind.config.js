@@ -7,13 +7,14 @@ const round = (num) =>
 		.replace(/(\.[0-9]+?)0+$/, "$1")
 		.replace(/\.0$/, "");
 const em = (px, base) => `${round(px / base)}em`;
+const rem = (px) => `${round(px / 16)}rem`;
 
 export default {
 	content: [
 		"./src/**/*.{js,jsx,ts,tsx,md,mdx}",
 		"./content/**/*.{js,jsx,ts,tsx,md,mdx}",
 	],
-	darkMode: 'selector', // NO DARK
+	darkMode: "selector", // NO DARK
 	theme: {
 		extend: {
 			fontSize: {
@@ -25,16 +26,38 @@ export default {
 				"4xl": "2560px",
 			},
 			fontFamily: {
-				sans: ["MiSans", ...defaultTheme.fontFamily.sans],
-				serif: ["MiSans", ...defaultTheme.fontFamily.serif],
-				display: ["var(--font-geist)", { fontFeatureSettings: '"ss01"' }],
-				mono: [
-					"var(--font-geist-mono)",
+				sans: [
 					"PingFang SC",
 					"Hiragino Sans GB",
-					"MiSans",
+					"Microsoft YaHei",
+					...defaultTheme.fontFamily.sans,
+				],
+				serif: [
+					"PingFang SC",
+					"Hiragino Sans GB",
+					"Microsoft YaHei",
+					...defaultTheme.fontFamily.serif,
+				],
+				mono: [
+					"Geist Mono",
+					"PingFang SC",
+					"Hiragino Sans GB",
 					...defaultTheme.fontFamily.mono,
 				],
+			},
+			animation: {
+				"accordion-down": "accordion-down 0.2s ease-out",
+				"accordion-up": "accordion-up 0.2s ease-out",
+				shaking: "tilt-n-move-shaking 0.4s ease-in-out infinite",
+			},
+			keyframes: {
+				"tilt-n-move-shaking": {
+					"0%": { transform: `translate(0, 0) rotate(0deg);` },
+					"25%": { transform: `translate(2px, 2px) rotate(2deg);` },
+					"50%": { transform: `translate(0, 0) rotate(0deg);` },
+					"75%": { transform: `translate(-2px, 2px) rotate(-2deg);` },
+					"100%": { transform: `translate(0, 0) rotate(0deg);` },
+				},
 			},
 			typography: (theme) => ({
 				DEFAULT: {
@@ -70,6 +93,12 @@ export default {
 						},
 					},
 				},
+				lg: {
+					css: {
+						fontSize: rem(20),
+						lineHeight: round(24 / 14),
+					},
+				},
 			}),
 			colors: {
 				sprout: {
@@ -85,27 +114,36 @@ export default {
 					900: "#313e29",
 					950: "#182013",
 				},
-				'chill': {
-					'50': '#f2f9f9',
-					'100': '#ddeff0',
-					'200': '#bfe0e2',
-					'300': '#92cace',
-					'400': '#5faab1',
-					'500': '#438e96',
-					'600': '#3b757f',
-					'700': '#356169',
-					'800': '#325158',
-					'900': '#2d464c',
-					'950': '#1a2c32',
+				chill: {
+					50: "#f2f9f9",
+					100: "#ddeff0",
+					200: "#bfe0e2",
+					300: "#92cace",
+					400: "#5faab1",
+					500: "#438e96",
+					600: "#3b757f",
+					700: "#356169",
+					800: "#325158",
+					900: "#2d464c",
+					950: "#1a2c32",
 				},
-
+				ouchi: {
+					50: "#f8f7fb",
+					100: "#f0f0f7",
+					200: "#e5e4f0",
+					300: "#d0cde5",
+					400: "#b7b0d5",
+					500: "#9b90c2",
+					600: "#8776b1",
+					700: "#75649d",
+					800: "#625384",
+					900: "#52466c",
+					950: "#342d48",
+				},
 			},
 		},
 	},
-	plugins: [
-		require("@tailwindcss/typography"),
-		require("daisyui")
-	],
+	plugins: [require("@tailwindcss/typography"), require("daisyui")],
 	daisyui: {
 		themes: ["light"],
 		darkTheme: "light", // I HATE DARK

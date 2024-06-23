@@ -1,4 +1,6 @@
 {
+  description = "flake for this";
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     devenv.url = "github:cachix/devenv";
@@ -10,24 +12,33 @@
   };
 
   outputs =
-    { nixpkgs, devenv, ... }@inputs:
-    let
-      pkgs = nixpkgs.legacyPackages."x86_64-linux";
-    in
-    {
-      devShell.x86_64-linux = devenv.lib.mkShell {
-        inherit inputs pkgs;
-        modules = [
-          (
-            { pkgs, ... }:
-            {
-              packages = [ pkgs.nodePackages_latest.pnpm ];
-              languages.javascript = {
-                enable = true;
-              };
-            }
-          )
-        ];
-      };
+    inputs@{ flake-parts, nixpkgs, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [ inputs.devenv.flakeModule ];
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+      perSystem =
+        { ... }:
+        let
+          pkgs = import nixpkgs { system = "x86_64-linux"; };
+        in
+        {
+
+          # broken `nix flake show` but doesn't matter.
+          devenv.shells.default = {
+            dotenv.enable = true;
+            languages.javascript = {
+              enable = true;
+              npm.install.enable = false;
+            };
+            packages = [
+              pkgs.nodePackages_latest.pnpm
+              pkgs.typescript
+              pkgs.biome
+            ];
+          };
+        };
     };
 }

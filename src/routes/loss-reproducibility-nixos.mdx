@@ -38,20 +38,7 @@ Nov 08 21:08:13 hastur systemd[1]: Failed to start Home Manager environment for 
 ```
 
 之后尝试二分commit, 最终发现在本地仓库的 rebuild不行, 远端仓库的rebuild则没有报错,但本地和远端仓库的commit是完全同步的  
-![png](20221109133805.png)  
-本地仓库rebuild使用
-
-```
-sudo nixos-rebuild switch --flake .#hastur
-```
-
-远端仓库rebuild使用
-
-```
-sudo nixos-rebuild switch --flake github:oluceps/nixos-config#hastur
-```
-
-确认过没有问题, 但处在本地仓库的generation rebuild远端仓库或从远端仓库的generation rebuild 本地仓库会出现奇怪的现象
+使用本地仓库和远程仓库rebuild, 确认过没有问题, 但处在本地仓库(rebuild形成)的generation rebuild远端仓库或从远端仓库的generation rebuild 本地仓库会出现奇怪的现象，虽然呈现一定的相关性但是无法确认是不是这个行为直接导致的。
 日志显示 hm-user 的service重启了  
 按照正常情况, 两个完全同步的仓库rebuild出的outpath应该完全相同, 也就不会有服务的更改/重启
 

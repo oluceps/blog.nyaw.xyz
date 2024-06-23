@@ -1,3 +1,3 @@
 export default function NoEntry() {
-  throw new Error("404");
+	throw new Error("404");
 }

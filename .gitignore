@@ -1,5 +1,7 @@
-/public/sitemap.xml
-/src/routes/data.json
+public/sitemap.xml
+src/routes/data.json
+src/routes/data.ts
+data.ts
 /.direnv
 /.devenv
 dist
@@ -29,3 +31,5 @@ gitignore
 # System Files
 .DS_Store
 Thumbs.db
+
+time.json

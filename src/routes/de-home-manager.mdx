@@ -2,21 +2,19 @@
 date: '2024-05-21T05:06:57.000Z'
 description: You may really don't need it
 draft: false
-extra:
-  toc: true
-  hideLevel: 10
-  math: false
+toc: true
+hideLevel: 10
 title: Replace home-manager
 tags:
-- nixos
-- linux
+- NixOS
+- Linux
 categories:
 - 记录
 ---
 
 # Intro
 
-[home-manager](https://github.com/nix-community/home-manager) is a basic system for managing a user environment using the Nix package manager together with the Nix libraries found in Nixpkgs. It allows declarative configuration of user specific (non-global) packages and dotfiles.
+[home-manager](https://github.com/nix-community/home-manager) is a basic system for managing a user environment using Nix. It allows setting declarative user envs.
 
 For a nixos user includes me, home-manager may already introduced at the same time as the config created, for managing user-spec configs. But it has really poor maintainence and code quality, and it does produced few bugs several months I use it. And I do considered removing it but seems there's no a better solution exist.
 
