@@ -137,7 +137,7 @@ const AntiOCR = () => {
 
   return (
     <div class="flex flex-col w-full justify-center items-center">
-      <div class="grid grid-cols-2 grid-rows-2 w-full gap-3">
+      <div class="grid md:grid-cols-2 w-full gap-3">
         <div class="w-full h-full">
           <textarea class="textarea textarea-bordered w-full h-full p-2" placeholder="在这儿输入文字"
             id="txt"
@@ -222,9 +222,10 @@ const AntiOCR = () => {
             value={points()}
             onInput={(e) => setPoints(parseInt((e.target as HTMLInputElement).value))}
           />
-
         </div>
+      </div>
 
+      <div class="grid md:grid-cols-2">
         <div class="w-full py-2 flex flex-col">
           <div class={`px-1.5 flex items-center justify-center font-bold text-[${fontColorHex()}]`}>
             文字颜色
@@ -268,8 +269,6 @@ const AntiOCR = () => {
             value="0"
             onInput={() => changeColor('fontcolor')}
           />
-
-
         </div>
         <div class="w-full py-2 flex flex-col">
           <canvas id="backcolor_c" class="hidden"></canvas>
@@ -315,7 +314,6 @@ const AntiOCR = () => {
             onInput={() => changeColor('backcolor')}
           />
         </div>
-
 
       </div>
 
