@@ -228,7 +228,7 @@ const AntiOCR = () => {
       <div class="grid md:grid-cols-2 w-full gap-3">
         <div class="w-full py-2 flex flex-col">
           <div class={`px-1.5 flex items-center justify-center font-bold text-[${fontColorHex()}]`}>
-            文字颜色
+            文字颜色: {fontColorHex()}
           </div>
           <canvas id="fontcolor_c" class="hidden"></canvas>
           <label class="label">
@@ -273,7 +273,7 @@ const AntiOCR = () => {
         <div class="w-full py-2 flex flex-col">
           <canvas id="backcolor_c" class="hidden"></canvas>
           <div class={`px-1.5 flex items-center justify-center font-bold text-[${backColorHex()}]`}>
-            背景颜色
+            背景颜色: {backColorHex()}
           </div>
           <label class="label">
             <span class="label-text">Red:</span>
