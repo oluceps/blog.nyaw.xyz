@@ -6,7 +6,7 @@ const AntiOCR = () => {
   let canvas: HTMLCanvasElement;
   let img: HTMLImageElement;
 
-  const [txt, setTxt] = createSignal('這是一段測試文本～\n喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵');
+  const [txt, setTxt] = createSignal('這是一段測試文本～\n喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵?');
   const [fontSize, setFontSize] = createSignal(16);
   const [fontWeight, setFontWeight] = createSignal('normal');
   const [len, setLen] = createSignal(40);
@@ -200,14 +200,13 @@ const AntiOCR = () => {
             onInput={(e) => setPoints(parseInt((e.target as HTMLInputElement).value))}
           />
 
+        </div>
 
+        <div class="w-full py-2 flex flex-col">
           <label class="label">
             <span class="label-text">文字颜色: <span id="fontcolor">{fontColor()}</span></span>
           </label>
           <canvas id="fontcolor_c" class="hidden"></canvas>
-        </div>
-
-        <div class="w-full py-2 flex flex-col">
           <label class="label">
             <span class="label-text">Red:</span>
           </label>
@@ -252,6 +251,9 @@ const AntiOCR = () => {
         <div class="w-full py-2 flex flex-col">
           <canvas id="backcolor_c" class="hidden"></canvas>
           <label class="label">
+            <span class="label-text">背景颜色: <span id="backcolor">{backColor()}</span></span>
+          </label>
+          <label class="label">
             <span class="label-text">Red:</span>
           </label>
           <input
@@ -291,9 +293,7 @@ const AntiOCR = () => {
           />
         </div>
 
-        <label class="label">
-          <span class="label-text">背景颜色: <span id="backcolor">{backColor()}</span></span>
-        </label>
+
       </div>
 
       <button class="btn" onClick={textToImg}>
