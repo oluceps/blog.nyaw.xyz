@@ -6,6 +6,19 @@ const AntiOCR = () => {
   let canvas: HTMLCanvasElement;
   let img: HTMLImageElement;
 
+  const componentToHex = (c: number) => {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  }
+  const rgbToHex = (rgbString: string) => {
+    const parts = rgbString.slice(4, -1).split(',');
+    const r = parseInt(parts[0]);
+    const g = parseInt(parts[1]);
+    const b = parseInt(parts[2]);
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+  }
+
+
   const [txt, setTxt] = createSignal('這是一段測試文本～\n喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵喵?');
   const [fontSize, setFontSize] = createSignal(16);
   const [fontWeight, setFontWeight] = createSignal('normal');
@@ -203,9 +216,9 @@ const AntiOCR = () => {
         </div>
 
         <div class="w-full py-2 flex flex-col">
-          <label class="label">
-            <span class="label-text">文字颜色: <span id="fontcolor">{fontColor()}</span></span>
-          </label>
+          <div class={`px-1.5 flex items-center justify-center font-bold text-[${rgbToHex(fontColor())}]`}>
+            文字颜色
+          </div>
           <canvas id="fontcolor_c" class="hidden"></canvas>
           <label class="label">
             <span class="label-text">Red:</span>
