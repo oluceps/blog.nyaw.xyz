@@ -123,94 +123,56 @@ const AntiOCR = () => {
         />
       </div>
       <div>
-        <table>
-          <tr>
-            <td>
-              <label>字体大小:</label>
-              <input size="4" id="fontSize" value={fontSize()} onInput={(e) => setFontSize(parseInt((e.target as HTMLInputElement).value))} />
-              px
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label>字体精细:</label>
-              <select id="fontWeight" value={fontWeight()} onChange={(e) => setFontWeight((e.target as HTMLSelectElement).value)}>
-                <option value="normal">正常</option>
-                <option value="bold">粗</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label>每行显示:</label>
-              <input size="4" id="len" value={len()} onInput={(e) => setLen(parseInt((e.target as HTMLInputElement).value))} />
-              个字
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p>
-                文字颜色:<span id="fontcolor">{fontColor()}</span>
-                <canvas id="fontcolor_c" width="20" height="20"></canvas>
-              </p>
-              <p>
-                Red：
-                <input type="range" id="fontcolor_red" min="0" max="255" value="0" onInput={() => changeColor('fontcolor')} />
-              </p>
-              <p>
-                Green：
-                <input type="range" id="fontcolor_green" min="0" max="255" value="0" onInput={() => changeColor('fontcolor')} />
-              </p>
-              <p>
-                Blue：
-                <input type="range" id="fontcolor_blue" min="0" max="255" value="0" onInput={() => changeColor('fontcolor')} />
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <p>
-                背景颜色:<span id="backcolor">{backColor()}</span>
-                <canvas id="backcolor_c" width="20" height="20"></canvas>
-              </p>
-              <p>
-                Red：
-                <input type="range" id="backcolor_red" min="0" max="255" value="255" onInput={() => changeColor('backcolor')} />
-              </p>
-              <p>
-                Green：
-                <input type="range" id="backcolor_green" min="0" max="255" value="255" onInput={() => changeColor('backcolor')} />
-              </p>
-              <p>
-                Blue：
-                <input type="range" id="backcolor_blue" min="0" max="255" value="255" onInput={() => changeColor('backcolor')} />
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label>線條粗細:</label>
-              <input size="4" id="lineSize" value={lineSize()} onInput={(e) => setLineSize(parseInt((e.target as HTMLInputElement).value))} />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label>畫點大小:</label>
-              <input size="4" id="pointSize" value={pointSize()} onInput={(e) => setPointSize(parseInt((e.target as HTMLInputElement).value))} />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label>畫點密度:</label>
-              <input type="range" id="points" min="0" max="20" value={points()} onInput={(e) => setPoints(parseInt((e.target as HTMLInputElement).value))} />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button onClick={textToImg}>生成图片</button>
-            </td>
-          </tr>
-        </table>
+        <label>字体大小:</label>
+        <input size="4" id="fontSize" value={fontSize()} onInput={(e) => setFontSize(parseInt((e.target as HTMLInputElement).value))} />
+        px
+        <label>字体精细:</label>
+        <select id="fontWeight" value={fontWeight()} onChange={(e) => setFontWeight((e.target as HTMLSelectElement).value)}>
+          <option value="normal">正常</option>
+          <option value="bold">粗</option>
+        </select>
+        <label>每行显示:</label>
+        <input size="4" id="len" value={len()} onInput={(e) => setLen(parseInt((e.target as HTMLInputElement).value))} />
+        个字
+        <p>
+          文字颜色:<span id="fontcolor">{fontColor()}</span>
+          <canvas id="fontcolor_c" width="20" height="20"></canvas>
+        </p>
+        <p>
+          Red：
+          <input type="range" id="fontcolor_red" min="0" max="255" value="0" onInput={() => changeColor('fontcolor')} />
+        </p>
+        <p>
+          Green：
+          <input type="range" id="fontcolor_green" min="0" max="255" value="0" onInput={() => changeColor('fontcolor')} />
+        </p>
+        <p>
+          Blue：
+          <input type="range" id="fontcolor_blue" min="0" max="255" value="0" onInput={() => changeColor('fontcolor')} />
+        </p>
+        <p>
+          背景颜色:<span id="backcolor">{backColor()}</span>
+          <canvas id="backcolor_c" width="20" height="20"></canvas>
+        </p>
+        <p>
+          Red：
+          <input type="range" id="backcolor_red" min="0" max="255" value="255" onInput={() => changeColor('backcolor')} />
+        </p>
+        <p>
+          Green：
+          <input type="range" id="backcolor_green" min="0" max="255" value="255" onInput={() => changeColor('backcolor')} />
+        </p>
+        <p>
+          Blue：
+          <input type="range" id="backcolor_blue" min="0" max="255" value="255" onInput={() => changeColor('backcolor')} />
+        </p>
+        <label>線條粗細:</label>
+        <input size="4" id="lineSize" value={lineSize()} onInput={(e) => setLineSize(parseInt((e.target as HTMLInputElement).value))} />
+        <label>畫點大小:</label>
+        <input size="4" id="pointSize" value={pointSize()} onInput={(e) => setPointSize(parseInt((e.target as HTMLInputElement).value))} />
+        <label>畫點密度:</label>
+        <input type="range" id="points" min="0" max="20" value={points()} onInput={(e) => setPoints(parseInt((e.target as HTMLInputElement).value))} />
+        <button onClick={textToImg}>生成图片</button>
       </div>
       <canvas ref={canvas} style={{ display: 'block' }} width="0" height="0"></canvas>
       <div>
