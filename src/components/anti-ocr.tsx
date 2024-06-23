@@ -323,7 +323,7 @@ const AntiOCR = () => {
       <canvas ref={canvas!} class="hidden"></canvas>
 
       <div class="mt-4">
-        <img ref={img!} class="border" />
+        <img ref={img!} class="rounded-none" />
       </div>
 
     </div>

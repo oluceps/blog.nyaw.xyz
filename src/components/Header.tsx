@@ -5,7 +5,7 @@ import cfg from "../constant";
 const Header: Component<{sticky: boolean}> = (props) => {
 
 	return (
-		<header class={`${props.sticky ? "sticky" : ""} backdrop-blur-xl top-0 w-screen px-3 xl:px-5 2xl:px-6 pt-2 pb-2`}>
+		<header class={`${props.sticky ? "sticky" : ""} backdrop-blur-sm top-0 w-screen px-3 xl:px-5 2xl:px-6 pt-2 pb-2`}>
 			<nav class="flex items-center justify-between flex-nowrap">
 				<A
 					href="/"
@@ -23,7 +23,7 @@ const Header: Component<{sticky: boolean}> = (props) => {
 						{(item) => (
 							<A
 								href={item.url}
-								class="flex text-slate-600 px-3 py-2 leading-none hover:shadow-sm hover:text-slate-700 ease-in-out hover:backdrop-blur-2xl hover:bg-sprout-100 transition-all duration-400 justify-center items-center rounded-md overflow-visible dark:text-chill-200"
+								class="flex text-slate-600 px-3 py-2 leading-none hover:shadow-sm hover:text-slate-700 ease-in-out hover:backdrop-blur-2xl hover:bg-sprout-200/50 transition duration-500 justify-center items-center rounded-md overflow-visible dark:text-chill-200 hover:backdrop-blur-md"
 							>
 								{item.name}
 							</A>
