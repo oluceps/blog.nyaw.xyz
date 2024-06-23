@@ -113,201 +113,207 @@ const AntiOCR = () => {
   });
 
   return (
-    <div class="flex flex-col items-center p-4 space-y-6">
-      <div class="w-full max-w-4xl flex flex-col md:flex-row space-y-4 md:space-x-6 md:space-y-0">
-        <textarea
-          id="txt"
-          class="textarea textarea-bordered w-full h-64 md:w-1/2"
-          value={txt()}
-          onInput={(e) => setTxt((e.target as HTMLTextAreaElement).value)}
-        />
-        <div class="w-full md:w-1/2 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">字体大小</span>
-            </label>
-            <input
-              type="number"
-              id="fontSize"
-              class="input input-bordered"
-              value={fontSize()}
-              onInput={(e) => setFontSize(parseInt((e.target as HTMLInputElement).value))}
-            />
-          </div>
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">字体精细</span>
-            </label>
-            <select
-              id="fontWeight"
-              class="select select-bordered"
-              value={fontWeight()}
-              onChange={(e) => setFontWeight((e.target as HTMLSelectElement).value)}
-            >
-              <option value="normal">正常</option>
-              <option value="bold">粗</option>
-            </select>
-          </div>
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">每行显示</span>
-            </label>
-            <input
-              type="number"
-              id="len"
-              class="input input-bordered"
-              value={len()}
-              onInput={(e) => setLen(parseInt((e.target as HTMLInputElement).value))}
-            />
-          </div>
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">線條粗細</span>
-            </label>
-            <input
-              type="number"
-              id="lineSize"
-              class="input input-bordered"
-              value={lineSize()}
-              onInput={(e) => setLineSize(parseInt((e.target as HTMLInputElement).value))}
-            />
-          </div>
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">畫點大小</span>
-            </label>
-            <input
-              type="number"
-              id="pointSize"
-              class="input input-bordered"
-              value={pointSize()}
-              onInput={(e) => setPointSize(parseInt((e.target as HTMLInputElement).value))}
-            />
-          </div>
-          <div class="form-control col-span-2">
-            <label class="label">
-              <span class="label-text">畫點密度</span>
-            </label>
-            <input
-              type="range"
-              id="points"
-              class="range range-primary"
-              min="0"
-              max="20"
-              value={points()}
-              onInput={(e) => setPoints(parseInt((e.target as HTMLInputElement).value))}
-            />
-          </div>
+    <div class="flex flex-col w-full h-full justify-center items-center">
+      <div class="grid grid-cols-2 grid-rows-2 w-full h-full">
+        <div class="w-full h-full flex-col py-2">
+
+          <input
+            id="txt"
+            class="input input-bordered input-lg w-full max-w-xs"
+            value={txt()}
+            onInput={(e) => setTxt((e.target as unknown as HTMLTextAreaElement).value)}
+          />
+
+        </div>
+
+
+        <div class="w-full h-full flex flex-col">
+
+
+          <label class="label">
+            <span class="label-text">字体大小</span>
+          </label>
+          <input
+            type="number"
+            id="fontSize"
+            class="input input-bordered"
+            value={fontSize()}
+            onInput={(e) => setFontSize(parseInt((e.target as HTMLInputElement).value))}
+          />
+
+
+
+          <label class="label">
+            <span class="label-text">字体精细</span>
+          </label>
+          <select
+            id="fontWeight"
+            class="select select-bordered"
+            value={fontWeight()}
+            onChange={(e) => setFontWeight((e.target as HTMLSelectElement).value)}
+          >
+            <option value="normal">正常</option>
+            <option value="bold">粗</option>
+          </select>
+
+
+          <label class="label">
+            <span class="label-text">每行显示</span>
+          </label>
+          <input
+            type="number"
+            id="len"
+            class="input input-bordered"
+            value={len()}
+            onInput={(e) => setLen(parseInt((e.target as HTMLInputElement).value))}
+          />
+
+          <label class="label">
+            <span class="label-text">線條粗細</span>
+          </label>
+          <input
+            type="number"
+            id="lineSize"
+            class="input input-bordered"
+            value={lineSize()}
+            onInput={(e) => setLineSize(parseInt((e.target as HTMLInputElement).value))}
+          />
+
+          <label class="label">
+            <span class="label-text">畫點大小</span>
+          </label>
+          <input
+            type="number"
+            id="pointSize"
+            class="input input-bordered"
+            value={pointSize()}
+            onInput={(e) => setPointSize(parseInt((e.target as HTMLInputElement).value))}
+          />
+
+          <label class="label">
+            <span class="label-text">畫點密度</span>
+          </label>
+          <input
+            type="range"
+            id="points"
+            class="range"
+            min="0"
+            max="20"
+            value={points()}
+            onInput={(e) => setPoints(parseInt((e.target as HTMLInputElement).value))}
+          />
+
+
+          <label class="label">
+            <span class="label-text">文字颜色: <span id="fontcolor">{fontColor()}</span></span>
+          </label>
+          <canvas id="fontcolor_c" class="hidden"></canvas>
+        </div>
+
+
+
+        <div class="w-full h-full flex flex-col">
+
+          <label class="label">
+            <span class="label-text">Red:</span>
+          </label>
+          <input
+            type="range"
+            id="fontcolor_red"
+            class="range"
+            min="0"
+            max="255"
+            value="0"
+            onInput={() => changeColor('fontcolor')}
+          />
+
+          <label class="label">
+            <span class="label-text">Green:</span>
+          </label>
+          <input
+            type="range"
+            id="fontcolor_green"
+            class="range"
+            min="0"
+            max="255"
+            value="0"
+            onInput={() => changeColor('fontcolor')}
+          />
+
+          <label class="label">
+            <span class="label-text">Blue:</span>
+          </label>
+          <input
+            type="range"
+            id="fontcolor_blue"
+            class="range"
+            min="0"
+            max="255"
+            value="0"
+            onInput={() => changeColor('fontcolor')}
+          />
+
+
+        </div>
+        <div class="w-full h-full flex flex-col">
+
+          <label class="label">
+            <span class="label-text">背景颜色: <span id="backcolor">{backColor()}</span></span>
+          </label>
+          <canvas id="backcolor_c" class="hidden"></canvas>
+          <label class="label">
+            <span class="label-text">Red:</span>
+          </label>
+          <input
+            type="range"
+            id="backcolor_red"
+            class="range"
+            min="0"
+            max="255"
+            value="255"
+            onInput={() => changeColor('backcolor')}
+          />
+
+          <label class="label">
+            <span class="label-text">Green:</span>
+          </label>
+          <input
+            type="range"
+            id="backcolor_green"
+            class="range"
+            min="0"
+            max="255"
+            value="255"
+            onInput={() => changeColor('backcolor')}
+          />
+
+          <label class="label">
+            <span class="label-text">Blue:</span>
+          </label>
+          <input
+            type="range"
+            id="backcolor_blue"
+            class="range"
+            min="0"
+            max="255"
+            value="255"
+            onInput={() => changeColor('backcolor')}
+          />
         </div>
       </div>
 
-      <div class="w-full max-w-4xl flex flex-wrap space-y-4 space-x-3">
-        <div class="w-full md:w-1/2 space-y-4">
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">文字颜色: <span id="fontcolor">{fontColor()}</span></span>
-            </label>
-            <canvas id="fontcolor_c" class="hidden"></canvas>
-            <label class="label">
-              <span class="label-text">Red:</span>
-            </label>
-            <input
-              type="range"
-              id="fontcolor_red"
-              class="range range-primary"
-              min="0"
-              max="255"
-              value="0"
-              onInput={() => changeColor('fontcolor')}
-            />
-            <label class="label">
-              <span class="label-text">Green:</span>
-            </label>
-            <input
-              type="range"
-              id="fontcolor_green"
-              class="range range-primary"
-              min="0"
-              max="255"
-              value="0"
-              onInput={() => changeColor('fontcolor')}
-            />
-            <label class="label">
-              <span class="label-text">Blue:</span>
-            </label>
-            <input
-              type="range"
-              id="fontcolor_blue"
-              class="range range-primary"
-              min="0"
-              max="255"
-              value="0"
-              onInput={() => changeColor('fontcolor')}
-            />
-          </div>
-        </div>
-        <div class="w-full md:w-1/2 space-y-4">
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">背景颜色: <span id="backcolor">{backColor()}</span></span>
-            </label>
-            <canvas id="backcolor_c" class="hidden"></canvas>
-            <label class="label">
-              <span class="label-text">Red:</span>
-            </label>
-            <input
-              type="range"
-              id="backcolor_red"
-              class="range range-primary"
-              min="0"
-              max="255"
-              value="255"
-              onInput={() => changeColor('backcolor')}
-            />
-            <label class="label">
-              <span class="label-text">Green:</span>
-            </label>
-            <input
-              type="range"
-              id="backcolor_green"
-              class="range"
-              min="0"
-              max="255"
-              value="255"
-              onInput={() => changeColor('backcolor')}
-            />
-            <label class="label">
-              <span class="label-text">Blue:</span>
-            </label>
-            <input
-              type="range"
-              id="backcolor_blue"
-              class="range"
-              min="0"
-              max="255"
-              value="255"
-              onInput={() => changeColor('backcolor')}
-            />
-          </div>
-        </div>
-      </div>
 
       <button class="btn" onClick={textToImg}>
         生成图片
       </button>
+
+
       <canvas ref={canvas!} class="hidden"></canvas>
+
       <div class="mt-4">
         <img ref={img!} class="border" />
       </div>
-      <div class="mt-4">
-        <a href="https://github.com/yuzu233/anti-ocr" class="link link-primary">
-          Github
-        </a>{' '}
-        |{' '}
-        <a href="https://twitter.com/yuzuqwq" class="link link-primary">
-          Author's Twitter
-        </a>
-      </div>
+
     </div>
   );
 };
