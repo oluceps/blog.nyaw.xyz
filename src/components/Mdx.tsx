@@ -27,7 +27,7 @@ const cstomLink = (props: ParentProps & { href: string }) => {
 		<A
 			target="_blank"
 			{...rest}
-			class="flex-initial flex-wrap items-center"
+			class="flex-initial flex-nowrap items-center"
 		>
 			{resolved()}
 			<Icon path={link} class="h-4 w-4 pl-1" />
