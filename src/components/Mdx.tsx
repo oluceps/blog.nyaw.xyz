@@ -24,26 +24,15 @@ const cstomLink = (props: ParentProps & { href: string }) => {
 
 
 	return (
-		// <A
-		// 	target="_blank"
-		// 	{...rest}
-		// 	class="inline-flex items-center"
-		// >
-		// <div class="break-all inline-flex items-center" {...rest}>
-		// 	{resolved()}
-		// 	<Icon path={link} class="h-5 w-5 px-1 pt-2 float-right" />
-		// </div>
-		<a
+		<A
 			class="underline-offset-4 inline items-center space-x-1 group break-all"
 			target="_blank"
 			rel="noopener noreferrer nofollow"
 			{...rest}
 		>
 			<span>{resolved()}</span>
-			<Icon path={link} class="group-hover:animate-shaking inline w-5 h-5" />
-		</a>
-
-		// </A>
+			<Icon path={link} class="group-hover:animate-shaking inline w-4 h-4" />
+		</A>
 	);
 
 };
