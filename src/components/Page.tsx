@@ -1,13 +1,8 @@
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
-import { type Component, Show, ParentComponent, children, createSignal, createEffect, createMemo, Suspense } from "solid-js";
-
+import { Show, ParentComponent, children, createSignal, createEffect, createMemo } from "solid-js";
 import cfg from "../constant";
-import { Layout } from "./Layout";
-import components from "./Mdx";
-import { isError } from "vinxi/http";
 import data from "../routes/data.json"
 import { useLocation } from "@solidjs/router";
-import PageLoading from "./PageLoading";
 
 function formatDate(date: Date | undefined) {
 	if (date === undefined) {
@@ -46,18 +41,20 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 				content={article()?.tags?.join(",")}
 			/>
 			<article class="antialiased prose dark:prose-invert justify-self-center mx-auto mb-16 w-full mt-10 break-words">
-				<h1>{article()?.title}</h1>
-				<div class="text-zinc-500 font-serif mb-2 font-light text-sm">
-					{formatDate(article()?.date)}
-				</div>
+				<Show when={!article()?.extra?.noBanner}>
+					<h1>{article()?.title}</h1>
+					<div class="text-zinc-500 font-serif mb-2 font-light text-sm">
+						{formatDate(article()?.date)}
+					</div>
 
-				<div class="flex w-auto mb-10 justify-end items-end">
-					<Show when={1}>
-						<i class="text-pretty text-slate-500 text-start text-sm font-mono leading-loose">
-							{article()?.description}
-						</i>
-					</Show>
-				</div>
+					<div class="flex w-auto mb-10 justify-end items-end">
+						<Show when={1}>
+							<i class="text-pretty text-slate-500 text-start text-sm font-mono leading-loose">
+								{article()?.description}
+							</i>
+						</Show>
+					</div>
+				</Show>
 				{resolved()}
 			</article>
 

@@ -21,6 +21,7 @@ export interface Data {
 		toc?: boolean;
 		hideLevel?: number;
 		math?: boolean;
+		noBanner?: boolean;
 	};
 }
 
