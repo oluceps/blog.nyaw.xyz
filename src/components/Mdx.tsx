@@ -30,7 +30,7 @@ const cstomLink = (props: ParentProps & { href: string }) => {
 			class="inline-flex items-baseline"
 		>
 			{resolved()}
-			<Icon path={link} class="h-4 w-4 pl-1" />
+			<Icon path={link} class="h-5 w-5 px-1 pt-1.5" />
 		</A>
 	);
 
