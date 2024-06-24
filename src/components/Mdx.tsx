@@ -2,6 +2,9 @@ import { Match, Switch, children, splitProps, type ParentProps } from "solid-js"
 import { A } from "@solidjs/router";
 import { QuickLinks, QuickLinksProps } from "./quick-link";
 import cfg from "../constant"
+import { Icon } from "solid-heroicons";
+import { IconLink } from "@tabler/icons-solidjs";
+import { link } from "solid-heroicons/solid";
 
 const cstomLink = (props: ParentProps & { href: string }) => {
 	const [, rest] = splitProps(props, ["children"]);
@@ -24,8 +27,10 @@ const cstomLink = (props: ParentProps & { href: string }) => {
 		<A
 			target="_blank"
 			{...rest}
+			class="flex flex-wrap justify-center"
 		>
 			{resolved()}
+			<Icon path={link} class="h-4 w-4 pl-1" />
 		</A>
 	);
 
