@@ -80,12 +80,12 @@ export const Arti: Component = () => {
 					return (
 						<>
 							<Show when={attr.showYear}>
-								<div class="text-lg font-mono font-normal pb-3 text-slate-600 dark:text-chill-100">
+								<div class="text-lg lg:text-2xl font-mono font-normal pb-3 text-slate-600 dark:text-chill-100">
 									{attr.date.getFullYear()}
 								</div>
 							</Show>
 							<div class="antialiased flex flex-col mx-3 md:mx-6">
-								<article class="flex overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm lg:text-normal">
+								<article class="flex overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm xl:text-lg">
 									<a
 										class="no-underline mb-px font-extralight leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12"
 										href={`https://en.wikipedia.org/wiki/${new Intl.DateTimeFormat(
@@ -121,7 +121,7 @@ export const Arti: Component = () => {
 									<Show when={attr.categories}>
 										{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
 										<button
-											class="pl-6 text-xs text-slate-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
+											class="pl-6 text-xs lg:text-base text-slate-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
 											onClick={[
 												switchCategories,
 												attr.categories?.[0],

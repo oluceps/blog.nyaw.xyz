@@ -7,6 +7,7 @@ const round = (num) =>
 		.replace(/(\.[0-9]+?)0+$/, "$1")
 		.replace(/\.0$/, "");
 const em = (px, base) => `${round(px / base)}em`;
+const rem = (px) => `${round(px / 16)}rem`
 
 export default {
 	content: [
@@ -70,6 +71,12 @@ export default {
 						},
 					},
 				},
+				lg: {
+					css: {
+						fontSize: rem(20),
+						lineHeight: round(24 / 14),
+					}
+				}
 			}),
 			colors: {
 				sprout: {
