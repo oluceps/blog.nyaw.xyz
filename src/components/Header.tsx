@@ -9,7 +9,7 @@ const Header: Component<{sticky: boolean}> = (props) => {
 			<nav class="flex items-center justify-between flex-nowrap">
 				<A
 					href="/"
-					class="flex items-center justify-center text-lg lg:text-2xl font-bold px-1 rounded-sm text-sprout-650 overflow-visible"
+					class="flex items-center justify-center text-lg 2xl:text-2xl font-bold px-1 rounded-sm text-sprout-650 overflow-visible"
 				>
 					<div class="relative h-4 w-auto">
 						<div class="absolute h-4 w-4 -top-1.5 -start-1.5 bg-sprout-300 dark:bg-sprout-400 rounded-sm" />
@@ -23,7 +23,7 @@ const Header: Component<{sticky: boolean}> = (props) => {
 						{(item) => (
 							<A
 								href={item.url}
-								class="flex text-slate-600 px-3 py-2 leading-none hover:shadow-sm hover:text-slate-700 lg:text-xl ease-out hover:backdrop-blur-2xl hover:bg-sprout-200/70 lg:hover:bg-sprout-200/90 transition duration-500 justify-center items-center rounded-md overflow-visible dark:text-chill-200 hover:backdrop-blur-md"
+								class="flex text-slate-600 px-3 py-2 leading-none hover:shadow-sm hover:text-slate-700 2xl:text-xl ease-out hover:backdrop-blur-2xl hover:bg-sprout-200/70 lg:hover:bg-sprout-200/90 transition duration-500 justify-center items-center rounded-md overflow-visible dark:text-chill-200 hover:backdrop-blur-md"
 							>
 								{item.name}
 							</A>

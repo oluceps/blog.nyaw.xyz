@@ -8,7 +8,7 @@ const Root: Component = () => {
     <MetaProvider>
       <Title>扉页 - {cfg.title}</Title>
       <Meta name="description" content={cfg.extra.description} />
-      <div class="flex flex-col space-y-3 lg:space-y-8 px-3 sm:px-0 w-full sm:w-2/3 lg:w-1/2 mx-auto my-6 md:mt-14 grow">
+      <div class="flex flex-col space-y-3 2xl:space-y-8 px-3 sm:px-0 w-full sm:w-2/3 2xl:w-7/12 mx-auto my-6 md:mt-14 grow">
         <Suspense fallback={<>
           <div class="h-8 w-16 mb-4 skeleton" />
           <div class="flex flex-col space-y-10">

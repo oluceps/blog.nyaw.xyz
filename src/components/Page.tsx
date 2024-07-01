@@ -40,16 +40,16 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 				name="keywords"
 				content={article()?.tags?.join(",")}
 			/>
-			<article class="antialiased prose lg:prose-lg dark:prose-invert justify-self-center mx-auto mb-16 w-full mt-10 break-words">
+			<article class="antialiased prose 2xl:prose-lg dark:prose-invert justify-self-center mx-auto mb-16 w-full mt-10 break-words">
 				<Show when={!article()?.extra?.noBanner}>
 					<h1>{article()?.title}</h1>
-					<div class="text-zinc-500 font-serif mb-2 font-light text-sm lg:text-lg">
+					<div class="text-zinc-500 font-serif mb-2 font-light text-sm 2xl:text-lg">
 						{formatDate(article()?.date)}
 					</div>
 
 					<div class="flex w-auto mb-10 justify-end items-end">
 						<Show when={1}>
-							<i class="text-pretty text-slate-500 text-start text-sm lg:text-lg font-mono leading-loose">
+							<i class="text-pretty text-slate-500 text-start text-sm 2xl:text-lg font-mono leading-loose">
 								{article()?.description}
 							</i>
 						</Show>
