@@ -21,7 +21,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 
 
 	const onScroll = () => {
-		const headings = document.querySelectorAll("main h2, main h3");
+		const headings = document.querySelectorAll("main h1, main h2, main h3");
 		let currentSection = "";
 		headings.forEach((heading) => {
 			if (heading.getBoundingClientRect().top < 300) {
@@ -96,7 +96,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 		<div class="w-full">
 			<ol
 				role="list"
-				class="text-xs list-none marker:text-sprout-400 mt-2 p-0 flex flex-col pl-2.5 space-y-px"
+				class="text-xs list-none marker:text-sprout-400 mt-2 p-0 flex flex-col pl-2.5 space-y-1"
 			>
 				<Index each={pageSections.sections}>
 					{(section) => {
@@ -104,7 +104,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 						return (
 
 							<Show when={section().id != ""}>
-								<li class="pl-0 pt-0 space-y-px list-disc marker:text-sprout-400">
+								<li class="pl-0 pt-0 space-y-0.5 list-disc marker:text-sprout-400">
 									<span>
 										<a
 											href={`#${section().id}`}
@@ -122,7 +122,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 									<Show when={section().children.length !== 0}>
 										<ol
 											role="list"
-											class="pl-2.5 text-slate-500 list-disc decoration-sprout-300 active:font-bold hover:text-slate-700 font-bold active:text-sprout-600 space-y-px"
+											class="pl-2.5 text-slate-500 list-disc decoration-sprout-300 active:font-bold hover:text-slate-700 font-bold active:text-sprout-600 space-y-0.5"
 										>
 											<Index each={section().children}>
 												{(subSection) => (
