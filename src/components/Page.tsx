@@ -3,6 +3,7 @@ import { Show, ParentComponent, children, createSignal, createEffect, createMemo
 import cfg from "../constant";
 import data from "../routes/data.json"
 import { useLocation } from "@solidjs/router";
+import { TableOfContents } from "./Toc";
 
 function formatDate(date: Date | undefined) {
 	if (date === undefined) {
@@ -55,6 +56,9 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 							</i>
 						</Show>
 					</div>
+					<Show when={article()?.extra?.toc}>
+						<TableOfContents children={resolved()} />
+					</Show>
 				</Show>
 				{resolved()}
 			</article>
