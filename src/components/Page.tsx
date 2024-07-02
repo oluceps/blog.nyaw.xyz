@@ -40,6 +40,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 				name="keywords"
 				content={article()?.tags?.join(",")}
 			/>
+			<Meta property="article:published_time" content={formatDate(article()?.date)} />
 			<article class="antialiased prose 2xl:prose-lg dark:prose-invert justify-self-center mx-auto mb-16 w-full mt-10 break-words">
 				<Show when={!article()?.extra?.noBanner}>
 					<h1>{article()?.title}</h1>

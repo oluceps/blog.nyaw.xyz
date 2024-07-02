@@ -2,6 +2,7 @@ export default {
 	base_url: "https://blog.nyaw.xyz",
 	title: "紙",
 	obj_store: "https://pub-54793cba1fde4e8aaa0e7872d8eeb3d2.r2.dev",
+	author: "secirian",
 	taxonomies: [
 		{
 			feed: true,
