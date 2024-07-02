@@ -10,6 +10,7 @@ const Root: Component = () => {
       <Meta name="description" content={cfg.extra.description} />
       <Meta name="author" content={cfg.author} />
       <Meta name="twitter:image" content={cfg.base_url + "/" + "twitter-card.png"} />
+      <Meta name="twitter:card" content="summary_large_image"/>
       <div class="flex flex-col space-y-3 2xl:space-y-8 px-3 sm:px-0 w-full sm:w-2/3 2xl:w-7/12 mx-auto my-6 md:mt-14 grow">
         <Suspense fallback={<>
           <div class="h-8 w-16 mb-4 skeleton" />
