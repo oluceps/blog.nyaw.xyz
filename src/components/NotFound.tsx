@@ -1,7 +1,7 @@
 import { Layout } from "./Layout"
 
 
-const PageNotFound = () => {
+const NotFound = () => {
   return (<Layout>
     <div class="flex flex-col w-11/12 md:w-3/4 mx-auto pt-8 space-y-8 text-2xl">
       Page
@@ -11,4 +11,4 @@ const PageNotFound = () => {
   </Layout>)
 }
 
-export default PageNotFound
+export default NotFound
