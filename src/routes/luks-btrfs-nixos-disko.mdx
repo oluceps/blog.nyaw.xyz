@@ -155,7 +155,10 @@ fileSystems."/persist".neededForBoot = true;
 
 ## 安装
 
+<Emph type="warn">
 执行以下操作会清除磁盘数据。
+</Emph>
+
 
 
 1. 进入livecd
@@ -166,8 +169,10 @@ fileSystems."/persist".neededForBoot = true;
 
 4. 使用 nixos-install 命令进行安装
 
-NOTICE
+<Emph type="noti">
+使用root on tmpfs 和自动挂载，在内存较小的机器上安装可能会出现一些问题。详见
 https://github.com/NixOS/nixpkgs/issues/304422
+</Emph>
 
 安装完成后重启进入系统。
 

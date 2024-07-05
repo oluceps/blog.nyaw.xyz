@@ -1,6 +1,7 @@
 import { Match, Switch, children, splitProps, type ParentProps } from "solid-js";
 import { A } from "@solidjs/router";
 import { QuickLinks, QuickLinksProps } from "./quick-link";
+import { Emph, EmphProps } from "./emph";
 import cfg from "../constant"
 import { Icon } from "solid-heroicons";
 import { IconLink } from "@tabler/icons-solidjs";
@@ -116,6 +117,12 @@ const components = {
 		<QuickLinks title={props.title} icon={props.icon} href={props.href}>
 			{props.children}
 		</QuickLinks>
+	),
+
+	Emph: (props: EmphProps) => (
+		<Emph info={props.info} type={props.type}>
+			{props.children}
+		</Emph>
 	),
 
 	h1: (props: ParentProps) => (
