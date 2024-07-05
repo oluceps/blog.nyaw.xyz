@@ -43,7 +43,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 			/>
 			<Meta property="article:published_time" content={formatDate(article()?.date)} />
 			<article class="antialiased prose 2xl:prose-lg dark:prose-invert justify-self-center mx-auto mb-16 w-full mt-10 break-words">
-				<Show when={!article()?.extra?.noBanner}>
+				<Show when={!article()?.noBanner}>
 					<h1>{article()?.title}</h1>
 					<div class="text-zinc-500 font-serif mb-2 font-light text-sm 2xl:text-lg">
 						{formatDate(article()?.date)}
@@ -56,7 +56,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 							</i>
 						</Show>
 					</div>
-					<Show when={article()?.extra?.toc}>
+					<Show when={article()?.toc}>
 						<TableOfContents children={resolved()} />
 					</Show>
 				</Show>

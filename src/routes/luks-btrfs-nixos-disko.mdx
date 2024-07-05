@@ -1,0 +1,201 @@
+---
+date: 2024-07-05T11:02:02.109744304+00:00
+description: 在 NixOS 上使用 disko 声明 btrfs on luks 和 root on tmpfs
+categories:
+  - 记录
+tags:
+  - nixos
+  - linux
+  - luks
+  - 加密
+  - crypt
+  - 中文
+  - zh-cn
+title: disko(LUKS2(btrfs), root on tmpfs)
+toc: true
+---
+
+
+前几天给两台电脑交换硬盘 发现笔记本的m2硬盘螺丝拧不下来，最后柠花了上街找人拧的。
+
+然后给这只HP的硬盘迁移系统，放在USB硬盘盒里喂 subvol 结果喂一半它噶了，等了半个小时还是无法识盘，直接京东售后了，给我换了块新的嘿嘿
+
+正好记一下已经用了不下三次的安装步骤。
+
+# 正文
+
+写你们nixos的东西可太方便了。
+
+https://github.com/oluceps/nixos-config/blob/trival/hosts/kaambl/hardware.nix
+
+## 关键配置
+
+```nix
+  disko.devices = {
+    disk = {
+      nvme = {
+        type = "disk";
+        device = "/dev/disk/by-id/XXXXXXXXXXXXXXXXXXX";
+        content = {
+          type = "gpt";
+          partitions = {
+            esp = {
+              label = "ESP";
+              size = "2G";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/efi";
+              };
+            };
+            cryptroot = {
+              label = "CRYPTROOT";
+              end = "-32G";
+              content = {
+                type = "luks";
+                name = "cryptroot";
+                settings = {
+                  allowDiscards = true;
+                  bypassWorkqueues = true;
+                  crypttabExtraOpts = [
+                    "same-cpu-crypt"
+                    "submit-from-crypt-cpus"
+                    "fido2-device=auto"
+                  ];
+                };
+                content = {
+                  type = "btrfs";
+                  extraArgs = [
+                    "--label nixos"
+                    "-f"
+                    "--csum xxhash64"
+                    "--features"
+                    "block-group-tree"
+                  ];
+                  subvolumes = {
+                    "/persist" = {
+                      mountpoint = "/persist";
+                      mountOptions = [
+                        "compress-force=lzo"
+                        "noatime"
+                        "discard=async"
+                        "space_cache=v2"
+                      ];
+                    };
+                    "/nix" = {
+                      mountpoint = "/nix";
+                      mountOptions = [
+                        "compress-force=lzo"
+                        "noatime"
+                        "discard=async"
+                        "space_cache=v2"
+                        "nodev"
+                        "nosuid"
+                      ];
+                    };
+                    "/var" = {
+                      mountpoint = "/var";
+                      mountOptions = [
+                        "compress-force=lzo"
+                        "noatime"
+                        "discard=async"
+                        "space_cache=v2"
+                      ];
+                    };
+                    "/persist/tmp" = {
+                      mountpoint = "/tmp";
+                      mountOptions = [
+                        "relatime"
+                        "nodev"
+                        "nosuid"
+                        "discard=async"
+                        "space_cache=v2"
+                      ];
+                    };
+                  };
+                };
+              };
+            };
+            encryptedSwap = {
+              size = "100%";
+              content = {
+                type = "swap";
+                randomEncryption = true;
+              };
+            };
+          };
+        };
+      };
+    };
+    nodev = {
+      "/" = {
+        fsType = "tmpfs";
+        mountOptions = [
+          "relatime"
+          "nosuid"
+          "nodev"
+          "size=2G"
+          "mode=755"
+        ];
+      };
+    };
+  };
+fileSystems."/persist".neededForBoot = true;
+
+```
+
+想不到还有什么需要强调的。关于持久化文件的配置，请[查看](https://github.com/nix-community/impermanence), 如果使用tpm2：
+
+```nix
+  security.tpm2.enable = true;
+  security.tpm2.pkcs11.enable = true;
+  security.tpm2.tctiEnvironment.enable = true;
+```
+
+## 安装
+
+执行以下操作会清除磁盘数据。
+
+
+1. 进入livecd
+
+2. 克隆配置仓库
+
+3. 运行 `nix run github:nix-community/disko -- -m disko --flake .#<NAME>` , 这将处理好分区、创建LUKS分区、加密映射、格式化等操作，最后自动挂载到 /mnt 目录下，按照定义的布局。
+
+4. 使用 nixos-install 命令进行安装
+
+NOTICE
+https://github.com/NixOS/nixpkgs/issues/304422
+
+安装完成后重启进入系统。
+
+## tpm2认证
+
+建议使用 CPU builtin TPM 的用户采用此操作，因为部分主板的外置TPM与CPU之间的信道不受加密。
+
+以下console操作需要替换device字符。
+
+添加认证：
+
+```console
+  systemd-cryptenroll /dev/nvme0n1p1  --tpm2-device=auto --tpm2-pcrs=0+7
+```
+
+关于 `tpm2-pcrs` 参数，见 [PCRs 定义](https://uapi-group.org/specifications/specs/linux_tpm_pcr_registry/)
+
+以上`0+7`出于「确保安全启动和固件状态不变的情况下自动解密」的考虑。
+
+
+## fido2认证
+
+这里采用 Yubikey 作为fido2认证设备。插入具有Fido2功能的 Yubikey, 执行：
+
+```console
+  systemd-cryptenroll /dev/nvme0n1p1 --fido2-device=auto
+```
+
+关于PIN和presense的设定查看 `systemd-cryptenroll -h`
+
+Full disk encryption 和[安全启动](https://blog.nyaw.xyz/lanzaboote-secureboot-on-nixos)更配哦!

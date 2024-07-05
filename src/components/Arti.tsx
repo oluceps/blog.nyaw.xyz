@@ -17,12 +17,10 @@ export interface Data {
 	featured_image?: string;
 	categories?: Array<string>;
 	tags?: Array<string>;
-	extra?: {
-		toc?: boolean;
-		hideLevel?: number;
-		math?: boolean;
-		noBanner?: boolean;
-	};
+	toc?: boolean;
+	hideLevel?: number;
+	math?: boolean;
+	noBanner?: boolean;
 }
 
 const [showCate, setShowCate] = createSignal("");
@@ -60,7 +58,7 @@ export const Arti: Component = () => {
 							: true;
 					})
 					.filter((item) => {
-						const itemHideLvl = item.extra?.hideLevel || 5;
+						const itemHideLvl = item.hideLevel || 5;
 						return cfg.extra.hideLevel < itemHideLvl && !item.draft;
 					}) // rearange date basic on current content
 					.map((item, index, arr) => {
