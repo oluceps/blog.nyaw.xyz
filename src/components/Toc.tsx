@@ -104,7 +104,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 						return (
 
 							<Show when={section().id != ""}>
-								<li class="pl-0 pt-0 space-y-0.5 list-disc marker:text-sprout-400">
+								<li class="pl-1.5 pt-0 space-y-0.5 list-disc marker:text-sprout-400">
 									<span>
 										<a
 											href={`#${section().id}`}
