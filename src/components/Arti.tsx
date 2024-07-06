@@ -24,11 +24,6 @@ export interface Data {
 }
 
 const [showCate, setShowCate] = createSignal("");
-const sortDate = (res: Array<Data>) => {
-	return res.sort((a, b) => {
-		return b.date.getTime() - a.date.getTime();
-	});
-};
 
 const switchCategories = (data: string) => {
 	setShowCate(data);
