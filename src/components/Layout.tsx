@@ -25,7 +25,7 @@ export function Layout(props: ParentProps) {
 				<div class="flex flex-col bg-zinc-50 dark:bg-[#171717] min-h-screen items-center">
 					<Header sticky={isRoot()} />
 					<Switch fallback={
-						<div class="flex flex-col flex-1 grow pb-12 w-11/12 sm:w-full">
+						<div class="flex flex-col flex-1 grow pb-12 w-11/12 md:w-full">
 							<Page>
 								{props.children}
 							</Page>
