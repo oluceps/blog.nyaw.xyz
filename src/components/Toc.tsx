@@ -62,7 +62,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 						children: [],
 					});
 				} else if (heading.tagName === "H2") {
-					sections[sections.length - 1].push({
+					sections[sections.length - 1].children.push({
 						text: heading.textContent,
 						id: heading.id,
 						level: 2,
