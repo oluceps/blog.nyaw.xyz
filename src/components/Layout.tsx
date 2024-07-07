@@ -1,11 +1,10 @@
-import { Link, MetaProvider } from "@solidjs/meta";
+import { Link, Meta, MetaProvider } from "@solidjs/meta";
 import cfg from "../constant";
 import Footer from "./Footer";
 import Header from "./Header";
-import { Match, ParentProps, Show, Switch, createEffect, createMemo, createSignal } from "solid-js";
+import { Match, ParentProps, Switch, createEffect, createSignal } from "solid-js";
 import { useLocation } from "@solidjs/router";
 import Page from "./Page";
-import { Arti } from "./Arti";
 import Root from "./Root"
 import { PageStateProvider } from "./page-state";
 
@@ -22,6 +21,8 @@ export function Layout(props: ParentProps) {
 		<MetaProvider>
 			<PageStateProvider>
 				<Link rel="canonical" href={cfg.base_url} />
+				<Meta name="twitter:image" content={cfg.base_url + "/" + "twitter-card.png"} />
+				<Meta name="twitter:card" content="summary_large_image" />
 				<div class="flex flex-col bg-zinc-50 dark:bg-[#171717] min-h-screen items-center">
 					<Header sticky={isRoot()} />
 					<Switch fallback={
