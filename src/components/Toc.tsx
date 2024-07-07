@@ -54,26 +54,31 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 		if (headings) {
 			headings.forEach((heading) => {
 
-				if (heading.tagName === "H1") {
-					sections.push({
-						text: heading.textContent,
-						id: heading.id,
-						level: 1,
-						children: [],
-					});
-				} else if (heading.tagName === "H2") {
-					sections[sections.length - 1].children.push({
-						text: heading.textContent,
-						id: heading.id,
-						level: 2,
-						children: [],
-					});
-				} else if (heading.tagName === "H3") {
-					sections[sections.length - 2].children.push({
-						text: heading.textContent,
-						id: heading.id,
-						level: 3,
-					});
+				switch (heading.tagName) {
+					case "H1":
+						sections.push({
+							text: heading.textContent,
+							id: heading.id,
+							level: 1,
+							children: [],
+						});
+						break
+					case "H2":
+						sections[sections.length - 1].children.push({
+							text: heading.textContent,
+							id: heading.id,
+							level: 2,
+							children: [],
+						});
+						break
+					case "H3":
+						const ayaya = sections[sections.length - 1].children.length
+						sections[sections.length - 1].children[ayaya - 1].children.push({
+							text: heading.textContent,
+							id: heading.id,
+							level: 3,
+						});
+						break
 				}
 			});
 		}
@@ -82,6 +87,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 			path: location.pathname,
 			sections: sections,
 		});
+		console.log(sections)
 	}
 
 	createEffect(() => getHeaders(props.children));
@@ -100,9 +106,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 			>
 				<Index each={pageSections.sections}>
 					{(section) => {
-						console.log(section)
 						return (
-
 							<Show when={section().id != ""}>
 								<li class="pl-1.5 pt-0 space-y-px list-disc marker:text-sprout-400 my-0">
 									<span>
@@ -125,8 +129,8 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 											class="pl-2.5 text-slate-500 list-disc decoration-sprout-300 active:font-bold hover:text-slate-700 font-bold active:text-sprout-600 space-y-0.5"
 										>
 											<Index each={section().children}>
-												{(subSection) => (
-													<li class="my-0">
+												{(subSection, idxSubSec) => (
+													<li class="pl-1.5 pt-0 space-y-px list-disc marker:text-sprout-400 my-0">
 														<a
 															href={`#${subSection().id}`}
 															classList={{
@@ -138,6 +142,31 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 														>
 															{subSection().text}
 														</a>
+
+														<Show when={section().children.length !== 0}>
+															<ol
+																role="list"
+																class="pl-1.5 text-slate-500 list-disc decoration-sprout-300 active:font-bold hover:text-slate-700 font-bold active:text-sprout-600 space-y-0.5"
+															>
+																<Index each={section().children[idxSubSec].children}>
+																	{(subSectionSub) => (
+																		<li class="my-0">
+																			<a
+																				href={`#${subSectionSub().id}`}
+																				classList={{
+																					"text-sprout-600 hover:text-slate-700 font-bold":
+																						currentSection() === subSectionSub().id,
+																				}}
+																				class="no-underline hover:font-bold hover:text-sprout-700"
+																				target="_self"
+																			>
+																				{subSectionSub().text}
+																			</a>
+																		</li>
+																	)}
+																</Index>
+															</ol>
+														</Show>
 													</li>
 												)}
 											</Index>

@@ -16,6 +16,8 @@ type ParentSection = {
   children: ChildSection[] | [];
 };
 type ChildSection = {
+  // 2 level of child
+  children: ChildSection[] | [];
   text: string | undefined;
   id: string;
   level: number;
