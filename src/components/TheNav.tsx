@@ -16,13 +16,16 @@ export default function Home() {
   createEffect(() => {
     setHoveredTab(tabRefs()[hoveredIdx() ?? -1]?.getBoundingClientRect())
   })
+  // createEffect(() => {
+  //   console.log(hoveredTab())
+  // })
 
   return (
     <nav
       onmouseleave={() => {
         setHoveredIdx(null);
       }}
-      class={`bg-background flex items-center justify-end relative pt-2 pr-2 flex-1`}
+      class={`bg-background flex items-center justify-end relative pt-2 pr-2`}
     >
       {menu.map((tab, idx) =>
         <button ref={(el) => {
@@ -39,30 +42,30 @@ export default function Home() {
       {hoveredTab() ? (
         <Presence>
           <Motion.button
-            class="absolute top-0 left-0 bg-sprout-200/90 rounded-md"
+            class="absolute top-0 right-0 bg-sprout-200/90 rounded-md"
             initial={{
               top: hoveredTab()?.top + "px",
-              left: hoveredTab()?.left + "px",
+              right: document.documentElement.clientWidth - (hoveredTab()?.right || 0) + "px",
               width: hoveredTab()?.width + "px",
               height: hoveredTab()?.height + "px",
               opacity: 0,
             }}
             animate={{
               top: hoveredTab()?.top + "px",
-              left: hoveredTab()?.left + "px",
+              right: document.documentElement.clientWidth - (hoveredTab()?.right || 0) + "px",
               width: hoveredTab()?.width + "px",
               height: hoveredTab()?.height + "px",
               opacity: 1,
             }}
             exit={{
               top: hoveredTab()?.top + "px",
-              left: hoveredTab()?.left + "px",
+              right: document.documentElement.clientWidth - (hoveredTab()?.right || 0) + "px",
               width: hoveredTab()?.width + "px",
               height: hoveredTab()?.height + "px",
               opacity: 0,
             }}
             transition={{
-              duration: 0.14,
+              duration: 0.18,
             }}
           />
         </Presence>
