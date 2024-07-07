@@ -15,6 +15,7 @@
     "@vinxi/plugin-mdx": "^3.7.1",
     "solid-js": "^1.8.18",
     "solid-mdx": "^0.0.7",
+    "solid-motionone": "^1.0.0",
     "vinxi": "^0.3.12"
   },
   "engines": {
