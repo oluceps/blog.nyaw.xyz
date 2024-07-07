@@ -31,7 +31,7 @@ export default function Home() {
           class="px-2 py-1.5 z-10 font-base text-slate-600 hover:text-black"
           onpointerenter={() => { setHoveredIdx(idx); console.log("enter", idx) }}
         >
-          <A href={tab.url}>
+          <A href={tab.url} class="w-full h-full">
             {tab.name}
           </A>
         </button>)
