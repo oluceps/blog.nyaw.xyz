@@ -137,7 +137,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 																"text-sprout-600 hover:text-slate-700 font-bold":
 																	currentSection() === subSection().id,
 															}}
-															class="no-underline hover:font-bold hover:text-sprout-700"
+															class="no-underline hover:font-bold hover:text-slate-700"
 															target="_self"
 														>
 															{subSection().text}
@@ -157,7 +157,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 																					"text-sprout-600 hover:text-slate-700 font-bold":
 																						currentSection() === subSectionSub().id,
 																				}}
-																				class="no-underline hover:font-bold hover:text-sprout-700"
+																				class="no-underline hover:font-bold hover:text-slate-700"
 																				target="_self"
 																			>
 																				{subSectionSub().text}
