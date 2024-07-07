@@ -1,12 +1,12 @@
 import { A } from "@solidjs/router";
-import { type Component, For } from "solid-js";
+import { type Component } from "solid-js";
 import cfg from "../constant";
 import TheNav from "./TheNav";
 
 const Header: Component<{ sticky: boolean }> = (props) => {
 
 	return (
-		<header class={`${props.sticky ? "sticky" : ""} backdrop-blur-sm top-0 w-screen flex items-center justify-end mx-4`}>
+		<header class={`${props.sticky ? "sticky" : ""} backdrop-blur-sm top-0 w-screen flex items-center justify-end mx-3 xl:mx-5 2xl:mx-6`}>
 			<A
 				href="/"
 				class="flex items-center justify-center text-lg 2xl:text-2xl font-bold px-1 rounded-sm text-sprout-650 overflow-visible absolute left-3 z-10"

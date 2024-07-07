@@ -22,12 +22,14 @@ export default {
 			{
 				name: "关于",
 				url: "/about",
-				weight: 4,
 			},
 			{
 				name: "留言",
 				url: "https://github.com/oluceps/oluceps/issues/new",
-				weight: 3,
+			},
+			{
+				name: "首頁",
+				url: "/",
 			},
 		],
 	},
