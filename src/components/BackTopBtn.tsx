@@ -19,7 +19,7 @@ const ScrollTopBtn: Component = () => {
     <Show when={!hiddenState() && (document.documentElement.clientWidth > 930)}>
       <button onclick={() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
-      }} class={`!fixed bottom-5 right-5 p-3 mb-3 bg-sprout-200/60 backdrop-blur-md rounded-md h-9 w-9 grid items-center justify-center}`}>
+      }} class={`!fixed bottom-5 right-5 p-3 mb-3 bg-sprout-200/60 hover:bg-sprout-200/90 backdrop-blur-md rounded-md h-9 w-9 grid items-center justify-center}`}>
         <Icon path={chevronUp} class="h-full w-full" />
       </button>
     </Show>
