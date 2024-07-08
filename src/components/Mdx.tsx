@@ -1,10 +1,9 @@
 import { Match, Switch, children, splitProps, type ParentProps } from "solid-js";
 import { A } from "@solidjs/router";
-import { QuickLinks, QuickLinksProps } from "./quick-link";
-import { Emph, EmphProps } from "./emph";
+import { QuickLinks, QuickLinksProps } from "../ingredients/quick-link";
+import { Emph, EmphProps } from "../ingredients/emph";
 import cfg from "../constant"
 import { Icon } from "solid-heroicons";
-import { IconLink } from "@tabler/icons-solidjs";
 import { link } from "solid-heroicons/solid";
 
 const cstomLink = (props: ParentProps & { href: string }) => {

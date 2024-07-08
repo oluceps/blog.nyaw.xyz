@@ -9,7 +9,7 @@ import {
 	type ResolvedChildren,
 } from "solid-js";
 import { useLocation } from "@solidjs/router";
-import { usePageState } from "./page-state";
+import { usePageState } from "./PageState";
 
 
 export const TableOfContents: Component<{ children: ResolvedChildren }> = (

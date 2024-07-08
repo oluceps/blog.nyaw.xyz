@@ -35,26 +35,50 @@ noBanner: true
 
 ## Encryption
 
-`ED9B 8F88 BD92 824F F96A 2213 5E45 FB64 3F70 92CF`
+<div class="collapse collapse-plus bg-sprout-200 overflow-x-scroll">
+  <input type="radio" name="my-accordion-3" defaultChecked />
+  <div class="collapse-title text-xl font-medium">SSH Public Key</div>
+  <div class="collapse-content">
+	```
+    ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEv3S53gBU3Hqvr5o5g+yrn1B7eiaE5Y/OIFlTwU+NEG
+	```
 
-```
------BEGIN PGP PUBLIC KEY BLOCK-----
+	**Hash Verify**
+	```
+	SHA256:GO2+eOlmFlQJHZ+KFl8vgj+o/+WhIeq7+jBINN+RCX4
+	```
+  </div>
+</div>
+<div class="collapse collapse-plus bg-sprout-200 mt-3 overflow-x-scroll">
+  <input type="radio" name="my-accordion-3" />
+  <div class="collapse-title text-xl font-medium">GPG Public Key</div>
+  <div class="collapse-content">
+    ```
+    -----BEGIN PGP PUBLIC KEY BLOCK-----
+    
+    mDMEYpo12hYJKwYBBAHaRw8BAQdAC4p2YhUP0l+dNXtDP2zgbUBf//D8vg1x4hJM
+    8Ns1ltm0F1NlY2lyaWFuIDxpQG9sdWNlcHMudWs+iJMEExYKADsWIQTtm4+IvZKC
+    T/lqIhNeRftkP3CSzwUCYvDsLAIbAwULCQgHAgIiAgYVCgkICwIEFgIDAQIeBwIX
+    gAAKCRBeRftkP3CSz9FoAP4i1YONhGBGilwx7gIz9WFzDeg+p2g+Pj65Ep/dcfT1
+    cgEA4BP7Thu0SbH7j0ApVJX5GM/nVeTFHetTL7Etgk1Ccwi4OARimjXaEgorBgEE
+    AZdVAQUBAQdAmNKDkWe+pAfHkis7bVWkbOwvuEwnoB4hvqhd4y2PRhQDAQgHiHgE
+    GBYKACAWIQTtm4+IvZKCT/lqIhNeRftkP3CSzwUCYpo12gIbDAAKCRBeRftkP3CS
+    z5ZLAQCkc9/3c7Md1u/tvUQ5hr+HQMQ9ZefzBFZbLqSFtu90hgEAytzvrkp0qeI0
+    lQ5ToAqPQeB6WRIoMr2KnkiDV9P0Mgs=
+    =MD1j
+    -----END PGP PUBLIC KEY BLOCK-----
+    ```
 
-mDMEYpo12hYJKwYBBAHaRw8BAQdAC4p2YhUP0l+dNXtDP2zgbUBf//D8vg1x4hJM
-8Ns1ltm0F1NlY2lyaWFuIDxpQG9sdWNlcHMudWs+iJMEExYKADsWIQTtm4+IvZKC
-T/lqIhNeRftkP3CSzwUCYvDsLAIbAwULCQgHAgIiAgYVCgkICwIEFgIDAQIeBwIX
-gAAKCRBeRftkP3CSz9FoAP4i1YONhGBGilwx7gIz9WFzDeg+p2g+Pj65Ep/dcfT1
-cgEA4BP7Thu0SbH7j0ApVJX5GM/nVeTFHetTL7Etgk1Ccwi4OARimjXaEgorBgEE
-AZdVAQUBAQdAmNKDkWe+pAfHkis7bVWkbOwvuEwnoB4hvqhd4y2PRhQDAQgHiHgE
-GBYKACAWIQTtm4+IvZKCT/lqIhNeRftkP3CSzwUCYpo12gIbDAAKCRBeRftkP3CS
-z5ZLAQCkc9/3c7Md1u/tvUQ5hr+HQMQ9ZefzBFZbLqSFtu90hgEAytzvrkp0qeI0
-lQ5ToAqPQeB6WRIoMr2KnkiDV9P0Mgs=
-=MD1j
------END PGP PUBLIC KEY BLOCK-----
-```
+	**Signature**
 
-`SHA256:GO2+eOlmFlQJHZ+KFl8vgj+o/+WhIeq7+jBINN+RCX4`
+	```
+	ED9B 8F88 BD92 824F F96A 2213 5E45 FB64 3F70 92CF
+	```
 
-```
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEv3S53gBU3Hqvr5o5g+yrn1B7eiaE5Y/OIFlTwU+NEG
-```
+	Also import from remote
+	```
+	wget https://raw.githubusercontent.com/oluceps/oluceps/key/key.asc -O key.asc \
+	&& gpg --import key.asc
+	```
+  </div>
+</div>

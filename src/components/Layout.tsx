@@ -6,7 +6,7 @@ import { Match, ParentProps, Switch, createEffect, createSignal } from "solid-js
 import { useLocation } from "@solidjs/router";
 import Page from "./Page";
 import Root from "./Root"
-import { PageStateProvider } from "./page-state";
+import { PageStateProvider } from "./PageState";
 import BackTopBtn from "./BackTopBtn";
 
 export function Layout(props: ParentProps) {
