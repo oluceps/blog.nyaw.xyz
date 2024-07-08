@@ -13,7 +13,7 @@ const Header: Component<{ sticky: boolean }> = (props) => {
 			>
 				<div class="relative h-4 w-auto">
 					<div class="absolute h-4 w-4 -top-1.5 -start-1.5 bg-sprout-300 dark:bg-sprout-400 rounded-sm" />
-					<div class="absolute leading-none text-slate-600 dark:text-slate-200 text-nowrap">
+					<div class="absolute leading-none text-neutral-600 dark:text-slate-200 text-nowrap">
 						{cfg.title}
 					</div>
 				</div>

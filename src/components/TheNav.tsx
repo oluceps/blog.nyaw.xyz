@@ -31,7 +31,7 @@ export default function Home() {
         <button ref={(el) => {
           tabRefs()[idx] = el
         }}
-          class="px-2 py-1.5 z-10 font-base text-slate-600 hover:text-black"
+          class="px-2 py-1.5 z-10 font-base text-neutral-500 hover:text-neutral-700"
           onpointerenter={() => { setHoveredIdx(idx); console.log("enter", idx) }}
         >
           <A href={tab.url} class="w-full h-full">
