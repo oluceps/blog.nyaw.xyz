@@ -34,6 +34,9 @@ dependencies:
     version: 0.3.12
 
 devDependencies:
+  '@solid-primitives/scroll':
+    specifier: ^2.0.23
+    version: 2.0.23(solid-js@1.8.18)
   '@solidjs/meta':
     specifier: ^0.29.4
     version: 0.29.4(solid-js@1.8.18)
@@ -79,6 +82,9 @@ devDependencies:
   solid-heroicons:
     specifier: ^3.2.4
     version: 3.2.4(solid-js@1.8.18)
+  tailwind-merge:
+    specifier: ^2.4.0
+    version: 2.4.0
   tailwindcss:
     specifier: ^3.4.4
     version: 3.4.4
@@ -1608,6 +1614,15 @@ packages:
     engines: {node: '>=18'}
     dev: false
 
+  /@solid-primitives/event-listener@2.3.3(solid-js@1.8.18):
+    resolution: {integrity: sha512-DAJbl+F0wrFW2xmcV8dKMBhk9QLVLuBSW+TR4JmIfTaObxd13PuL7nqaXnaYKDWOYa6otB00qcCUIGbuIhSUgQ==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      '@solid-primitives/utils': 6.2.3(solid-js@1.8.18)
+      solid-js: 1.8.18
+    dev: true
+
   /@solid-primitives/props@3.1.11(solid-js@1.8.18):
     resolution: {integrity: sha512-jZAKWwvDRHjiydIumDgMj68qviIbowQ1ci7nkEAgzgvanNkhKSQV8iPgR2jMk1uv7S2ZqXYHslVQTgJel/TEyg==}
     peerDependencies:
@@ -1626,6 +1641,35 @@ packages:
       solid-js: 1.8.18
     dev: false
 
+  /@solid-primitives/rootless@1.4.5(solid-js@1.8.18):
+    resolution: {integrity: sha512-GFJE9GC3ojx0aUKqAUZmQPyU8fOVMtnVNrkdk2yS4kd17WqVSpXpoTmo9CnOwA+PG7FTzdIkogvfLQSLs4lrww==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      '@solid-primitives/utils': 6.2.3(solid-js@1.8.18)
+      solid-js: 1.8.18
+    dev: true
+
+  /@solid-primitives/scroll@2.0.23(solid-js@1.8.18):
+    resolution: {integrity: sha512-kO0YpXKEUHaAnHp3zIsHYmxxuKXO3/LxVhZQHHmhqsmUY6A5IBObkSkoQ/ChIPl/WMKE7ynxEq40OgRmhvyUSw==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      '@solid-primitives/event-listener': 2.3.3(solid-js@1.8.18)
+      '@solid-primitives/rootless': 1.4.5(solid-js@1.8.18)
+      '@solid-primitives/static-store': 0.0.8(solid-js@1.8.18)
+      solid-js: 1.8.18
+    dev: true
+
+  /@solid-primitives/static-store@0.0.8(solid-js@1.8.18):
+    resolution: {integrity: sha512-ZecE4BqY0oBk0YG00nzaAWO5Mjcny8Fc06CdbXadH9T9lzq/9GefqcSe/5AtdXqjvY/DtJ5C6CkcjPZO0o/eqg==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      '@solid-primitives/utils': 6.2.3(solid-js@1.8.18)
+      solid-js: 1.8.18
+    dev: true
+
   /@solid-primitives/transition-group@1.0.5(solid-js@1.8.18):
     resolution: {integrity: sha512-G3FuqvL13kQ55WzWPX2ewiXdZ/1iboiX53195sq7bbkDbXqP6TYKiadwEdsaDogW5rPnPYAym3+xnsNplQJRKQ==}
     peerDependencies:
@@ -1640,7 +1684,6 @@ packages:
       solid-js: ^1.6.12
     dependencies:
       solid-js: 1.8.18
-    dev: false
 
   /@solidjs/meta@0.29.4(solid-js@1.8.18):
     resolution: {integrity: sha512-zdIWBGpR9zGx1p1bzIPqF5Gs+Ks/BH8R6fWhmUa/dcK1L2rUC8BAcZJzNRYBQv74kScf1TSOs0EY//Vd/I0V8g==}
@@ -5985,6 +6028,10 @@ packages:
     resolution: {integrity: sha512-ulAk51I9UVUyJgxlv9M6lFot2WP3e7t8Kz9+IS6D4rVba1tR9kON+Ey69f+1R4Q8cd45Lod6a4IcJIxnzGc/zA==}
     engines: {node: '>=18'}
     dev: false
+
+  /tailwind-merge@2.4.0:
+    resolution: {integrity: sha512-49AwoOQNKdqKPd9CViyH5wJoSKsCDjUlzL8DxuGp3P1FsGY36NJDAa18jLZcaHAUUuTj+JB8IAo8zWgBNvBF7A==}
+    dev: true
 
   /tailwindcss@3.4.4:
     resolution: {integrity: sha512-ZoyXOdJjISB7/BcLTR6SEsLgKtDStYyYZVLsUtWChO4Ps20CBad7lfJKVDiejocV4ME1hLmyY0WJE3hSDcmQ2A==}

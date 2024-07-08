@@ -7,6 +7,7 @@ import { useLocation } from "@solidjs/router";
 import Page from "./Page";
 import Root from "./Root"
 import { PageStateProvider } from "./page-state";
+import BackTopBtn from "./BackTopBtn";
 
 export function Layout(props: ParentProps) {
 	const location = useLocation();
@@ -36,6 +37,7 @@ export function Layout(props: ParentProps) {
 							<Root />
 						</Match>
 					</Switch>
+					<BackTopBtn />
 					<Footer />
 				</div>
 			</PageStateProvider>

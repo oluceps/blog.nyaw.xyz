@@ -4,6 +4,7 @@ import cfg from "../constant";
 import data from "../routes/data.json"
 import { useLocation } from "@solidjs/router";
 import { TableOfContents } from "./Toc";
+import BackTopBtn from "./BackTopBtn";
 
 function formatDate(date: Date | undefined) {
 	if (date === undefined) {
@@ -62,7 +63,6 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 				</Show>
 				{resolved()}
 			</article>
-
 		</MetaProvider>
 	);
 };
