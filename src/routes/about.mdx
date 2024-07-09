@@ -43,6 +43,11 @@ noBanner: true
 	```
 	SHA256:GO2+eOlmFlQJHZ+KFl8vgj+o/+WhIeq7+jBINN+RCX4
 	```
+
+	+ From remote
+	```
+	curl https://github.com/oluceps.keys | head -n 1 > id_ed25519.pub
+	```
 </Collapse>
 <Collapse title="GPG Public Key">
     ```
@@ -67,7 +72,7 @@ noBanner: true
 	ED9B 8F88 BD92 824F F96A 2213 5E45 FB64 3F70 92CF
 	```
 
-	+ Also import from remote
+	+ Import from remote
 	```
 	curl https://raw.githubusercontent.com/oluceps/oluceps/key/key.asc | \
 	gpg --import
