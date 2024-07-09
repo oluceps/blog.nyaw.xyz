@@ -16,7 +16,7 @@ const cstomLink = (props: ParentProps & { href: string }) => {
 			<A
 				class={`anchor no-underline hover:underline`}
 				{...rest}
-				target="_self"
+				noScroll={true}
 			>
 				{resolved()}
 			</A>
