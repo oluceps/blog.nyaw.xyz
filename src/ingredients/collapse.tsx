@@ -7,7 +7,7 @@ const Col: Component<ParentProps & { title: string }> =
     const [expandState, setExpandState] = createSignal(false)
 
     return (
-      <div class="border-2 border-sprout-200 rounded-lg ring ring-sprout-200 p-3 mt-3"
+      <div class="rounded-md ring ring-sprout-200 p-3 mt-3"
         onmouseenter={() => setExpandState(!expandState())}
         onmouseleave={() => setExpandState(!expandState())}
       >
