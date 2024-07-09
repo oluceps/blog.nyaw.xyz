@@ -1,19 +1,27 @@
 import { Component, createSignal, ParentProps } from "solid-js"
+import { Collapse } from 'solid-collapse';
 
 
-const Collapse: Component<ParentProps & { title: string }> =
+const Col: Component<ParentProps & { title: string }> =
   (props: ParentProps & { title: string }) => {
     const [expandState, setExpandState] = createSignal(false)
 
-    return (<>
-      <div class="my-2 p-3 rounded-lg border-2 rounded-md border-sprout-300 w-full" onmouseenter={() => setExpandState(true)} onmouseleave={() => setExpandState(false)}>
-        <div class="font-bold">{props.title}</div>
-        <div class={expandState() ? "" : `hidden`}>
-          {props.children}
-        </div>
-      </div></>
+    return (
+      <section class="CollapseContainer">
+        <button
+          onClick={() => setExpandState(!expandState())}
+          class={`CollapseHeader ${!expandState() ? 'CollapseHeaderActive' : ''}`}
+        >
+          {props.title}
+        </button>
+        <Collapse value={expandState()} class="CollapseTransition">
+          <p class="CollapseContent">
+            {props.children}
+          </p>
+        </Collapse>
+      </section>
     )
   }
 
 
-export default Collapse;
+export default Col;
