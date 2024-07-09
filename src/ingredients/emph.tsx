@@ -13,6 +13,7 @@ export const isExternalURL = (url: string) => /^https?:\/\//.test(url);
 
 export type EmphProps = {
   type: "warn" | "info" | "tips" | "noti";
+  info: string,
   children: JSXElement;
 };
 

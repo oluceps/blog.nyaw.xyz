@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@mdx-js/mdx": "^2.3.0",
+    "@solid-primitives/script-loader": "^2.2.0",
     "@solidjs/router": "^0.13.6",
     "@solidjs/start": "^1.0.2",
     "@vercel/speed-insights": "^1.0.12",

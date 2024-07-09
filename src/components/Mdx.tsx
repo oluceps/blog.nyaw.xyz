@@ -2,6 +2,7 @@ import { Match, Switch, children, splitProps, type ParentProps } from "solid-js"
 import { A } from "@solidjs/router";
 import { QuickLinks, QuickLinksProps } from "../ingredients/quick-link";
 import { Emph, EmphProps } from "../ingredients/emph";
+import Collapse from "~/ingredients/collapse";
 import cfg from "../constant"
 import { Icon } from "solid-heroicons";
 import { link } from "solid-heroicons/solid";
@@ -123,6 +124,9 @@ const components = {
 			{props.children}
 		</Emph>
 	),
+
+	Collapse: (props: ParentProps & { title: string }) => (
+		<Collapse title={props.title}>{props.children}</Collapse>),
 
 	h1: (props: ParentProps) => (
 

@@ -34,25 +34,17 @@ noBanner: true
 ---
 
 ## Encryption
-
-<div class="collapse collapse-plus bg-sprout-200 overflow-x-scroll">
-  <input type="radio" name="my-accordion-3" defaultChecked />
-  <div class="collapse-title text-xl font-medium">SSH Public Key</div>
-  <div class="collapse-content">
+<Collapse title="SSH Public Key" >
 	```
     ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEv3S53gBU3Hqvr5o5g+yrn1B7eiaE5Y/OIFlTwU+NEG
 	```
 
-	**Hash Verify**
+	Hash Verify
 	```
 	SHA256:GO2+eOlmFlQJHZ+KFl8vgj+o/+WhIeq7+jBINN+RCX4
 	```
-  </div>
-</div>
-<div class="collapse collapse-plus bg-sprout-200 mt-3 overflow-x-scroll">
-  <input type="radio" name="my-accordion-3" />
-  <div class="collapse-title text-xl font-medium">GPG Public Key</div>
-  <div class="collapse-content">
+</Collapse>
+<Collapse title="GPG Public Key">
     ```
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     
@@ -80,5 +72,4 @@ noBanner: true
 	wget https://raw.githubusercontent.com/oluceps/oluceps/key/key.asc -O key.asc \
 	&& gpg --import key.asc
 	```
-  </div>
-</div>
+</Collapse>

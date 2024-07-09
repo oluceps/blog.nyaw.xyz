@@ -8,6 +8,9 @@ dependencies:
   '@mdx-js/mdx':
     specifier: ^2.3.0
     version: 2.3.0
+  '@solid-primitives/script-loader':
+    specifier: ^2.2.0
+    version: 2.2.0(solid-js@1.8.18)
   '@solidjs/router':
     specifier: ^0.13.6
     version: 0.13.6(solid-js@1.8.18)
@@ -1649,6 +1652,14 @@ packages:
       '@solid-primitives/utils': 6.2.3(solid-js@1.8.18)
       solid-js: 1.8.18
     dev: true
+
+  /@solid-primitives/script-loader@2.2.0(solid-js@1.8.18):
+    resolution: {integrity: sha512-PlQEcdpvhtWUsceDp1Miyn49v74QNx/Xv7bpdqVTL6GvvQNuXF0qtpDrOZ+jZvOQiHLlnzNWrBk6YdWwenqcnw==}
+    peerDependencies:
+      solid-js: ^1.6.12
+    dependencies:
+      solid-js: 1.8.18
+    dev: false
 
   /@solid-primitives/scroll@2.0.23(solid-js@1.8.18):
     resolution: {integrity: sha512-kO0YpXKEUHaAnHp3zIsHYmxxuKXO3/LxVhZQHHmhqsmUY6A5IBObkSkoQ/ChIPl/WMKE7ynxEq40OgRmhvyUSw==}
