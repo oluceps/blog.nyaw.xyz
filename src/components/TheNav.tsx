@@ -36,7 +36,7 @@ export default function Home() {
         }}
           class="px-2 py-1.5 z-10 font-base text-neutral-500 hover:text-neutral-700"
           onpointerenter={() => { setHoveredIdx(idx); console.log("enter", idx) }}
-          onclick={() => navigate(tab.url)}
+          onclick={() => tab.url.startsWith("/") ? navigate(tab.url) : window.open(tab.url, '_blank')}
         >
           {tab.name}
         </button>)
