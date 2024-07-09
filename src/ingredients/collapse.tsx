@@ -15,9 +15,7 @@ const Col: Component<ParentProps & { title: string }> =
           {props.title}
         </button>
         <Collapse value={expandState()} class="CollapseTransition">
-          <p class="CollapseContent">
-            {props.children}
-          </p>
+          {props.children}
         </Collapse>
       </section>
     )
