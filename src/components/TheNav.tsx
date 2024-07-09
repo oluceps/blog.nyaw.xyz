@@ -1,11 +1,13 @@
 
-import { A } from "@solidjs/router";
+import { A, useNavigate } from "@solidjs/router";
 import { createEffect, createSignal } from "solid-js";
 import { Motion, Presence } from "solid-motionone"
 import cfg from "../constant";
 
 export default function Home() {
   const menu = cfg.extra.menu;
+
+  const navigate = useNavigate();
 
   type TabRef = HTMLButtonElement | null;
   const [tabRefs] = createSignal<TabRef[]>([]);
@@ -16,6 +18,7 @@ export default function Home() {
   createEffect(() => {
     setHoveredTab(tabRefs()[hoveredIdx() ?? -1]?.getBoundingClientRect())
   })
+
   // createEffect(() => {
   //   console.log(hoveredTab())
   // })
@@ -33,10 +36,9 @@ export default function Home() {
         }}
           class="px-2 py-1.5 z-10 font-base text-neutral-500 hover:text-neutral-700"
           onpointerenter={() => { setHoveredIdx(idx); console.log("enter", idx) }}
+          onclick={() => navigate(tab.url)}
         >
-          <A href={tab.url} class="w-full h-full">
-            {tab.name}
-          </A>
+          {tab.name}
         </button>)
       }
       {hoveredTab() ? (
