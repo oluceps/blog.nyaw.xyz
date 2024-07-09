@@ -7,17 +7,17 @@ const Col: Component<ParentProps & { title: string }> =
     const [expandState, setExpandState] = createSignal(false)
 
     return (
-      <section class="CollapseContainer">
-        <button
-          onClick={() => setExpandState(!expandState())}
-          class={`CollapseHeader ${!expandState() ? 'CollapseHeaderActive' : ''}`}
-        >
-          {props.title}
-        </button>
-        <Collapse value={expandState()} class="CollapseTransition">
-          {props.children}
-        </Collapse>
-      </section>
+      <div class="border-2 border-sprout-200 rounded-lg ring ring-sprout-200 p-3 mt-3"
+        onmouseenter={() => setExpandState(!expandState())}
+        onmouseleave={() => setExpandState(!expandState())}
+      >
+        <section class="CollapseContainer">
+          <div class={`font-bold ${expandState() ? "text-sprout-600" : "text-slate-500"}`}>{props.title}</div>
+          <Collapse value={expandState()} class="CollapseTransition">
+            {props.children}
+          </Collapse>
+        </section>
+      </div>
     )
   }
 
