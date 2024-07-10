@@ -32,7 +32,7 @@ const cstomLink = (props: ParentProps & { href: string }) => {
 			{...rest}
 		>
 			<span>{resolved()}</span>
-			<Icon path={link} class="group-hover:animate-shaking inline w-3 h-3" />
+			<Icon path={link} class="group-hover:animate-shaking inline w-3.5 h-3.5 mb-0.5" />
 		</A>
 	);
 

@@ -37,6 +37,20 @@ export default {
 					...defaultTheme.fontFamily.mono,
 				],
 			},
+			animation: {
+				"accordion-down": "accordion-down 0.2s ease-out",
+				"accordion-up": "accordion-up 0.2s ease-out",
+				shaking: "tilt-n-move-shaking 0.4s ease-in-out infinite",
+			},
+			keyframes: {
+				"tilt-n-move-shaking": {
+					"0%": { transform: `translate(0, 0) rotate(0deg);` },
+					"25%": { transform: `translate(2px, 2px) rotate(2deg);` },
+					"50%": { transform: `translate(0, 0) rotate(0deg);` },
+					"75%": { transform: `translate(-2px, 2px) rotate(-2deg);` },
+					"100%": { transform: `translate(0, 0) rotate(0deg);` },
+				},
+			},
 			typography: (theme) => ({
 				DEFAULT: {
 					css: {
