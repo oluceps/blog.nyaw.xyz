@@ -7,7 +7,7 @@ const Root: Component = () => {
   return (
     <MetaProvider>
       <Title>扉页 - {cfg.title}</Title>
-      <Meta name="description" content={cfg.extra.description} />
+      <Meta name="description" content={cfg.description} />
       <Meta name="author" content={cfg.author} />
       <div class="flex flex-col space-y-3 2xl:space-y-8 px-3 sm:px-0 w-full sm:w-2/3 2xl:w-7/12 mx-auto my-6 md:mt-14 grow">
         <Arti />

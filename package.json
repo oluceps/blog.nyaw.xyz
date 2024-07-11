@@ -15,6 +15,7 @@
     "@vercel/speed-insights": "^1.0.12",
     "@vinxi/plugin-mdx": "^3.7.1",
     "solid-collapse": "^1.1.0",
+    "solid-icons": "^1.1.0",
     "solid-js": "^1.8.18",
     "solid-mdx": "^0.0.7",
     "solid-motionone": "^1.0.0",

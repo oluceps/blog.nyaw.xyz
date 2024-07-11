@@ -54,7 +54,7 @@ export const Arti: Component = () => {
 					})
 					.filter((item) => {
 						const itemHideLvl = item.hideLevel || 5;
-						return cfg.extra.hideLevel < itemHideLvl && !item.draft;
+						return cfg.hideLevel < itemHideLvl && !item.draft;
 					}) // rearange date basic on current content
 					.map((item, index, arr) => {
 						if (index === 0) {

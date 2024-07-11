@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Show, type Component } from "solid-js";
+import { Show, type Component } from "solid-js";
 import { useWindowScrollPosition } from "@solid-primitives/scroll";
 import { Icon } from "solid-heroicons";
 

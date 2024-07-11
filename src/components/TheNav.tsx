@@ -5,7 +5,7 @@ import { Motion, Presence } from "solid-motionone"
 import cfg from "../constant";
 
 export default function Home() {
-  const menu = cfg.extra.menu;
+  const menu = cfg.menu;
 
   const navigate = useNavigate();
 
