@@ -1,13 +1,16 @@
 import { Link, Meta, MetaProvider } from "@solidjs/meta";
 import cfg from "../constant";
-import Footer from "./Footer";
 import Header from "./Header";
+import { lazy } from "solid-js";
 import { Match, ParentProps, Switch, createEffect, createSignal } from "solid-js";
 import { useLocation } from "@solidjs/router";
 import Page from "./Page";
 import Root from "./Root"
 import { PageStateProvider } from "./PageState";
-import BackTopBtn from "./BackTopBtn";
+
+const Footer = lazy(() => import("./Footer"));
+const BackTopBtn = lazy(( ) => import("./BackTopBtn"));
+
 
 export function Layout(props: ParentProps) {
 	const location = useLocation();
