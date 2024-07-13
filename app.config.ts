@@ -7,8 +7,8 @@ import remarkExpressiveCode from 'remark-expressive-code'
 import { ExpressiveCodeTheme } from "remark-expressive-code";
 import rehypeSlug from "rehype-slug";
 import rehypeAutoLinkHeadings from "rehype-autolink-headings";
-// import rehypeKatex from 'rehype-katex'
-// import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import remarkMath from 'remark-math'
 
 /* @ts-ignore */
 import pkg from "@vinxi/plugin-mdx";
@@ -46,7 +46,8 @@ export default defineConfig({
         jsxImportSource: "solid-js",
         providerImportSource: "solid-mdx",
         rehypePlugins: [
-          // rehypeKatex,
+          // rehypeMathJaxSVG,
+          () => rehypeKatex({ output: "html" }),
           [
             rehypeRaw,
             {
@@ -68,7 +69,7 @@ export default defineConfig({
           remarkGfm,
           remarkFrontmatter,
           [remarkExpressiveCode, remarkExpressiveCodeOptions],
-          // remarkMath
+          remarkMath
         ],
       }),
       { enforce: "pre" },
