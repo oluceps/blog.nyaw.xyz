@@ -21,7 +21,7 @@
           (
             { pkgs, ... }:
             {
-              packages = [ pkgs.nodePackages_latest.pnpm ];
+              packages = [ pkgs.nodePackages_latest.pnpm pkgs.typescript ];
               languages.javascript = {
                 enable = true;
               };
