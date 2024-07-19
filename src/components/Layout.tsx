@@ -9,7 +9,7 @@ import Root from "./Root"
 import { PageStateProvider } from "./PageState";
 
 const Footer = lazy(() => import("./Footer"));
-const BackTopBtn = lazy(( ) => import("./BackTopBtn"));
+const BackTopBtn = lazy(() => import("./BackTopBtn"));
 
 
 export function Layout(props: ParentProps) {
@@ -27,6 +27,8 @@ export function Layout(props: ParentProps) {
 				<Link rel="canonical" href={cfg.base_url} />
 				<Meta name="twitter:image" content={cfg.base_url + "/" + "twitter-card.png"} />
 				<Meta name="twitter:card" content="summary_large_image" />
+				<Meta property="og:image" content={cfg.base_url + "/" + "twitter-card.png"} />
+				<Meta property="og:url" content={cfg.base_url} />
 				<div class="flex flex-col bg-zinc-50 dark:bg-[#171717] min-h-screen items-center">
 					<Header sticky={isRoot()} />
 					<Switch fallback={
