@@ -37,6 +37,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 		<MetaProvider>
 			<Title>{`${article()?.title} - ${cfg.title}`}</Title>
 			<Link rel="canonical" href={currentUrl} />
+			<Meta property="og:url" content={currentUrl} />
 			<Meta name="description" content={article()?.description || cfg.description} />
 			<Meta
 				name="keywords"
