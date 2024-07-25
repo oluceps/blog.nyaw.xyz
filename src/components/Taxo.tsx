@@ -2,29 +2,88 @@ import { createEffect, createSignal, For } from "solid-js"
 import data from "../routes/data.json"
 import { A } from "@solidjs/router";
 import cfg from "../constant";
+import { Data } from "./Arti";
 
 
 export default function Taxo() {
   let [checked, setChecked] = createSignal(false);
-  createEffect(() => {
-    console.log(checked())
-  })
-  let redata = data.filter((item) => {
+  // createEffect(() => {
+  //   console.log(checked())
+  // })
+  let reData = data.filter((item) => {
     const itemHideLvl = item.hideLevel || 5;
     return cfg.hideLevel < itemHideLvl && !item.draft;
   });
-  const allTags = new Set(redata.reduce<string[]>((acc, item) => {
+
+
+  let allTags = new Set(reData.reduce<string[]>((acc, item) => {
     return item.tags ? acc.concat(item.tags) : acc;
   }, []));
-  const allCate = new Set(redata.reduce<string[]>((acc, item) => {
+  const allCate = new Set(reData.reduce<string[]>((acc, item) => {
     return item.categories ? acc.concat(item.categories) : acc;
   }, []));
 
+
+  // find all only one article tag
+  let onlyTag: Map<string, string> = new Map()
+
+  for (const t of allTags) {
+    let count = 0;
+    let last;
+    for (const it of reData) {
+      if (it.tags?.includes(t)) {
+        count++;
+        last = it.title;
+      }
+    }
+    if (count == 1 && last) {
+      onlyTag.set(t, last)
+      allTags.delete(t)
+    }
+  }
+  console.log("onlyT", onlyTag)
+
+  // [A -> bbb, B -> bbb] => [ [A, B] -> bbb ]
+  const outputMap = new Map<string[], string>();
+  const tempMap = new Map<string, string[]>();
+
+  onlyTag.forEach((value, key) => {
+    if (!tempMap.has(value)) {
+      tempMap.set(value, []);
+    }
+    tempMap.get(value)?.push(key);
+  });
+  tempMap.forEach((keys, value) => {
+    outputMap.set(keys, value);
+  });
+
+
+  for (const i of outputMap.keys()) {
+    allTags.add(i.join(" | "))
+  }
+
+  const reversedMap: Map<string, string[]> = new Map();
+
+  outputMap.forEach((value, key) => {
+    reversedMap.set(value, key);
+  });
+
+  reData = reData.reduce<typeof reData>((acc, item) => {
+    if (Array.from(outputMap.values()).includes(item.title)) {
+      const updatedTags = item.tags!.filter(tag => !Array.from(onlyTag.keys()).includes(tag))
+        .concat(reversedMap.get(item.title)?.join(" | ") || []);
+      // @ts-ignore
+      acc.push({ ...item, tags: updatedTags });
+      return acc
+    }
+    acc.push({ ...item });
+    return acc;
+  }, []);
+
   const [ctx] = createSignal(
     new Set(
-      redata.map((i) => { return { ...i, date: new Date(i.date) } })
+      reData.map((i) => { return { ...i, date: new Date(i.date) } })
     ));
-  console.log(allTags, allCate)
 
   return (
     <div class="mx-auto sm:w-2/3 2xl:w-7/12 flex flex-col grow w-11/12 space-y-8 mt-20">
@@ -61,7 +120,7 @@ export default function Taxo() {
 
       </div>
 
-      <div class="divider"/>
+      <div class="divider" />
 
 
       <div class="antialiased flex flex-col sm:mx-3 md:mx-10 2xl:mx-16">
@@ -85,7 +144,10 @@ export default function Taxo() {
                         item.date.getFullYear()
                       ),
                     };
-                  }).filter((item) => { return checked() ? (item.tags ? item.tags.includes(outerAttr) : false) : (item.categories ? item.categories.includes(outerAttr) : false) })}
+                  }).filter((item) => {
+                    return checked() ? (item.tags ? item.tags.includes(outerAttr) : false) :
+                      (item.categories ? item.categories.includes(outerAttr) : false)
+                  })}
               >
                 {(attr) => {
                   return <article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
