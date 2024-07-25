@@ -128,7 +128,7 @@ export default function Taxo() {
         <For each={Array.from(checked() ? allTags.values() : allCate.values())}>
           {(outerAttr) => {
             return <>
-              <p class="mt-4"
+              <p class={checked() ? "mt-6" : "mt-4"}
                 id={outerAttr}
               >{outerAttr}</p>
               <For
