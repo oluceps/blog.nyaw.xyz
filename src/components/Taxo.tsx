@@ -59,7 +59,7 @@ export default function Taxo() {
 
 
   for (const i of outputMap.keys()) {
-    allTags.add(i.join(" | "))
+    allTags.add(i.join(" / "))
   }
 
   const reversedMap: Map<string, string[]> = new Map();
@@ -71,7 +71,7 @@ export default function Taxo() {
   reData = reData.reduce<typeof reData>((acc, item) => {
     if (Array.from(outputMap.values()).includes(item.title)) {
       const updatedTags = item.tags!.filter(tag => !Array.from(onlyTag.keys()).includes(tag))
-        .concat(reversedMap.get(item.title)?.join(" | ") || []);
+        .concat(reversedMap.get(item.title)?.join(" / ") || []);
       // @ts-ignore
       acc.push({ ...item, tags: updatedTags });
       return acc
