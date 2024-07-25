@@ -110,8 +110,8 @@ export const Arti: Component = () => {
 									</A>
 								</article>
 
-								<div class="flex justify-end min-h-8">
-									<Show when={attr.categories}>
+								<div class="flex justify-end">
+									<Show when={attr.categories} fallback={<div class="h-4" />}>
 										{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
 										<button
 											class="pl-6 text-xs 2xl:text-base text-slate-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
