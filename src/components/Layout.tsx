@@ -7,6 +7,7 @@ import { useLocation } from "@solidjs/router";
 import Page from "./Page";
 import Root from "./Root"
 import { PageStateProvider } from "./PageState";
+import Taxo from "./Taxo";
 
 const Footer = lazy(() => import("./Footer"));
 const BackTopBtn = lazy(() => import("./BackTopBtn"));
@@ -20,6 +21,7 @@ export function Layout(props: ParentProps) {
 	});
 
 	const isRoot = () => currentPath() === "/";
+	const isTaxo = () => currentPath() === "/taxonomy";
 
 	return (
 		<MetaProvider>
@@ -40,6 +42,9 @@ export function Layout(props: ParentProps) {
 					}>
 						<Match when={isRoot()} >
 							<Root />
+						</Match>
+						<Match when={isTaxo()} >
+							<Taxo />
 						</Match>
 					</Switch>
 					<BackTopBtn />

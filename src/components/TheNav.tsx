@@ -1,5 +1,5 @@
 
-import { A, useNavigate } from "@solidjs/router";
+import { useNavigate } from "@solidjs/router";
 import { createEffect, createSignal } from "solid-js";
 import { Motion, Presence } from "solid-motionone"
 import cfg from "../constant";
@@ -20,10 +20,6 @@ export default function Home() {
     setHoveredTab(tabRefs()[hoveredIdx() ?? -1]?.getBoundingClientRect())
   })
 
-  createEffect(() => {
-    console.log()
-  })
-
   return (
     <nav
       onmouseleave={() => {
@@ -35,8 +31,8 @@ export default function Home() {
         <button ref={(el) => {
           tabRefs()[idx] = el
         }}
-          class={`px-1.5 py-1 z-10 font-base text-neutral-500 hover:text-neutral-600 transition-all duration-200 rounded-md
-          ${useLocation().pathname == tab.url && !hoveredTab() && useLocation().pathname.length != 1 ? "bg-sprout-100" : ""}`}
+          class={`px-1.5 py-1 z-10 font-base text-neutral-500 hover:text-neutral-600 transition-all duration-500 rounded-md
+          ${useLocation().pathname == tab.url && !hoveredTab() && useLocation().pathname.length != 1 ? "bg-sprout-100 text-neutral-700/80" : ""}`}
           onpointerenter={() => { setHoveredIdx(idx) }}
           onclick={() => tab.url.startsWith("/") ? navigate(tab.url) : window.open(tab.url, '_blank')}
         >

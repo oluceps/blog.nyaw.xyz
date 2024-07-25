@@ -23,6 +23,10 @@ export default {
 			url: "/about",
 		},
 		{
+			name: "分类",
+			url: "/taxonomy",
+		},
+		{
 			name: "留言",
 			url: "https://github.com/oluceps/oluceps/issues/new",
 		},

@@ -73,7 +73,7 @@ export const Arti: Component = () => {
 					return (
 						<>
 							<Show when={attr.showYear}>
-								<div class="text-lg 2xl:text-2xl font-mono font-normal pb-3 text-slate-600 dark:text-chill-100">
+								<div class="text-lg 2xl:text-2xl font-bold font-normal pb-3 text-slate-700 dark:text-chill-100">
 									{attr.date.getFullYear()}
 								</div>
 							</Show>
