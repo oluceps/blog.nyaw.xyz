@@ -3,7 +3,6 @@ export default {
 	title: "紙",
 	obj_store: "https://pub-54793cba1fde4e8aaa0e7872d8eeb3d2.r2.dev",
 	author: "Secirian",
-	valid: "2020-2024",
 	taxonomies: [
 		{
 			feed: true,
