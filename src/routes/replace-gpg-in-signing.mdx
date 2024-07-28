@@ -1,11 +1,11 @@
 ---
-title: 使用 Yubikey FIDO2 签名代码
+title: 使用 Yubikey FIDO2 签名
 date: '2023-07-16T22:53:00.000Z'
 description: 拜拜GPG
 draft: false
 toc: true
 tags:
-- crypto
+- cryptography
 - fido2
 - security
 - openssh
@@ -107,3 +107,34 @@ initial import
 update: 这样会导致每次签名都需要触摸密钥，好像有点麻烦 特别是 rebase 的时候。
 
 update: 用回ssh key了, 一下感觉 rebase 好快
+
+# 补充 文件签名
+
+作为一种方便的替代PGP的方式，当然也可以使用minisign。
+
+## Sign
+
+```console
+  ssh-keygen -Y sign -f ./OPENSSH_KEY  -n FILE_NAME ./FILE
+```
+
+在当前目录会生成后缀.sig的文件。
+
+## Verify
+
+首先要创建一个 `allowed_signers` 文件, 把邮箱后面加空格黏贴上公钥放进去就可以了。
+
+比如
+
+```
+i@oluceps.uk sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NAIBFIalie2guY29tAAAAIH+HwSzDbhaisdjABAdibbdsvwqfla4GY6EuD1yGuNkX6QAAAaifAIfalAALjg5NTQzMzc1 ssh:1689543375
+```
+
+使用这个验证签名
+
+```console
+  cat FILE | ssh-keygen -Y verify -f allowed_signers -I i@oluceps.uk -n FILE -s FILE.sig
+  Good "FILE" signature for i@oluceps.uk with ED25519-SK key SHA256:iabd+DxjcImivTYhsuQTlPhTIlYr2aHojF3YaisdbM
+```
+
+> 作为 [这篇博文](https://www.agwa.name/blog/post/ssh_signatures) 的简短助记。
