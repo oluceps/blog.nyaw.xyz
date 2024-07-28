@@ -120,7 +120,7 @@ const components = {
 	),
 
 	Emph: (props: EmphProps) => (
-		<Emph info={props.info} type={props.type}>
+		<Emph type={props.type}>
 			{props.children}
 		</Emph>
 	),
@@ -197,7 +197,7 @@ const components = {
 	),
 	blockquote: (props: ParentProps) => (
 		<blockquote
-			class="flex items-center not-prose text-base not-italic font-normal text-zinc-500">
+			class="flex items-center not-prose text-base not-italic font-normal text-zinc-500 my-2">
 
 			<div class="text-3xl text-sprout-400 mr-2">"</div>{props.children}
 
