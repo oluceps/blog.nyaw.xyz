@@ -11,16 +11,16 @@
     "@mdx-js/mdx": "^2.3.0",
     "@solid-primitives/script-loader": "^2.2.0",
     "@solidjs/router": "^0.13.6",
-    "@solidjs/start": "^1.0.2",
+    "@solidjs/start": "^1.0.6",
     "@vercel/speed-insights": "^1.0.12",
     "@vinxi/plugin-mdx": "^3.7.1",
     "rehype-katex": "^7.0.0",
     "solid-collapse": "^1.1.0",
     "solid-icons": "^1.1.0",
-    "solid-js": "^1.8.18",
+    "solid-js": "^1.8.19",
     "solid-mdx": "^0.0.7",
     "solid-motionone": "^1.0.0",
-    "vinxi": "^0.3.12"
+    "vinxi": "^0.4.1"
   },
   "engines": {
     "node": ">=18"
@@ -28,12 +28,12 @@
   "devDependencies": {
     "@solid-primitives/scroll": "^2.0.23",
     "@solidjs/meta": "^0.29.4",
-    "@tabler/icons-solidjs": "^3.9.0",
+    "@tabler/icons-solidjs": "^3.11.0",
     "@tailwindcss/typography": "^0.5.13",
     "autoprefixer": "^10.4.19",
     "daisyui": "^4.12.10",
     "gray-matter": "^4.0.3",
-    "postcss": "^8.4.39",
+    "postcss": "^8.4.40",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-expressive-code": "^0.35.3",
     "rehype-raw": "^7.0.0",
@@ -44,6 +44,6 @@
     "remark-math": "^6.0.0",
     "solid-heroicons": "^3.2.4",
     "tailwind-merge": "^2.4.0",
-    "tailwindcss": "^3.4.4"
+    "tailwindcss": "^3.4.7"
   }
 }
