@@ -1,6 +1,6 @@
 import { Icon } from "solid-heroicons";
 import { A } from "@solidjs/router";
-import { Component, JSXElement, Match, ParentComponent, Show, Switch } from "solid-js";
+import { Component, JSXElement, Match, ParentComponent, ParentProps, Show, Switch } from "solid-js";
 
 import {
   exclamationTriangle, // warn
@@ -26,41 +26,46 @@ const icons = {
 
 export const Emph: ParentComponent<EmphProps> = (props) => {
 
-  const w = () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-red-400`} />
-  const i = () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-sprout-400`} />
-  const t = () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-chill-400`} />
-  const n = () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-ouchi-400`} />
 
-  const iconOpts = {
-    warn: w,
-    info: i,
-    tips: t,
-    note: n
-  }
-
-  const ex = () => {
-    switch (props.type) {
-      case "warn": return "WARNING"
-      case "info": return "Information"
-      case "tips": return "Tips"
-      case "note": return "Notice"
+  const styleOpts = {
+    warn: {
+      text: "WARNING",
+      icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-red-400`} />,
+      border: (props: ParentProps) => <div class={`group relative rounded-xl border-2 border-red-300/80`}> {props.children}</div>
+    },
+    info: {
+      text: "Information",
+      icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-sprout-400`} />,
+      border: (props: ParentProps) => <div class={`group relative rounded-xl border-2 border-sprout-300/80`}> {props.children}</div>
+    },
+    tips: {
+      text: "Tips",
+      icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-chill-400`} />,
+      border: (props: ParentProps) => <div class={`group relative rounded-xl border-2 border-chill-500/40`}> {props.children}</div>
+    },
+    note: {
+      text: "Notice",
+      icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-ouchi-400`} />,
+      border: (props: ParentProps) => <div class={`group relative rounded-xl border-2 border-[#9B90C2]/50`}> {props.children}</div>
     }
   }
 
+
+
   return (
-    <div class={`group relative rounded-xl border-4 border-sprout-300/80`}>
+    <Dynamic component={styleOpts[props.type].border}>
       <div class="absolute -inset-px rounded-xl border-2 opacity-0" />
       <div class="relative overflow-hidden rounded-xl px-5 py-4">
         <div class="flex items-center">
-          <Dynamic component={iconOpts[props.type]} />
+          <Dynamic component={styleOpts[props.type].icon} />
           <div class="text-xl text-slate-900 dark:text-white capitalize no-underline pl-3">
-            {ex()}
+            {styleOpts[props.type].text}
           </div>
         </div>
         <p class="text-[0.91rem] pl-1 text-balance text-slate-800 dark:text-slate-300 -mb-2">
           {props.children}
         </p>
       </div>
-    </div>
+    </Dynamic>
   );
 }
