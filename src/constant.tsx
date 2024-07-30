@@ -13,7 +13,7 @@ export default {
 			name: "categories",
 		},
 	],
-	description: "0<有些时候在某些地方的碎碎念",
+	description: "Secirian's blog. Place to place myself",
 	hideLevel: 0,
 	license: "CC BY-SA 4.0",
 	menu: [
