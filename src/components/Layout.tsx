@@ -31,6 +31,9 @@ export function Layout(props: ParentProps) {
 				<Meta name="twitter:card" content="summary_large_image" />
 				<Meta property="og:image" content={cfg.base_url + "/" + "twitter-card.png"} />
 				<Meta property="og:url" content={cfg.base_url} />
+				<Meta property="og:site_name" content={cfg.title} />
+				<Meta property="og:title" content={cfg.title} />
+				<Meta property="og:description" content={cfg.description} />
 				<div class="flex flex-col bg-zinc-50 dark:bg-[#171717] min-h-screen items-center">
 					<Header sticky={isRoot()} />
 					<Switch fallback={

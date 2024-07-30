@@ -39,6 +39,8 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 			<Link rel="canonical" href={currentUrl} />
 			<Meta property="og:url" content={currentUrl} />
 			<Meta name="description" content={article()?.description || cfg.description} />
+			<Meta property="og:title" content={cfg.title} />
+			<Meta property="og:description" content={cfg.description} />
 			<Meta
 				name="keywords"
 				content={article()?.tags?.join(",")}
