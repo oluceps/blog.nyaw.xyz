@@ -20,20 +20,14 @@ function formatDate(date: Date | undefined) {
 const Page: ParentComponent<{ isError?: false }> = (props) => {
 	const resolved = children(() => props.children)
 	const location = useLocation();
-	const [currentPath, setCurrentPath] = createSignal(location.pathname);
-	console.log(currentPath())
-	onMount(() => {
-		setCurrentPath(currentPath().substring(1));
-	});
 
 	const [ctx] = createSignal(
 		data.map((i) => { return { ...i, date: new Date(i.date) } })
 	);
 
-	const currentUrl = `${cfg.base_url}${location.pathname}`
+	const article = createMemo(() => ctx().find((i) => i.path == location.pathname.substring(1)))
 
-	const article = createMemo(() => ctx().find((i) => i.path === currentPath()))
-	console.log("article", article())
+	const currentUrl = `${cfg.base_url}${location.pathname}`
 	return (
 		<MetaProvider>
 			<Title>{`${article()?.title} - ${cfg.title}`}</Title>
