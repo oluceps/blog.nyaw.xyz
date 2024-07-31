@@ -8,8 +8,8 @@ import Page from "./Page";
 import Root from "./Root"
 import { PageStateProvider } from "./PageState";
 import Taxo from "./Taxo";
+import Footer from "./Footer";
 
-const Footer = lazy(() => import("./Footer"));
 const BackTopBtn = lazy(() => import("./BackTopBtn"));
 
 

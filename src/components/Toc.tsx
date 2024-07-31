@@ -87,7 +87,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 			path: location.pathname,
 			sections: sections,
 		});
-		console.log(sections)
+		// console.log(sections)
 	}
 
 	createEffect(() => getHeaders(props.children));

@@ -1,5 +1,5 @@
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
-import { Show, ParentComponent, children, createSignal, createEffect, createMemo, onMount } from "solid-js";
+import { Show, ParentComponent, children, createMemo } from "solid-js";
 import cfg from "../constant";
 import data from "../routes/data.json"
 import { useLocation } from "@solidjs/router";
@@ -21,11 +21,9 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 	const resolved = children(() => props.children)
 	const location = useLocation();
 
-	const [ctx] = createSignal(
-		data.map((i) => { return { ...i, date: new Date(i.date) } })
-	);
+	const ctx = data.map((i) => { return { ...i, date: new Date(i.date) } });
 
-	const article = createMemo(() => ctx().find((i) => i.path == location.pathname.substring(1)))
+	const article = createMemo(() => ctx.find((i) => i.path == location.pathname.substring(1)))
 
 	const currentUrl = `${cfg.base_url}${location.pathname}`
 	return (
