@@ -23,7 +23,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 
 	const ctx = data.map((i) => { return { ...i, date: new Date(i.date) } });
 
-	const article = createMemo(() => ctx.find((i) => i.path == location.pathname.substring(1)))
+	const article = createMemo(() => ctx.find((i) => i.path == location.pathname.replaceAll('/', '')))
 
 	const currentUrl = `${cfg.base_url}${location.pathname}`
 	return (
