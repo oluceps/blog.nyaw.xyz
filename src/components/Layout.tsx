@@ -21,7 +21,7 @@ export function Layout(props: ParentProps) {
 	});
 
 	const isRoot = () => currentPath() === "/";
-	const isTaxo = () => currentPath() === "/taxonomy";
+	const isTaxo = () => currentPath().replaceAll('/', '') === "taxonomy";
 
 	return (
 		<MetaProvider>
