@@ -2,7 +2,7 @@ import { Link, Meta, MetaProvider } from "@solidjs/meta";
 import cfg from "../constant";
 import Header from "./Header";
 import { lazy } from "solid-js";
-import { Match, ParentProps, Switch, createEffect, createSignal } from "solid-js";
+import { Match, type ParentProps, Switch, createEffect, createSignal } from "solid-js";
 import { useLocation } from "@solidjs/router";
 import Page from "./Page";
 import Root from "./Root"

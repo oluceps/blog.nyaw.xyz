@@ -12,9 +12,9 @@ const AntiOCR = () => {
   }
   const rgbToHex = (rgbString: string) => {
     const parts = rgbString.slice(4, -1).split(',');
-    const r = parseInt(parts[0]);
-    const g = parseInt(parts[1]);
-    const b = parseInt(parts[2]);
+    const r = Number.parseInt(parts[0]);
+    const g = Number.parseInt(parts[1]);
+    const b = Number.parseInt(parts[2]);
     const rt = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b)
     console.log(rt)
     return rt;
@@ -44,7 +44,7 @@ const AntiOCR = () => {
   };
 
   const textToImg = () => {
-    let text = txt();
+    const text = txt();
     let length = len();
     if (text === '') {
       alert('請輸入文字');
@@ -158,7 +158,7 @@ const AntiOCR = () => {
             id="fontSize"
             class="input input-bordered"
             value={fontSize()}
-            onInput={(e) => setFontSize(parseInt((e.target as HTMLInputElement).value))}
+            onInput={(e) => setFontSize(Number.parseInt((e.target as HTMLInputElement).value))}
           />
 
 
@@ -185,7 +185,7 @@ const AntiOCR = () => {
             id="len"
             class="input input-bordered"
             value={len()}
-            onInput={(e) => setLen(parseInt((e.target as HTMLInputElement).value))}
+            onInput={(e) => setLen(Number.parseInt((e.target as HTMLInputElement).value))}
           />
 
           <label class="label">
@@ -196,7 +196,7 @@ const AntiOCR = () => {
             id="lineSize"
             class="input input-bordered"
             value={lineSize()}
-            onInput={(e) => setLineSize(parseInt((e.target as HTMLInputElement).value))}
+            onInput={(e) => setLineSize(Number.parseInt((e.target as HTMLInputElement).value))}
           />
 
           <label class="label">
@@ -207,7 +207,7 @@ const AntiOCR = () => {
             id="pointSize"
             class="input input-bordered"
             value={pointSize()}
-            onInput={(e) => setPointSize(parseInt((e.target as HTMLInputElement).value))}
+            onInput={(e) => setPointSize(Number.parseInt((e.target as HTMLInputElement).value))}
           />
 
           <label class="label">
@@ -220,7 +220,7 @@ const AntiOCR = () => {
             min="0"
             max="20"
             value={points()}
-            onInput={(e) => setPoints(parseInt((e.target as HTMLInputElement).value))}
+            onInput={(e) => setPoints(Number.parseInt((e.target as HTMLInputElement).value))}
           />
         </div>
       </div>

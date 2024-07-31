@@ -1,5 +1,5 @@
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
-import { Show, ParentComponent, children, createMemo } from "solid-js";
+import { Show, type ParentComponent, children, createMemo } from "solid-js";
 import cfg from "../constant";
 import data from "../routes/data.json"
 import { useLocation } from "@solidjs/router";

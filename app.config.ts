@@ -4,7 +4,7 @@ import rehypeRaw from "rehype-raw";
 import { nodeTypes } from "@mdx-js/mdx";
 import remarkGfm from "remark-gfm";
 import remarkExpressiveCode from 'remark-expressive-code'
-import { ExpressiveCodeTheme } from "remark-expressive-code";
+import type { ExpressiveCodeTheme } from "remark-expressive-code";
 import rehypeSlug from "rehype-slug";
 import rehypeAutoLinkHeadings from "rehype-autolink-headings";
 import rehypeKatex from 'rehype-katex'

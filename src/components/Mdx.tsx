@@ -1,7 +1,7 @@
 import { Match, Switch, children, splitProps, type ParentProps } from "solid-js";
 import { A } from "@solidjs/router";
-import { QuickLinks, QuickLinksProps } from "../ingredients/quick-link";
-import { Emph, EmphProps } from "../ingredients/emph";
+import { QuickLinks, type QuickLinksProps } from "../ingredients/quick-link";
+import { Emph, type EmphProps } from "../ingredients/emph";
 import Col from "~/ingredients/collapse";
 import cfg from "../constant"
 import { Icon } from "solid-heroicons";

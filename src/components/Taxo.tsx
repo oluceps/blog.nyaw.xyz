@@ -7,7 +7,7 @@ import { Meta, MetaProvider } from "@solidjs/meta";
 
 
 export default function Taxo() {
-  let [checked, setChecked] = createSignal(false);
+  const [checked, setChecked] = createSignal(false);
   // createEffect(() => {
   //   console.log(checked())
   // })
@@ -17,7 +17,7 @@ export default function Taxo() {
   });
 
 
-  let allTags = new Set(reData.reduce<string[]>((acc, item) => {
+  const allTags = new Set(reData.reduce<string[]>((acc, item) => {
     return item.tags ? acc.concat(item.tags) : acc;
   }, []));
   const allCate = new Set(reData.reduce<string[]>((acc, item) => {
@@ -26,7 +26,7 @@ export default function Taxo() {
 
 
   // find all only one article tag
-  let onlyTag: Map<string, string> = new Map()
+  const onlyTag: Map<string, string> = new Map()
 
   for (const t of allTags) {
     let count = 0;

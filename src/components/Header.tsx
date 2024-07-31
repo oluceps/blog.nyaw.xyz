@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { type Component } from "solid-js";
+import type { Component } from "solid-js";
 import cfg from "../constant";
 import TheNav from "./TheNav";
 

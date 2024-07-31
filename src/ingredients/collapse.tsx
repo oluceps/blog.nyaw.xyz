@@ -1,4 +1,4 @@
-import { Component, createSignal, ParentProps } from "solid-js"
+import { type Component, createSignal, type ParentProps } from "solid-js"
 import { Collapse } from 'solid-collapse';
 import { plus } from "solid-heroicons/solid-mini"
 import { Icon } from "solid-heroicons";

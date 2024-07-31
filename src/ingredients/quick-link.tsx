@@ -1,6 +1,6 @@
 import { Icon } from "solid-heroicons";
 import { A } from "@solidjs/router";
-import { JSXElement, ParentComponent, Show } from "solid-js";
+import { type JSXElement, type ParentComponent, Show } from "solid-js";
 
 import {
   academicCap,

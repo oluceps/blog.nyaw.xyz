@@ -1,6 +1,6 @@
 import { Icon } from "solid-heroicons";
 import { A } from "@solidjs/router";
-import { Component, JSXElement, Match, ParentComponent, ParentProps, Show, Switch } from "solid-js";
+import { Component, type JSXElement, Match, type ParentComponent, type ParentProps, Show, Switch } from "solid-js";
 
 import {
   exclamationTriangle, // warn

@@ -1,5 +1,5 @@
-import { SetStoreFunction, StoreSetter, createStore } from "solid-js/store";
-import { createEffect, createContext, ParentProps, useContext } from "solid-js";
+import { type SetStoreFunction, StoreSetter, createStore } from "solid-js/store";
+import { createEffect, createContext, type ParentProps, useContext } from "solid-js";
 
 function usePageState() {
   return useContext(PageStateContext);

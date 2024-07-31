@@ -1,5 +1,5 @@
 import { Meta, MetaProvider, Title } from "@solidjs/meta";
-import { type Component } from "solid-js";
+import type { Component } from "solid-js";
 import cfg from "../constant";
 import { Arti } from "./Arti";
 
