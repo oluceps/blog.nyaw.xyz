@@ -3,10 +3,11 @@ import data from "../routes/data.json"
 import { A } from "@solidjs/router";
 import cfg from "../constant";
 import { Data } from "./Arti";
+import { Title } from "@solidjs/meta";
 
 
 export default function Taxo() {
-  let [checked, setChecked] = createSignal(false);
+  const [checked, setChecked] = createSignal(false);
   // createEffect(() => {
   //   console.log(checked())
   // })
@@ -16,7 +17,7 @@ export default function Taxo() {
   });
 
 
-  let allTags = new Set(reData.reduce<string[]>((acc, item) => {
+  const allTags = new Set(reData.reduce<string[]>((acc, item) => {
     return item.tags ? acc.concat(item.tags) : acc;
   }, []));
   const allCate = new Set(reData.reduce<string[]>((acc, item) => {
@@ -25,7 +26,7 @@ export default function Taxo() {
 
 
   // find all only one article tag
-  let onlyTag: Map<string, string> = new Map()
+  const onlyTag: Map<string, string> = new Map()
 
   for (const t of allTags) {
     let count = 0;
@@ -87,8 +88,8 @@ export default function Taxo() {
 
   return (
     <div class="mx-auto sm:w-2/3 2xl:w-7/12 flex flex-col grow w-11/12 space-y-8 mt-20">
+      <Title>分类 - {cfg.title}</Title>
       <div class="flex space-x-2 items-center">
-
 
         <div class={`px-2 py-px tansition-all duration-300 ${!checked() ? "bg-sprout-200/80 text-neutral-600 rounded-md" : "text-neutral-500"}`}>目录</div>
         <input
