@@ -14,9 +14,11 @@ const Col: Component<ParentProps & { title: string }> =
       >
         <section class="CollapseContainer">
           <div class="flex justify-between items-center"><div class={`font-bold ${expandState() ? "text-sprout-600" : "text-slate-500"}`}>{props.title}</div><Icon path={plus} class={`w-4 h-4 mr-3 transition-all duration-500 transform-gpu ${expandState() ? "rotate-45" : ""}`} /></div>
-          <Collapse value={expandState()} class="CollapseTransition">
-            {props.children}
-          </Collapse>
+          <div onClick={(e) => e.stopPropagation()} >
+            <Collapse value={expandState()} class="CollapseTransition">
+              {props.children}
+            </Collapse>
+          </div>
         </section>
       </div>
     )
