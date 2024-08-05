@@ -31,22 +31,38 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
     warn: {
       text: "WARNING",
       icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-red-400`} />,
-      border: (props: ParentProps) => <div class={`group relative rounded-xl border-2 border-red-300/80`}> {props.children}</div>
+      border: (props: ParentProps) =>
+        <div class={`group relative rounded-xl border-2 border-red-300/80`}>
+          <div class="absolute -inset-px rounded-xl border-2 opacity-80 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.red.100)),var(--quick-links-hover-bg,theme(colors.red.100)))_padding-box,linear-gradient(to_top,theme(colors.red.500),theme(colors.red.300))_border-box]" />
+          {props.children}
+        </div>
     },
     info: {
       text: "Information",
       icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-sprout-400`} />,
-      border: (props: ParentProps) => <div class={`group relative rounded-xl border-2 border-sprout-300/80`}> {props.children}</div>
+      border: (props: ParentProps) =>
+        <div class={`group relative rounded-xl border-2 border-sprout-300/80`}>
+          <div class="absolute -inset-px rounded-xl border-2 opacity-80 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sprout.100)),var(--quick-links-hover-bg,theme(colors.sprout.100)))_padding-box,linear-gradient(to_top,theme(colors.sprout.500),theme(colors.sprout.300))_border-box]" />
+          {props.children}
+        </div>
     },
     tips: {
       text: "Tips",
       icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-chill-400`} />,
-      border: (props: ParentProps) => <div class={`group relative rounded-xl border-2 border-chill-500/40`}> {props.children}</div>
+      border: (props: ParentProps) =>
+        <div class={`group relative rounded-xl border-2 border-chill-500/40`}>
+          <div class="absolute -inset-px rounded-xl border-2 opacity-80 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.chill.100)),var(--quick-links-hover-bg,theme(colors.chill.100)))_padding-box,linear-gradient(to_top,theme(colors.chill.500),theme(colors.chill.300))_border-box]" />
+          {props.children}
+        </div>
     },
     note: {
       text: "Notice",
       icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-ouchi-400`} />,
-      border: (props: ParentProps) => <div class={`group relative rounded-xl border-2 border-[#9B90C2]/50`}> {props.children}</div>
+      border: (props: ParentProps) =>
+        <div class={`group relative rounded-xl border-2 border-[#9B90C2]/50`}>
+          <div class="absolute -inset-px rounded-xl border-2 opacity-80 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.ouchi.100)),var(--quick-links-hover-bg,theme(colors.ouchi.100)))_padding-box,linear-gradient(to_top,theme(colors.ouchi.500),theme(colors.ouchi.300))_border-box]" />
+          {props.children}
+        </div>
     }
   }
 
@@ -54,7 +70,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 
   return (
     <Dynamic component={styleOpts[props.type].border}>
-      <div class="absolute -inset-px rounded-xl border-2 opacity-0" />
+
       <div class="relative overflow-hidden rounded-xl px-5 py-4">
         <div class="flex items-center">
           <Dynamic component={styleOpts[props.type].icon} />
