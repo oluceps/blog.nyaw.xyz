@@ -34,7 +34,13 @@ noBanner: true
 ---
 
 ## Encryption
-<Collapse title="SSH Public Key" >
+<Collapse title="AGE" >
+	```
+    age1jr2x2m85wtte9p0s7d833e0ug8xf3cf8a33l9kjprc9vlxmvjycq05p2qq
+	```
+</Collapse>
+
+<Collapse title="OPENSSH" >
 	```
     ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEv3S53gBU3Hqvr5o5g+yrn1B7eiaE5Y/OIFlTwU+NEG
 	```
@@ -49,12 +55,8 @@ noBanner: true
 	curl https://github.com/oluceps.keys | head -n 1 > id_ed25519.pub
 	```
 </Collapse>
-<Collapse title="AGE Public Key" >
-	```
-    age1jr2x2m85wtte9p0s7d833e0ug8xf3cf8a33l9kjprc9vlxmvjycq05p2qq
-	```
-</Collapse>
-<Collapse title="GPG Public Key">
+
+<Collapse title="GPG Encryption">
     ```
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     
@@ -81,5 +83,11 @@ noBanner: true
 	```
 	curl https://raw.githubusercontent.com/oluceps/oluceps/key/key.asc | \
 	gpg --import
+	```
+</Collapse>
+<Collapse title="MINISIGN" >
+	```
+	untrusted comment: minisign public key 74B2AF4537744B9
+  RWS5RHdT9CpLB37kQdM+tHwW8xwOSwsA3xExt6PUt1X3VR0w3e7DRE9/
 	```
 </Collapse>
