@@ -1,16 +1,15 @@
-import { createContext, ParentProps, useContext } from "solid-js";
-import { createStore, SetStoreFunction } from "solid-js/store";
+import { createContext, createSignal, ParentProps, useContext } from "solid-js";
 
 
-const [activeState, setActiveState] = createStore<{ state: string }>({ state: "" });
+const [activeState, setActiveState] = createSignal<string>("");
 
 const ActiveContext =
   createContext<{
-    activeState: { state: string };
-    setActiveState: SetStoreFunction<{ state: string }>;
+    activeState: typeof activeState;
+    setActiveState: typeof setActiveState;
   }>
     ({
-      activeState: { state: "" },
+      activeState: () => "",
       setActiveState: () => { }
     });
 

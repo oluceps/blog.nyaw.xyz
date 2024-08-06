@@ -10,11 +10,11 @@ const Col: Component<ParentProps & { title: string }> =
 
     const { activeState, setActiveState } = useAboutState();
 
-    const isActive = createMemo(() => activeState.state == props.title);
+    const isActive = createMemo(() => activeState() == props.title);
 
     return (
       <div class="rounded-md ring ring-sprout-200 p-3 mt-3"
-        onClick={() => setActiveState({ state: props.title })}
+        onClick={() => setActiveState(props.title)}
       >
         <section class="CollapseContainer">
           <div class="flex justify-between items-center"><div class={`font-bold ${isActive() ? "text-sprout-600" : "text-slate-500"}`}>

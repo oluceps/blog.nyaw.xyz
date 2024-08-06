@@ -5,7 +5,7 @@
     "dev": "pnpm gen && vinxi dev",
     "build": "pnpm gen && vinxi build",
     "start": "pnpm gen && vinxi start",
-    "gen": "node ./scripts/writeData.mjs && node ./scripts/writeSitemap.mjs"
+    "gen": "node ./scripts/writeData.mjs && node ./scripts/writeSitemap.mjs && node ./scripts/time.mjs"
   },
   "dependencies": {
     "@mdx-js/mdx": "^2.3.0",
