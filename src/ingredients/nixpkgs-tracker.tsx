@@ -55,7 +55,7 @@ const Tracker = () => {
   const [btnStatus, setBtnStatus] = createSignal(false);
   const [loading, setLoading] = createSignal(false);
   const [qnum, setQnum] = createSignal<number>();
-  const [queryStatus, setQueryStatus] = createSignal(["Input PR number", true]);
+  const [queryStatus, setQueryStatus] = createSignal(["", true]);
 
   createEffect(() => {
     console.log(qnum())
@@ -82,40 +82,39 @@ const Tracker = () => {
 
     const titleStatMap = await getPRTitle(pr);
 
+    const ready = () => {
+      setBtnStatus(true);
+      setLoading(false);
+    }
+
     switch (titleStatMap.statusCode) {
       case 404:
         setQueryStatus(["PR not found", false]);
-        setBtnStatus(true);
-        setLoading(false);
+        ready()
         return
       case 403:
         setQueryStatus(["Rate limit exceeded -- Please set token", false]);
-        setBtnStatus(true);
-        setLoading(false);
+        ready()
         return
       case 401:
         setQueryStatus(["Unauthorized -- Please set correct token", false]);
         tokenElement.focus();
-        setBtnStatus(true);
-        setLoading(false);
+        ready()
         return;
       case 200:
         setQueryStatus([titleStatMap.title, true]);
     }
 
     const checkBranch = async (branch: string) => {
-
       const merged = await getMergeCommit(pr).then((commit) => isContain(branch, commit));
       if (merged) branchStatus.set(branch, true)
-
     };
     try {
       await Promise.all(Array.from(branchStatus.keys()).map(checkBranch));
       console.log("inhandle", branchStatus)
     } catch (e) { console.log(e) }
 
-    setBtnStatus(true);
-    setLoading(false);
+    ready()
   };
 
   createEffect(() => {
@@ -158,7 +157,9 @@ const Tracker = () => {
           </Show>
           Query
         </button>
-        <div class={`p-2 rounded-md ${queryStatus()[1] ? "bg-slate-200" : "bg-red-200"}`} onClick={() => queryStatus()[0] != "Input PR number" ? window.open("https://github.com/nixos/nixpkgs/pull/" + qnum()) : ""}>{queryStatus()}</div>
+        <Show when={queryStatus()[0] != ""}>
+          <div class={`p-2 text-zink-800 rounded-md shadow-md opacity-85 ${queryStatus()[1] ? "bg-sprout-200" : "bg-red-200"}`} onClick={() => queryStatus()[0] != "" ? window.open("https://github.com/nixos/nixpkgs/pull/" + qnum()) : ""}>{queryStatus()}</div>
+        </Show>
       </div>
       <div class="flex flex-col justify-center items-center">
         <For each={Array.from(branchStatus)}>

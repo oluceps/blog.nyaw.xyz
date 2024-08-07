@@ -17,7 +17,7 @@ const Footer: Component = () => {
 				<p>BUILT ON {(new Date(time)).toLocaleString()}</p>
 			</div>
 			</div>
-			<div class="group-hover:hidden flex justify-end items-center mr-3 space-x-1 flex-nowrap">©{valid} {cfg.author} | {cfg.license}</div>
+			<div class="group-hover:hidden flex justify-end items-center mr-5 space-x-1 flex-nowrap">©{valid} {cfg.author} | {cfg.license}</div>
 		</div>
 	);
 };

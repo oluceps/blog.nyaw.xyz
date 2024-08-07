@@ -25,7 +25,7 @@ export default function Home() {
       onmouseleave={() => {
         setHoveredIdx(null);
       }}
-      class={`bg-background flex items-center justify-end relative pt-2 pr-2`}
+      class={`bg-background flex items-center justify-end relative px-2 py-1.5`}
     >
       {menu.map((tab, idx) =>
         <button ref={(el) => {
