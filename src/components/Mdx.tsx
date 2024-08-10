@@ -126,8 +126,8 @@ const components = {
 		</Emph>
 	),
 
-	Collapse: (props: ParentProps & { title: string }) => (
-		<Col title={props.title}>{props.children}</Col>),
+	Collapse: (props: ParentProps & { title: string, comment: string }) => (
+		<Col title={props.title} comment={props.comment}>{props.children}</Col>),
 
 	Reveal: (props: ParentProps) => (
 		<Reveal >{props.children}</Reveal>),

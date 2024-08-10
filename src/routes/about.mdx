@@ -71,16 +71,25 @@ import { Provider, useAboutState } from "../ingredients/about-state";
 </div>
 
 <Provider>
-  <Collapse title="AGE" >
+  <Collapse title="AGE" comment="Encryption" >
   	```
       age1jr2x2m85wtte9p0s7d833e0ug8xf3cf8a33l9kjprc9vlxmvjycq05p2qq
   	```
   </Collapse>
   
-  <Collapse title="MINISIGN" >
+  <Collapse title="MINISIGN" comment="Authentication">
+		+ Public Key
   	```
   	untrusted comment: minisign public key 74B2AF4537744B9
     RWS5RHdT9CpLB37kQdM+tHwW8xwOSwsA3xExt6PUt1X3VR0w3e7DRE9/
   	```
+
+		+ Signature
+		```
+		untrusted comment: signature from minisign secret key
+    RUS5RHdT9CpLBw6D/9+hmdmkU0huMikX75TF0aZprKZesObj1cXrKk+Hg2dlMdxTjPHzvy5stiQmZ1qHKtQSo18EfIYLCOtkwgo=
+    trusted comment: posted on blog.nyaw.xyz
+    dfMsFLWMwP0vrFbyZLTb/B5gEg7DfVukmKZiE8aGCAsrSLdUe/CFEpFj8WTnd01aSho5WLvQYNaNYb8FfUTJCQ==
+		```
   </Collapse>
 </Provider>

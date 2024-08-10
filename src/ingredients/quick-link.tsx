@@ -53,7 +53,7 @@ export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
           </div>
         </div>
 
-        <p class="text-[0.91rem] pl-1 text-balance text-slate-800 dark:text-slate-300 -mb-2">
+        <p class="text-[0.91rem] pl-1 text-balance text-slate-800 dark:text-slate-300 not-prose mb-1 mt-2.5">
           {props.children}
         </p>
       </div>

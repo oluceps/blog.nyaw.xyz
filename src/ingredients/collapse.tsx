@@ -5,8 +5,8 @@ import { Icon } from "solid-heroicons";
 import { useAboutState } from "./about-state";
 
 
-const Col: Component<ParentProps & { title: string }> =
-  (props: ParentProps & { title: string }) => {
+const Col: Component<ParentProps & { title: string, comment: string }> =
+  (props) => {
 
     const { activeState, setActiveState } = useAboutState();
 
@@ -19,8 +19,9 @@ const Col: Component<ParentProps & { title: string }> =
         <section>
           <div class="flex justify-start items-center">
             <Icon path={plus} class={`w-4 h-4 mx-3 my-2 transition-all duration-500 transform-gpu ${isActive() ? "rotate-45" : ""}`} />
-            <div class={`font-bold ml-3 ${isActive() ? "text-sprout-600" : "text-slate-500"}`}>
-              {props.title}
+            <div class={`font-bold flex w-full items-center justify-between mx-3 ${isActive() ? "text-sprout-600" : "text-zinc-500"}`}>
+              <div>{props.title}</div>
+              <div class="font-mono text-zinc-400">{props.comment}</div>
             </div>
           </div>
           <div onClick={(e) => e.stopPropagation()} >
