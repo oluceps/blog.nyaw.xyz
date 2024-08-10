@@ -13,14 +13,15 @@ const Col: Component<ParentProps & { title: string }> =
     const isActive = createMemo(() => activeState() == props.title);
 
     return (
-      <div class="rounded-md ring ring-sprout-200 p-3 mt-3"
-        onClick={() => setActiveState(props.title)}
+      <div class="rounded-md hover:shadow-md border border-sprout-300 transition-all duration-200 p-3 mt-3"
+        onClick={() => props.title == activeState() ? setActiveState("") : setActiveState(props.title)}
       >
-        <section class="CollapseContainer">
-          <div class="flex justify-between items-center"><div class={`font-bold ${isActive() ? "text-sprout-600" : "text-slate-500"}`}>
-            {props.title}
-          </div>
-            <Icon path={plus} class={`w-4 h-4 mr-3 transition-all duration-500 transform-gpu ${isActive() ? "rotate-45" : ""}`} />
+        <section>
+          <div class="flex justify-start items-center">
+            <Icon path={plus} class={`w-4 h-4 mx-3 my-2 transition-all duration-500 transform-gpu ${isActive() ? "rotate-45" : ""}`} />
+            <div class={`font-bold ml-3 ${isActive() ? "text-sprout-600" : "text-slate-500"}`}>
+              {props.title}
+            </div>
           </div>
           <div onClick={(e) => e.stopPropagation()} >
             <Collapse value={isActive()} class="CollapseTransition">
