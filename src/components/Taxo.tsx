@@ -42,7 +42,7 @@ export default function Taxo() {
       allTags.delete(t)
     }
   }
-  console.log("onlyT", onlyTag)
+  // console.log("onlyT", onlyTag)
 
   // [A -> bbb, B -> bbb] => [ [A, B] -> bbb ]
   const outputMap = new Map<string[], string>();
