@@ -13,7 +13,6 @@
     "@solid-primitives/script-loader": "^2.2.0",
     "@solidjs/router": "^0.13.6",
     "@solidjs/start": "^1.0.6",
-    "@vercel/speed-insights": "^1.0.12",
     "@vinxi/plugin-mdx": "^3.7.1",
     "ky": "^1.5.0",
     "rehype-katex": "^7.0.0",

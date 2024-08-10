@@ -6,9 +6,6 @@ import Mdx from "./components/Mdx"
 import "./style.css";
 import { Layout } from "./components/Layout";
 import NotFound from "./components/NotFound";
-import { injectSpeedInsights } from '@vercel/speed-insights';
-
-injectSpeedInsights();
 
 export default function App() {
   return (
