@@ -6,6 +6,7 @@ import Col from "~/ingredients/collapse";
 import cfg from "../constant"
 import { Icon } from "solid-heroicons";
 import { link } from "solid-heroicons/solid";
+import Reveal from "~/ingredients/rand-reveal";
 
 const cstomLink = (props: ParentProps & { href: string }) => {
 	const [, rest] = splitProps(props, ["children"]);
@@ -127,6 +128,9 @@ const components = {
 
 	Collapse: (props: ParentProps & { title: string }) => (
 		<Col title={props.title}>{props.children}</Col>),
+
+	Reveal: (props: ParentProps) => (
+		<Reveal >{props.children}</Reveal>),
 
 	h1: (props: ParentProps) => (
 
