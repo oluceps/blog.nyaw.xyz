@@ -114,7 +114,7 @@ const components = {
 	},
 
 	QuickLinks: (props: QuickLinksProps) => (
-		<QuickLinks title={props.title} icon={props.icon} href={props.href}>
+		<QuickLinks title={props.title} href={props.href}>
 			{props.children}
 		</QuickLinks>
 	),

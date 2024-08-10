@@ -1,39 +1,34 @@
-import { Icon } from "solid-heroicons";
 import { A } from "@solidjs/router";
 import { type JSXElement, type ParentComponent, Show } from "solid-js";
 
-import {
-  academicCap,
-  codeBracketSquare,
-  paperAirplane,
-  pencilSquare,
-  userGroup,
-} from "solid-heroicons/solid";
+import { BiLogosTelegram } from "solid-icons/bi";
+import { Dynamic } from "solid-js/web";
+import { AiOutlineNumber } from "solid-icons/ai";
+import { SiMaildotru } from "solid-icons/si";
+import { FaBrandsDiscord } from "solid-icons/fa";
 
 export const isExternalURL = (url: string) => /^https?:\/\//.test(url);
 
 export type QuickLinksProps = {
-  icon: "learn" | "contribute" | "template" | "community";
   title: string;
   href: string;
   children: JSXElement;
 };
 
 const icons = {
-  learn: academicCap,
-  contribute: pencilSquare,
-  community: userGroup,
-  template: codeBracketSquare,
-  airplane: paperAirplane
-};
+  Matrix: () => <AiOutlineNumber size={24} class="fill-sprout-400" />,
+  Mail: () => <SiMaildotru size={24} class="fill-sprout-400" />,
+  Telegram: () => <BiLogosTelegram size={24} class="fill-sprout-400" />,
+  Discord: () => <FaBrandsDiscord size={24} class="fill-sprout-400" />,
+}
 
 export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
   return (
-    <div class="group relative rounded-xl border-2 border-sprout-300">
-      <div class="absolute -inset-px rounded-xl border-2 border-transparent opacity-0 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sprout.100)),var(--quick-links-hover-bg,theme(colors.sprout.100)))_padding-box,linear-gradient(to_top,theme(colors.sprout.500),theme(colors.sprout.300))_border-box] group-hover:opacity-70 dark:[--quick-links-hover-bg:theme(colors.slate.900)]" />
+    <div class="group relative rounded-xl border border-sprout-300">
+      <div class="absolute -inset-px rounded-xl border-2 border-transparent opacity-0 transition-all [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sprout.100)),var(--quick-links-hover-bg,theme(colors.sprout.100)))_padding-box,linear-gradient(to_top,theme(colors.sprout.500),theme(colors.sprout.300))_border-box] group-hover:opacity-70 dark:[--quick-links-hover-bg:theme(colors.slate.900)]" />
       <div class="relative overflow-hidden rounded-xl px-5 py-4">
         <div class="flex items-center">
-          <Icon path={icons[props.icon]} class="h-7 w-7 fill-sprout-400" />
+          <Dynamic component={icons[props.title as keyof typeof icons]} />
           <div class="text-xl text-slate-900 dark:text-white capitalize no-underline pl-3">
             <Show
               when={isExternalURL(props.href)}
