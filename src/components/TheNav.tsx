@@ -57,13 +57,6 @@ export default function Home() {
               height: hoveredTab()?.height + "px",
               opacity: 1,
             }}
-            exit={{
-              top: hoveredTab()?.top + "px",
-              right: document.documentElement.clientWidth - (hoveredTab()?.right || 0) + "px",
-              width: hoveredTab()?.width + "px",
-              height: hoveredTab()?.height + "px",
-              opacity: 0,
-            }}
             transition={{
               duration: 0.18,
             }}
