@@ -180,7 +180,7 @@ https://github.com/NixOS/nixpkgs/issues/304422
 
 ## tpm2认证
 
-建议使用 CPU builtin TPM 的用户采用此操作，因为部分主板的外置TPM与CPU之间的信道不受加密。
+建议使用 CPU builtin TPM 的用户采用此操作，因为部分主板的外置TPM与CPU之间的信道不受加密。但如果是属于zen3架构及以下的CPU, 开不开都无所谓了因为受 faulTPM 影响。
 
 以下console操作需要替换device字符。
 

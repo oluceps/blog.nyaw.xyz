@@ -32,8 +32,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
       text: "WARNING",
       icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-red-400`} />,
       border: (props: ParentProps) =>
-        <div class={`group relative rounded-xl border-2 border-red-300/80`}>
-          <div class="absolute -inset-px rounded-xl border-2 opacity-80 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.red.100)),var(--quick-links-hover-bg,theme(colors.red.100)))_padding-box,linear-gradient(to_top,theme(colors.red.500),theme(colors.red.300))_border-box]" />
+        <div class="w-full outline-1 outline-red-300 outline-dashed rounded-md bg-[#fee2e5] py-4 px-6">
           {props.children}
         </div>
     },
@@ -41,8 +40,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
       text: "Information",
       icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-sprout-400`} />,
       border: (props: ParentProps) =>
-        <div class={`group relative rounded-xl border-2 border-sprout-300/80`}>
-          <div class="absolute -inset-px rounded-xl border-2 opacity-80 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sprout.100)),var(--quick-links-hover-bg,theme(colors.sprout.100)))_padding-box,linear-gradient(to_top,theme(colors.sprout.500),theme(colors.sprout.300))_border-box]" />
+        <div class="w-full outline-1 outline-sprout-300 outline-dashed rounded-md bg-sprout-100 py-4 px-6">
           {props.children}
         </div>
     },
@@ -50,8 +48,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
       text: "Tips",
       icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-chill-400`} />,
       border: (props: ParentProps) =>
-        <div class={`group relative rounded-xl border-2 border-chill-500/40`}>
-          <div class="absolute -inset-px rounded-xl border-2 opacity-80 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.chill.100)),var(--quick-links-hover-bg,theme(colors.chill.100)))_padding-box,linear-gradient(to_top,theme(colors.chill.500),theme(colors.chill.300))_border-box]" />
+        <div class="w-full outline-1 outline-chill-300 outline-dashed rounded-md bg-chill-100 py-4 px-6">
           {props.children}
         </div>
     },
@@ -59,8 +56,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
       text: "Notice",
       icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-ouchi-400`} />,
       border: (props: ParentProps) =>
-        <div class={`group relative rounded-xl border-2 border-[#9B90C2]/50`}>
-          <div class="absolute -inset-px rounded-xl border-2 opacity-80 [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.ouchi.100)),var(--quick-links-hover-bg,theme(colors.ouchi.100)))_padding-box,linear-gradient(to_top,theme(colors.ouchi.500),theme(colors.ouchi.300))_border-box]" />
+        <div class="w-full outline-1 outline-ouchi-300 outline-dashed rounded-md bg-ouchi-100 py-4 px-6">
           {props.children}
         </div>
     }
@@ -71,17 +67,31 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
   return (
     <Dynamic component={styleOpts[props.type].border}>
 
-      <div class="relative overflow-hidden rounded-xl px-5 py-4">
-        <div class="flex items-center">
+      <div class="flex flex-col items-start not-prose">
+        <div class="flex items-center mb-4">
           <Dynamic component={styleOpts[props.type].icon} />
-          <div class="text-xl text-slate-900 dark:text-white capitalize no-underline pl-3">
+          <div class="text-lg text-slate-600 font-bold capitalize no-underline pl-3">
             {styleOpts[props.type].text}
           </div>
         </div>
-        <p class="text-[0.91rem] pl-1 text-balance text-slate-800 dark:text-slate-300 -mb-2">
-          {props.children}
-        </p>
+        {props.children}
       </div>
+
     </Dynamic>
+
   );
 }
+// <Dynamic component={styleOpts[props.type].border}>
+
+//   <div class="relative overflow-hidden rounded-xl px-5 py-4">
+//     <div class="flex items-center">
+//       <Dynamic component={styleOpts[props.type].icon} />
+//       <div class="text-xl text-slate-900 dark:text-white capitalize no-underline pl-3">
+//         {styleOpts[props.type].text}
+//       </div>
+//     </div>
+//     <p class="text-[0.91rem] pl-1 text-balance text-slate-800 dark:text-slate-300 -mb-2">
+//       {props.children}
+//     </p>
+//   </div>
+// </Dynamic>
