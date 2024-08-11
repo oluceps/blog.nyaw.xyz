@@ -37,9 +37,9 @@ const OnlineIndicator: Component = () => {
   return (
     <>
       <Show when={isOnline()}>
-        <div class="absolute -bottom-0 -right-0 w-4 h-4 md:w-8 md:h-8 md:-top-2 md:-right-2 bg-sprout-200 md:bg-sprout-300 rounded-full animate-ping" />
+        <div class="absolute -bottom-0 -right-0 w-4 h-4 md:w-6 md:h-6 md:-top-2 md:-right-2 bg-sprout-200 md:bg-sprout-300 rounded-full animate-ping" />
       </Show>
-      <div data-tip={isOnline() ? "online" : "offline"} class={twMerge(`absolute tooltip -bottom-0 -right-0 w-4 h-4 md:w-8 md:h-8 md:-top-2 md:-right-2 rounded-full`, isOnline() ? "bg-sprout-200 md:bg-sprout-300" : "bg-slate-300")} />
+      <div data-tip={isOnline() ? "online" : "offline"} class={twMerge(`absolute tooltip -bottom-0 -right-0 w-4 h-4 md:w-6 md:h-6 md:-top-2 md:-right-2 rounded-full`, isOnline() ? "bg-sprout-200 md:bg-sprout-300" : "bg-slate-300")} />
     </>
   )
 }
