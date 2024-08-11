@@ -44,11 +44,11 @@ export default function Home() {
           <Motion.button
             class="absolute top-0 right-0 bg-sprout-200/90 rounded-md"
             initial={{
-              top: hoveredTab()?.bottom + "px",
+              top: hoveredTab()?.bottom! - 24 + "px",
               right: document.documentElement.clientWidth - (hoveredTab()?.right || 0) + "px",
               width: hoveredTab()?.width + "px",
               height: hoveredTab()?.height + "px",
-              opacity: 0.1,
+              opacity: 0,
             }}
             animate={{
               top: hoveredTab()?.top + "px",
