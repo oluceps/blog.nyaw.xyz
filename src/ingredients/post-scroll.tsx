@@ -1,4 +1,3 @@
-
 import { Show, type Component, type ParentProps } from "solid-js"
 
 import { useWindowScrollPosition } from "@solid-primitives/scroll";

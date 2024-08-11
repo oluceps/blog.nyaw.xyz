@@ -7,6 +7,7 @@ noBanner: true
 
 import { Provider, useAboutState } from "../ingredients/about-state";
 import PostScroll from "../ingredients/post-scroll";
+import Online from "../ingredients/online-indicator";
 
 <div class="md:flex bg-sprout-50 rounded-xl my-4 items-center justify-left outline-1 outline-dashed outline-sprout-200 lg:mt-16">
   <div class="flex md:flex-col items-center justify-center">
@@ -17,7 +18,7 @@ import PostScroll from "../ingredients/post-scroll";
         alt="avatar brown hair girl from https://www.pixiv.net/users/20817694"
     		onclick="window.open('https://www.pixiv.net/artworks/105555846', '_blank')"/>
 
-        <div class="absolute -bottom-0 -right-0 w-4 h-4 md:w-8 md:h-8 md:-top-2 md:-right-2 bg-sprout-200 md:bg-sprout-300 rounded-full"></div>
+        <Online/>
     </div>
   </div>
 	<div class="text-center md:text-left not-prose flex flex-col leading-snug mx-6 pb-8 md:pb-0">
