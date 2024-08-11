@@ -8,14 +8,19 @@ noBanner: true
 import { Provider, useAboutState } from "../ingredients/about-state";
 import PostScroll from "../ingredients/post-scroll";
 
-<div class="md:flex bg-sprout-50 rounded-xl p-4 my-4 md:px-14 justify-left outline-1 outline-dashed outline-sprout-200">
-  <img
-    class="w-28 h-28 md:w-48 md:h-48 md:rounded-xl rounded-full mx-auto"
-    src="https://s3.nyaw.xyz/misskey//d31646f0-8698-4bbb-98fd-84fbc9fd4b96.webp"
-    alt="avatar brown hair girl from https://www.pixiv.net/users/20817694"
-		onclick="window.open('https://www.pixiv.net/artworks/105555846', '_blank')"
-	/>
-	<div class="md:p-8 text-center md:text-left grow not-prose flex flex-col leading-snug mx-10">
+<div class="md:flex bg-sprout-50 rounded-xl my-4 items-center justify-left outline-1 outline-dashed outline-sprout-200 lg:mt-16">
+  <div class="flex md:flex-col items-center justify-center">
+    <div class="relative m-8 md:m-16">
+      <img
+        class="w-28 h-28 md:w-48 md:h-48 md:rounded-xl rounded-full not-prose"
+        src="https://s3.nyaw.xyz/misskey//d31646f0-8698-4bbb-98fd-84fbc9fd4b96.webp"
+        alt="avatar brown hair girl from https://www.pixiv.net/users/20817694"
+    		onclick="window.open('https://www.pixiv.net/artworks/105555846', '_blank')"/>
+
+        <div class="absolute -bottom-0 -right-0 w-4 h-4 md:w-8 md:h-8 md:-top-2 md:-right-2 bg-sprout-200 md:bg-sprout-300 rounded-full"></div>
+    </div>
+  </div>
+	<div class="text-center md:text-left not-prose flex flex-col leading-snug mx-6 pb-8 md:pb-0">
     <div class="font-medium mb-4 grow">
       <div class="text-stone-500 text-2xl font-bold">
         <Reveal>Secirian</Reveal>
