@@ -7,7 +7,7 @@ import { AiOutlineNumber } from "solid-icons/ai";
 import { SiMaildotru, SiMisskey } from "solid-icons/si";
 import { FaBrandsDiscord } from "solid-icons/fa";
 
-export const isExternalURL = (url: string) => /^https?:\/\//.test(url) || url.includes("mailto");
+export const isExternalURL = (url: string) => url.startsWith("https:") || url.startsWith("mailto:");
 
 export type QuickLinksProps = {
   title: string;
