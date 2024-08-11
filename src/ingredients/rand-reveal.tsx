@@ -48,7 +48,7 @@ const Reveal = (props: ParentProps) => {
   });
 
 
-  return <>{output()}</>;
+  return <>{output() ? output() : "\u00A0"}</>;
 }
 
 export default Reveal;
