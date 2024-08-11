@@ -19,7 +19,7 @@ export default {
 	menu: [
 		{
 			name: "关于",
-			url: "/about",
+			url: "/me",
 		},
 		{
 			name: "分类",
