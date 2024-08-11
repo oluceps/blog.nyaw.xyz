@@ -15,12 +15,12 @@ const Header: Component<{ sticky: boolean }> = (props) => {
 	})
 
 	return (
-		<header class={`${props.sticky ? "sticky" : ""} top-0 w-screen flex items-center justify-between mx-3 xl:mx-5 2xl:mx-6 pointer-events-none`}>
+		<header class={`${props.sticky ? "sticky" : ""} top-0 w-full flex items-center justify-between mx-3 xl:mx-5 2xl:mx-6 pointer-events-none`}>
 			<A
 				href="/"
-				class="flex items-center justify-center text-lg 2xl:text-2xl font-bold px-1 rounded-sm text-sprout-650 overflow-visible ml-2 group pointer-events-auto"
+				class="flex items-center justify-center text-lg 2xl:text-2xl font-bold rounded-sm text-sprout-650 overflow-visible group pointer-events-auto ml-3"
 			>
-				<div class="relative h-4 w-auto">
+				<div class="relative h-4">
 					<div class={twMerge('absolute h-4 w-4 -top-1.5 -left-1.5 bg-sprout-300 dark:bg-sprout-400 rounded-sm transition-all duration-500 delay-300 transform-gpu', afterHover())} />
 					<div class="absolute leading-none text-neutral-600 dark:text-slate-200 text-nowrap">
 						{cfg.title}
@@ -35,3 +35,4 @@ const Header: Component<{ sticky: boolean }> = (props) => {
 };
 
 export default Header;
+

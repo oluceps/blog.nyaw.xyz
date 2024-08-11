@@ -44,14 +44,14 @@ export default function Home() {
           <Motion.button
             class="absolute top-0 right-0 bg-sprout-200/90 rounded-md"
             initial={{
-              y: hoveredTab()?.bottom + "px",
+              top: hoveredTab()?.bottom + "px",
               right: document.documentElement.clientWidth - (hoveredTab()?.right || 0) + "px",
               width: hoveredTab()?.width + "px",
               height: hoveredTab()?.height + "px",
               opacity: 0.1,
             }}
             animate={{
-              y: hoveredTab()?.top + "px",
+              top: hoveredTab()?.top + "px",
               right: document.documentElement.clientWidth - (hoveredTab()?.right || 0) + "px",
               width: hoveredTab()?.width + "px",
               height: hoveredTab()?.height + "px",
@@ -66,5 +66,3 @@ export default function Home() {
     </nav>
   );
 }
-
-
