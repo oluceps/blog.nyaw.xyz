@@ -4,7 +4,7 @@ import { type JSXElement, type ParentComponent, Show } from "solid-js";
 import { BiLogosTelegram } from "solid-icons/bi";
 import { Dynamic } from "solid-js/web";
 import { AiOutlineNumber } from "solid-icons/ai";
-import { SiMaildotru } from "solid-icons/si";
+import { SiMaildotru, SiMisskey } from "solid-icons/si";
 import { FaBrandsDiscord } from "solid-icons/fa";
 
 export const isExternalURL = (url: string) => /^https?:\/\//.test(url);
@@ -20,6 +20,7 @@ const icons = {
   Mail: () => <SiMaildotru size={24} class="fill-sprout-400" />,
   Telegram: () => <BiLogosTelegram size={24} class="fill-sprout-400" />,
   Discord: () => <FaBrandsDiscord size={24} class="fill-sprout-400" />,
+  Misskey: () => <SiMisskey size={24} class="fill-sprout-400" />,
 }
 
 export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
