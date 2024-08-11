@@ -145,6 +145,8 @@ fileSystems."/persist".neededForBoot = true;
 
 ```
 
+使用tpm2或者yubikey的fido解锁，需要打开 `boot.initrd.systemd`.
+
 想不到还有什么需要强调的。关于持久化文件的配置，请[查看](https://github.com/nix-community/impermanence), 如果使用tpm2：
 
 ```nix
