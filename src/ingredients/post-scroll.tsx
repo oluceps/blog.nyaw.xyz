@@ -8,7 +8,7 @@ const PostScoll: Component<ParentProps> =
     const scroll = useWindowScrollPosition();
     return (
       <>
-        <div class={scroll.y < 20 ? "h-48" : "h-4"} />
+        <div id="enc" class={scroll.y < 20 ? "h-48" : "h-4"} />
         <Show when={scroll.y > 20}>
           {props.children}
         </Show>
