@@ -15,7 +15,7 @@ const cstomLink = (props: ParentProps & { href: string }) => {
 	if (props.href.startsWith("#")) {
 		return (
 			<A
-				class={`anchor no-underline hover:underline`}
+				class={`anchor no-underline`}
 				{...rest}
 				noScroll={true}
 			>

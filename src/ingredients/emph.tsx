@@ -67,8 +67,8 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
   return (
     <Dynamic component={styleOpts[props.type].border}>
 
-      <div class="flex flex-col items-start not-prose">
-        <div class="flex items-center mb-4">
+      <div class="flex flex-col items-start prose">
+        <div class="flex items-center">
           <Dynamic component={styleOpts[props.type].icon} />
           <div class="text-lg text-slate-600 font-bold capitalize no-underline pl-3">
             {styleOpts[props.type].text}
