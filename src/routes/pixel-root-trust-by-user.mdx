@@ -171,7 +171,7 @@ mv Image kernel
     ```
     <Emph type="tips">这一步手机将会重启，控制台可能显示waitting for device字段，不需要理会，等待他自动进行下一步操作。全部完成之后会正常退出。</Emph>
 
-    请注意，这只刷入了操作系统分区。由于 fastboot 的限制，bootloader 和 modem/radio 分区未被更改。如果它们尚未更新或不确定，请在 fastboot 完成后，按照 [更新部分](#updates) 的步骤刷入修补后的 OTA。一旦进行 OTA 刷入，始终可以确保所有分区都是最新的。
+    请注意，这只刷入了操作系统分区。由于 fastboot 的限制，bootloader 和 modem/radio 分区未被更改。如果它们尚未更新或不确定，请在 fastboot 完成后，按照 [更新](#如果-更新) 的步骤刷入修补后的 OTA。一旦进行 OTA 刷入，始终可以确保所有分区都是最新的。
 
     对于 Pixel 设备，您也可以通过从工厂镜像运行 `flash-base.sh` 来更新 bootloader 和 modem。
 
