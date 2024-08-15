@@ -74,9 +74,10 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
             {styleOpts[props.type].text}
           </div>
         </div>
-        {props.children}
+        <div class="whitespace-nowrap text-wrap mt-2">
+          {props.children}
+        </div>
       </div>
-
     </Dynamic>
 
   );
