@@ -40,7 +40,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
       text: "Information",
       icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-sprout-400`} />,
       border: (props: ParentProps) =>
-        <div class="w-full outline-1 outline-sprout-300 outline-dashed rounded-md bg-sprout-100 py-4 px-6">
+        <div class="w-full outline-1 outline-sprout-300 outline-dashed rounded-md bg-sprout-100 py-4 px-6 my-2">
           {props.children}
         </div>
     },
@@ -48,7 +48,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
       text: "Tips",
       icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-chill-400`} />,
       border: (props: ParentProps) =>
-        <div class="w-full outline-1 outline-chill-300 outline-dashed rounded-md bg-chill-100 py-4 px-6">
+        <div class="w-full outline-1 outline-chill-300 outline-dashed rounded-md bg-chill-100 py-4 px-6 my-2">
           {props.children}
         </div>
     },
@@ -56,7 +56,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
       text: "Notice",
       icon: () => <Icon path={icons[props.type]} class={`h-7 w-7 fill-ouchi-400`} />,
       border: (props: ParentProps) =>
-        <div class="w-full outline-1 outline-ouchi-300 outline-dashed rounded-md bg-ouchi-100 py-4 px-6">
+        <div class="w-full outline-1 outline-ouchi-300 outline-dashed rounded-md bg-ouchi-100 py-4 px-6 my-2">
           {props.children}
         </div>
     }
