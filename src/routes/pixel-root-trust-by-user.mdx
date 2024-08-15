@@ -141,69 +141,66 @@ mv Image kernel
 
 1. 确保 fastboot 版本为 34 或更高版本。旧版本存在 bug，可能导致后续的 `fastboot flashall` 命令无法正常工作。
 
-    ```bash
-    fastboot --version
-    ```
+```bash
+fastboot --version
+```
 
 2. 重启到 fastboot 模式并解锁引导加载程序（如果尚未解锁）。这将触发数据擦除。
 
-    ```bash
-    fastboot flashing unlock
-    ```
+```bash
+fastboot flashing unlock
+```
 
 3. 在首次设置时，设备必须已经运行正确的操作系统。如果需要，刷入原始未修补的 OTA。
 
 4. 从修补过的 OTA 中提取与原始版本不同的分区镜像。
+```bash
+avbroot ota extract \
+    --input /path/to/ota.zip.patched \
+    --directory extracted \
+    --fastboot
+```
 
-    ```bash
-    avbroot ota extract \
-        --input /path/to/ota.zip.patched \
-        --directory extracted \
-        --fastboot
-    ```
-
-    如果你希望为了安全起见提取并刷入所有操作系统分区，可以传入 `--all` 参数。
+如果你希望为了安全起见提取并刷入所有操作系统分区，可以传入 `--all` 参数。
 
 5. 刷入提取的分区镜像。
 
-    ```bash
-    ANDROID_PRODUCT_OUT=extracted fastboot flashall --skip-reboot
-    ```
-    <Emph type="tips">这一步手机将会重启，控制台可能显示waitting for device字段，不需要理会，等待他自动进行下一步操作。全部完成之后会正常退出。</Emph>
-
-    请注意，这只刷入了操作系统分区。由于 fastboot 的限制，bootloader 和 modem/radio 分区未被更改。如果它们尚未更新或不确定，请在 fastboot 完成后，按照 [更新](#如果-更新) 的步骤刷入修补后的 OTA。一旦进行 OTA 刷入，始终可以确保所有分区都是最新的。
-
-    对于 Pixel 设备，你也可以通过从工厂镜像运行 `flash-base.sh` 来更新 bootloader 和 modem。
+```bash
+ANDROID_PRODUCT_OUT=extracted fastboot flashall --skip-reboot
+```
+<Emph type="tips">这一步手机将会重启，控制台可能显示waitting for device字段，不需要理会，等待他自动进行下一步操作。全部完成之后会正常退出。</Emph>
+请注意，这只刷入了操作系统分区。由于 fastboot 的限制，bootloader 和 modem/radio 分区未被更改。如果它们尚未更新或不确定，请在 fastboot 完成后，按照 [更新](#如果-更新) 的步骤刷入修补后的 OTA。一旦进行 OTA 刷入，始终可以确保所有分区都是最新的。
+对于 Pixel 设备，你也可以通过从工厂镜像运行 `flash-base.sh` 来更新 bootloader 和 modem。
 
 6. 依据需求可fastbootd 重启到 bootloader 后，设置自定义 AVB 公钥。
 
-    ```bash
-    fastboot reboot-bootloader
-    fastboot erase avb_custom_key
-    fastboot flash avb_custom_key /path/to/avb_pkmd.bin
-    ```
+```bash
+fastboot reboot-bootloader
+fastboot erase avb_custom_key
+fastboot flash avb_custom_key /path/to/avb_pkmd.bin
+```
 
 7. **[可选]** 在锁定引导加载程序之前，先重启到 Android 系统以确认所有内容均已正确签名。
 
-    安装 Magisk 或 KernelSU 应用程序并运行以依据需求可：
+安装 Magisk 或 KernelSU 应用程序并运行以依据需求可：
 
-    ```bash
-    adb shell su -c 'dmesg | grep libfs_avb'
-    ```
+```bash
+adb shell su -c 'dmesg | grep libfs_avb'
+```
 
-    如果 AVB 工作正常，应打印出以下消息：
+如果 AVB 工作正常，应打印出以下消息：
 
-    ```bash
-    init: [libfs_avb]Returning avb_handle with status: Success
-    ```
+```bash
+init: [libfs_avb]Returning avb_handle with status: Success
+```
 
 8. 再次重启到 fastboot 模式并锁定引导加载程序。这将再次触发数据擦除。
 
-    ```bash
-    fastboot flashing lock
-    ```
+```bash
+fastboot flashing lock
+```
 
-    通过按下音量减键和电源键来确认，然后重启设备。
+通过按下音量减键和电源键来确认，然后重启设备。
 
 <Emph type="warn">记住：**不要取消勾选 `OEM unlocking`！**</Emph>
 
