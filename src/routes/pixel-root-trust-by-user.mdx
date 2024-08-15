@@ -132,7 +132,7 @@ mv Image kernel
     --key-ota ./ota.key
     --cert-ota ./ota.crt
     --input ./OTA_FILE.zip  # 原装的OTA包
-    --prepatched build/new-boot.img # 如果不需要 KernelSU, 即没有执行上文的可选步骤，可以将这行替换成 --rootless
+    --prepatched build/new-boot.img) # 如果不需要 KernelSU, 即没有执行上文的可选步骤，可以将这行替换成 --rootless
 ```
 
 执行完成以后会在当前目录生成 `OTA_FILE.zip.patched` 文件。
