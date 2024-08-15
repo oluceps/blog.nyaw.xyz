@@ -59,9 +59,9 @@ avbroot key extract-avb -k avb.key -o avb_pkmd.bin
 avbroot key generate-cert -k ota.key -o ota.crt
 ```
 
-以上命令仅为方便起见提供。avbroot 与任何标准 PKCS#8 编码的 4096 位 RSA 私钥和 PEM 编码的 X509 证书兼容，如 openssl 生成的那样。
+以上命令仅为方便起见提供。avbroot 与任何标准 PKCS#8 编码的 4096 位 RSA 私钥和 PEM 编码的 X509 证书兼容，与 openssl 生成的相同。
 
-如果丢失了 AVB 或 OTA 签名密钥，将无法签署新的 OTA zip 文件。您将需要生成新的签名密钥并重新解锁引导加载程序（触发数据擦除）。
+如果丢失了 AVB 或 OTA 签名密钥，将无法签署新的 OTA zip 文件。你将需要生成新的签名密钥并重新解锁引导加载程序（触发数据擦除）。
 
 # 初始设置
 
@@ -76,13 +76,13 @@ avbroot extract -i ./OTA_FILE --boot-only --directory build/
 
 ## 可选-替换内核为 KernelSU Patched
 
-本section按需求跳过
+这章是为了安装KernelSU，没需要就跳过本节。
 
 ### 下载并解压 KernelSU Anykernel 压缩包
 
 下载 [anykernel kernelsu](https://github.com/tiann/KernelSU/releases/)
 
-这里是为了安装KernelSU，没需要就跳过本节。对应的KMI版本参照 [Android 文档](https://source.android.com/docs/setup/build/building-pixel-kernels?hl=zh-cn) 和 [KernelSU 文档](https://kernelsu.org/guide/installation.html#kmi) 来选择。
+对应的KMI版本参照 [Android 文档](https://source.android.com/docs/setup/build/building-pixel-kernels?hl=zh-cn) 和 [KernelSU 文档](https://kernelsu.org/guide/installation.html#kmi) 来选择。
 
 为了从中提取GKI内核镜像并替换OTA包中的那个。
 
@@ -162,7 +162,7 @@ mv Image kernel
         --fastboot
     ```
 
-    如果您希望为了安全起见提取并刷入所有操作系统分区，可以传入 `--all` 参数。
+    如果你希望为了安全起见提取并刷入所有操作系统分区，可以传入 `--all` 参数。
 
 5. 刷入提取的分区镜像。
 
@@ -173,9 +173,9 @@ mv Image kernel
 
     请注意，这只刷入了操作系统分区。由于 fastboot 的限制，bootloader 和 modem/radio 分区未被更改。如果它们尚未更新或不确定，请在 fastboot 完成后，按照 [更新](#如果-更新) 的步骤刷入修补后的 OTA。一旦进行 OTA 刷入，始终可以确保所有分区都是最新的。
 
-    对于 Pixel 设备，您也可以通过从工厂镜像运行 `flash-base.sh` 来更新 bootloader 和 modem。
+    对于 Pixel 设备，你也可以通过从工厂镜像运行 `flash-base.sh` 来更新 bootloader 和 modem。
 
-6. 在从 fastbootd 重启到 bootloader 后，设置自定义 AVB 公钥。
+6. 依据需求可fastbootd 重启到 bootloader 后，设置自定义 AVB 公钥。
 
     ```bash
     fastboot reboot-bootloader
@@ -185,7 +185,7 @@ mv Image kernel
 
 7. **[可选]** 在锁定引导加载程序之前，先重启到 Android 系统以确认所有内容均已正确签名。
 
-    安装 Magisk 或 KernelSU 应用程序并运行以下命令：
+    安装 Magisk 或 KernelSU 应用程序并运行以依据需求可：
 
     ```bash
     adb shell su -c 'dmesg | grep libfs_avb'
@@ -209,7 +209,7 @@ mv Image kernel
 
 <div class="h-4"/>
 
-<Emph type="warn">如果您刷入 CalyxOS，设置向导会自动[关闭](https://github.com/CalyxOS/platform_packages_apps_SetupWizard/blob/7d2df25cedcbff83ddb608e628f9d97b38259c26/src/org/lineageos/setupwizard/SetupWizardApp.java#L135-L140) `OEM unlocking` 开关。请确保从 Android 的开发者设置中手动重新启用它。考虑使用 `OEMUnlockOnBoot` [模块](https://github.com/chenxiaolong/OEMUnlockOnBoot) 来确保每次启动时 OEM 解锁已启用。</Emph>
+<Emph type="warn">如果你刷入 CalyxOS，设置向导会自动[关闭](https://github.com/CalyxOS/platform_packages_apps_SetupWizard/blob/7d2df25cedcbff83ddb608e628f9d97b38259c26/src/org/lineageos/setupwizard/SetupWizardApp.java#L135-L140) `OEM unlocking` 开关。请确保从 Android 的开发者设置中手动重新启用它。考虑使用 `OEMUnlockOnBoot` [模块](https://github.com/chenxiaolong/OEMUnlockOnBoot) 来确保每次启动时 OEM 解锁已启用。</Emph>
 
 9. 完成！要安装未来的操作系统或 KernelSU 更新，请参阅下一部分。
 
@@ -220,7 +220,7 @@ mv Image kernel
 
 更新可以使用 [写好的justfile](https://github.com/oluceps/autopatchota)
 
-# 如果-恢复原装rom
+# 如果-恢复依据需求可om
 
 进入bootloader并解锁，
 ```bash
