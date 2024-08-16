@@ -1,11 +1,12 @@
 import { A } from "@solidjs/router";
 import { type JSXElement, type ParentComponent, Show } from "solid-js";
 
-import { BiLogosTelegram } from "solid-icons/bi";
+import { BiLogosTelegram, BiRegularPaperPlane } from "solid-icons/bi";
 import { Dynamic } from "solid-js/web";
 import { AiOutlineKey, AiOutlineNumber } from "solid-icons/ai";
 import { SiMaildotru, SiMisskey } from "solid-icons/si";
-import { FaBrandsDiscord } from "solid-icons/fa";
+import { FaBrandsDiscord, FaRegularPaperPlane } from "solid-icons/fa";
+import { IoPaperPlaneOutline } from "solid-icons/io";
 
 export const isExternalURL = (url: string) => url.startsWith("https:") || url.startsWith("mailto:");
 
@@ -17,8 +18,8 @@ export type QuickLinksProps = {
 
 const icons = {
   Matrix: () => <AiOutlineNumber size={24} class="fill-sprout-400" />,
-  Mail: () => <SiMaildotru size={24} class="fill-sprout-400" />,
-  Telegram: () => <BiLogosTelegram size={24} class="fill-sprout-400" />,
+  Mail: () => <SiMaildotru size={20} class="fill-sprout-400" />,
+  Telegram: () => <BiRegularPaperPlane size={24} class="fill-sprout-400" />,
   Discord: () => <FaBrandsDiscord size={24} class="fill-sprout-400" />,
   Misskey: () => <SiMisskey size={24} class="fill-sprout-400" />,
   Pubkey: () => <AiOutlineKey size={24} class="fill-sprout-400" />
