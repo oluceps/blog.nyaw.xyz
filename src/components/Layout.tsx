@@ -9,6 +9,7 @@ import Root from "./Root"
 import { PageStateProvider } from "./PageState";
 import Taxo from "./Taxo";
 import Footer from "./Footer";
+import Me from "~/ingredients/me";
 
 const BackTopBtn = lazy(() => import("./BackTopBtn"));
 
@@ -22,6 +23,7 @@ export function Layout(props: ParentProps) {
 
 	const isRoot = () => currentPath() === "/";
 	const isTaxo = () => currentPath().replaceAll('/', '') === "taxonomy";
+	const isMe = () => currentPath().replaceAll('/', '') === "me";
 
 	return (
 		<MetaProvider>
@@ -48,6 +50,9 @@ export function Layout(props: ParentProps) {
 						</Match>
 						<Match when={isTaxo()} >
 							<Taxo />
+						</Match>
+						<Match when={isMe()} >
+							<Me />
 						</Match>
 					</Switch>
 					<BackTopBtn />
