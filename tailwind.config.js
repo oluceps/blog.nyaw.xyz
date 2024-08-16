@@ -28,7 +28,6 @@ export default {
 			fontFamily: {
 				sans: ["MiSans", ...defaultTheme.fontFamily.sans],
 				serif: ["MiSans", ...defaultTheme.fontFamily.serif],
-				display: ["var(--font-geist)", { fontFeatureSettings: '"ss01"' }],
 				mono: [
 					"var(--font-geist-mono)",
 					"PingFang SC",
