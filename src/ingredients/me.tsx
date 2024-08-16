@@ -51,7 +51,7 @@ export default function Me() {
           href="https://matrix.to/#/@sec:nyaw.xyz"
         />
         <QuickLinks
-          title="Mail"
+          title="Mailbox"
           href="mailto:i@nyaw.xyz"
         />
         <QuickLinks

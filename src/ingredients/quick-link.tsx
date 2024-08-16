@@ -18,7 +18,7 @@ export type QuickLinksProps = {
 
 const icons = {
   Matrix: () => <AiOutlineNumber size={24} class="fill-sprout-400" />,
-  Mail: () => <SiMaildotru size={20} class="fill-sprout-400" />,
+  Mailbox: () => <SiMaildotru size={20} class="fill-sprout-400" />,
   Telegram: () => <BiRegularPaperPlane size={24} class="fill-sprout-400" />,
   Discord: () => <FaBrandsDiscord size={24} class="fill-sprout-400" />,
   Misskey: () => <SiMisskey size={24} class="fill-sprout-400" />,
