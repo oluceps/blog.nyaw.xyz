@@ -29,7 +29,7 @@ const OnlineIndicator: Component = () => {
   onMount(() => {
     fetchOnlineStatus();
 
-    const interval = setInterval(fetchOnlineStatus, 2000);
+    const interval = setInterval(fetchOnlineStatus, 5000);
 
     onCleanup(() => clearInterval(interval));
   });
