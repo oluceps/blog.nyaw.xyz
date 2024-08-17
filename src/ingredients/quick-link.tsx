@@ -1,12 +1,11 @@
 import { A } from "@solidjs/router";
 import { type JSXElement, type ParentComponent, Show } from "solid-js";
 
-import { BiLogosTelegram, BiRegularPaperPlane } from "solid-icons/bi";
+import { BiRegularPaperPlane } from "solid-icons/bi";
 import { Dynamic } from "solid-js/web";
 import { AiOutlineKey, AiOutlineNumber } from "solid-icons/ai";
 import { SiMaildotru, SiMisskey } from "solid-icons/si";
-import { FaBrandsDiscord, FaRegularPaperPlane } from "solid-icons/fa";
-import { IoPaperPlaneOutline } from "solid-icons/io";
+import { FaBrandsDiscord } from "solid-icons/fa";
 
 export const isExternalURL = (url: string) => url.startsWith("https:") || url.startsWith("mailto:");
 
