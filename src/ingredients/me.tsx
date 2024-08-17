@@ -17,7 +17,7 @@ export default function Me() {
       <Meta property="og:description" content={cfg.description} />
       <Title>{`关于 - ${cfg.title}`}</Title>
     </MetaProvider>
-    <div class="h-dvh grow flex flex-col justify-center w-11/12 md:w-3/5">
+    <div class="h-svh grow flex flex-col justify-center w-11/12 md:w-3/5">
 
       <div class="md:flex bg-sprout-50 rounded-xl my-4 items-center justify-left outline-1 outline-dashed outline-sprout-200">
         <div class="flex md:flex-col items-center justify-center">
