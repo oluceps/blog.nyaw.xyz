@@ -59,7 +59,7 @@ export default function Me() {
         </div>
       </div>
 
-      <div class="flex flex-col grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 gap-3 mt-4">
+      <div class="flex flex-col grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 gap-3">
         <QuickLinks
           title="Matrix"
           href="https://matrix.to/#/@sec:nyaw.xyz"
