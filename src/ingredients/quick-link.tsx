@@ -31,7 +31,7 @@ export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
       <div class="relative overflow-hidden rounded-xl px-3 lg:px-5 py-4">
         <div class="flex items-center">
           <Dynamic component={icons[props.title as keyof typeof icons]} />
-          <div class="text-xl text-slate-900 dark:text-white capitalize no-underline pl-2 lg:pl-3">
+          <div class="text-xl text-slate-900 dark:text-white capitalize no-underline pl-px lg:pl-3">
             <Show
               when={isExternalURL(props.href)}
               fallback={
