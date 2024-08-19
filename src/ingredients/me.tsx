@@ -26,6 +26,7 @@ export default function Me() {
               class="w-28 h-28 md:w-48 md:h-48 md:rounded-xl rounded-full not-prose"
               src="https://s3.nyaw.xyz/misskey//d8d5edcb-ab40-49fb-807e-e0954575ae4d.webp"
               alt="avatar brown hair girl from https://www.pixiv.net/users/20817694"
+              loading="lazy"
               onClick={() => window.open('https://www.pixiv.net/artworks/105555846', '_blank')} />
             <Online />
           </div>
