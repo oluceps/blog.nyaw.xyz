@@ -43,15 +43,15 @@ export default function Me() {
 							<Online />
 						</div>
 					</div>
-					<div class="text-center md:text-left not-prose flex flex-col leading-snug mx-6 pb-8 md:pb-0 justify-between gap-3">
+					<div class="text-center md:text-left not-prose flex flex-col leading-snug mx-6 pb-8 md:pb-0 justify-between gap-4">
 						<div class="text-stone-500 text-3xl font-bold">
 							<Reveal>Secirian</Reveal>
 						</div>
-						<div class="text-zinc-500 font-mono leading-snug md:ml-1">
+						<div class="text-zinc-500 font-mono leading-snug md:ml-1.5">
 							<p>BEng 3rd Y.</p>
 						</div>
 
-						<div class="mw-auto text-[13px] md:ml-1">
+						<div class="mw-auto text-[13px] md:ml-1.5 flex flex-col gap-px">
 							<div class="text-zinc-500">UTC + 8-8</div>
 							<div class="text-zinc-500">she / her</div>
 							<div class="text-zinc-500">ZHO / ENG / CDO / JPN</div>
