@@ -33,24 +33,23 @@ const seeFull = () => {
 	setShowCate("");
 };
 
-import data from "../routes/data.json"
+import data from "../routes/data.json";
 
 export const Arti: Component = () => {
-
-
 	const [ctx] = createSignal(
 		new Set(
-			data.map((i) => { return { ...i, date: new Date(i.date) } })
-		));
+			data.map((i) => {
+				return { ...i, date: new Date(i.date) };
+			}),
+		),
+	);
 
 	return (
 		<>
 			<For
 				each={[...ctx()]
 					.filter((item) => {
-						return showCate()
-							? item.categories?.[0] === showCate()
-							: true;
+						return showCate() ? item.categories?.[0] === showCate() : true;
 					})
 					.filter((item) => {
 						const itemHideLvl = item.hideLevel || 5;
@@ -63,8 +62,7 @@ export const Arti: Component = () => {
 						return {
 							...item,
 							showYear: !(
-								arr[index - 1].date.getFullYear() ===
-								item.date.getFullYear()
+								arr[index - 1].date.getFullYear() === item.date.getFullYear()
 							),
 						};
 					})}
@@ -115,10 +113,7 @@ export const Arti: Component = () => {
 										{/* biome-ignore lint/a11y/useButtonType: <explanation> */}
 										<button
 											class="pl-6 text-xs 2xl:text-base text-slate-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
-											onClick={[
-												switchCategories,
-												attr.categories?.[0],
-											]}
+											onClick={[switchCategories, attr.categories?.[0]]}
 										>
 											{attr.categories?.[0]}
 											<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
@@ -140,4 +135,4 @@ export const Arti: Component = () => {
 			</Show>
 		</>
 	);
-}
+};

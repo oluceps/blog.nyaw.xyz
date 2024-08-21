@@ -11,14 +11,12 @@ import {
 import { useLocation } from "@solidjs/router";
 import { usePageState } from "./PageState";
 
-
 export const TableOfContents: Component<{ children: ResolvedChildren }> = (
-	props
+	props,
 ) => {
 	const location = useLocation();
 	const [currentSection, setCurrentSection] = createSignal("");
 	const { setPageSections, pageSections } = usePageState();
-
 
 	const onScroll = () => {
 		const headings = document.querySelectorAll("main h1, main h2, main h3");
@@ -42,7 +40,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 		if (children) {
 			if (!Array.isArray(children)) return;
 			const firstElement = children.find(
-				(child) => child instanceof HTMLElement
+				(child) => child instanceof HTMLElement,
 			) as HTMLElement | null;
 			// if any of the child elements are not connected to the DOM the page contents haven't mounted yet
 			if (firstElement && !firstElement.isConnected) return;
@@ -53,7 +51,6 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 
 		if (headings) {
 			headings.forEach((heading) => {
-
 				switch (heading.tagName) {
 					case "H1":
 						sections.push({
@@ -62,7 +59,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 							level: 1,
 							children: [],
 						});
-						break
+						break;
 					case "H2":
 						sections[sections.length - 1].children.push({
 							text: heading.textContent,
@@ -70,15 +67,15 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 							level: 2,
 							children: [],
 						});
-						break
+						break;
 					case "H3":
-						const ayaya = sections[sections.length - 1].children.length
+						const ayaya = sections[sections.length - 1].children.length;
 						sections[sections.length - 1].children[ayaya - 1].children.push({
 							text: heading.textContent,
 							id: heading.id,
 							level: 3,
 						});
-						break
+						break;
 				}
 			});
 		}
@@ -94,7 +91,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 
 	onMount(() => {
 		document.addEventListener("layout-mounted", () =>
-			getHeaders(props.children)
+			getHeaders(props.children),
 		);
 	});
 
@@ -148,14 +145,17 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 																role="list"
 																class="pl-1.5 text-slate-500 list-disc decoration-sprout-300 active:font-bold hover:text-slate-700 font-bold active:text-sprout-600 space-y-0.5"
 															>
-																<Index each={section().children[idxSubSec].children}>
+																<Index
+																	each={section().children[idxSubSec].children}
+																>
 																	{(subSectionSub) => (
 																		<li class="my-0">
 																			<a
 																				href={`#${subSectionSub().id}`}
 																				classList={{
 																					"text-sprout-600 hover:text-slate-700 font-bold":
-																						currentSection() === subSectionSub().id,
+																						currentSection() ===
+																						subSectionSub().id,
 																				}}
 																				class="no-underline hover:font-bold hover:text-slate-700"
 																				target="_self"
@@ -173,12 +173,11 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 										</ol>
 									</Show>
 								</li>
-
 							</Show>
-						)
+						);
 					}}
 				</Index>
 			</ol>
 		</div>
 	);
-}
+};

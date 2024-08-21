@@ -1,13 +1,13 @@
 import { Link, Meta, Title } from "@solidjs/meta";
 import { Show, type ParentComponent, children, createMemo } from "solid-js";
 import cfg from "../constant";
-import data from "../routes/data.json"
+import data from "../routes/data.json";
 import { useLocation } from "@solidjs/router";
 import { TableOfContents } from "./Toc";
 
 function formatDate(date: Date | undefined) {
 	if (date === undefined) {
-		return ""
+		return "";
 	}
 	const year = date.getFullYear();
 
@@ -18,27 +18,34 @@ function formatDate(date: Date | undefined) {
 	return `${year}-${month}-${day}`;
 }
 const Page: ParentComponent<{ isError?: false }> = (props) => {
-	const resolved = children(() => props.children)
+	const resolved = children(() => props.children);
 	const location = useLocation();
 
-	const ctx = data.map((i) => { return { ...i, date: new Date(i.date) } });
+	const ctx = data.map((i) => {
+		return { ...i, date: new Date(i.date) };
+	});
 
-	const article = createMemo(() => ctx.find((i) => i.path == location.pathname.replaceAll('/', '')))
+	const article = createMemo(() =>
+		ctx.find((i) => i.path == location.pathname.replaceAll("/", "")),
+	);
 
-	const currentUrl = `${cfg.base_url}${location.pathname}`
+	const currentUrl = `${cfg.base_url}${location.pathname}`;
 	return (
 		<article class="antialiased prose 2xl:prose-lg dark:prose-invert justify-self-center mx-auto mb-16 w-full mt-10 break-words">
 			<Title>{`${article()?.title} - ${cfg.title}`}</Title>
 			<Link rel="canonical" href={currentUrl} />
 			<Meta property="og:url" content={currentUrl} />
-			<Meta name="description" content={article()?.description || cfg.description} />
+			<Meta
+				name="description"
+				content={article()?.description || cfg.description}
+			/>
 			<Meta property="og:title" content={cfg.title} />
 			<Meta property="og:description" content={cfg.description} />
+			<Meta name="keywords" content={article()?.tags?.join(",")} />
 			<Meta
-				name="keywords"
-				content={article()?.tags?.join(",")}
+				property="article:published_time"
+				content={formatDate(article()?.date)}
 			/>
-			<Meta property="article:published_time" content={formatDate(article()?.date)} />
 			<Show when={!article()?.noBanner}>
 				<h1>{article()?.title}</h1>
 				<div class="text-zinc-500 font-serif mb-2 font-light text-sm 2xl:text-lg">

@@ -3,79 +3,74 @@ import remarkFrontmatter from "remark-frontmatter";
 import rehypeRaw from "rehype-raw";
 import { nodeTypes } from "@mdx-js/mdx";
 import remarkGfm from "remark-gfm";
-import remarkExpressiveCode from 'remark-expressive-code'
+import remarkExpressiveCode from "remark-expressive-code";
 import type { ExpressiveCodeTheme } from "remark-expressive-code";
 import rehypeSlug from "rehype-slug";
 import rehypeAutoLinkHeadings from "rehype-autolink-headings";
-import rehypeKatex from 'rehype-katex'
-import remarkMath from 'remark-math'
+import rehypeKatex from "rehype-katex";
+import remarkMath from "remark-math";
 
 /* @ts-ignore */
 import pkg from "@vinxi/plugin-mdx";
 
 const { default: mdx } = pkg;
 
-
 const remarkExpressiveCodeOptions = {
-  themes: [
-    "min-light",
-    "rose-pine"
-  ],
-  themeCSSSelector: (theme: ExpressiveCodeTheme) =>
-    `[data-theme="${theme.name}"]`,
-  // I dont like dark mode
-  useDarkModeMediaQuery: false,
-  styleOverrides: {
-    frames: {
-      shadowColor: 'rgb(0 0 0 / 1%)',
-    },
-  },
-}
-
+	themes: ["min-light", "rose-pine"],
+	themeCSSSelector: (theme: ExpressiveCodeTheme) =>
+		`[data-theme="${theme.name}"]`,
+	// I dont like dark mode
+	useDarkModeMediaQuery: false,
+	styleOverrides: {
+		frames: {
+			shadowColor: "rgb(0 0 0 / 1%)",
+		},
+	},
+};
 
 export default defineConfig({
-  extensions: ["mdx", "md", "tsx"],
-  vite: {
-    plugins: [
-      mdx.withImports({})({
-        define: {
-          "import.meta.env": `'import.meta.env'`,
-        },
+	extensions: ["mdx", "md", "tsx"],
+	vite: {
+		plugins: [
+			mdx.withImports({})({
+				define: {
+					"import.meta.env": `'import.meta.env'`,
+				},
 
-        jsx: true,
-        jsxImportSource: "solid-js",
-        providerImportSource: "solid-mdx",
-        rehypePlugins: [
-          // rehypeMathJaxSVG,
-          () => rehypeKatex({ output: "html" }),
-          [
-            rehypeRaw,
-            {
-              passThrough: nodeTypes,
-            },
-          ],
-          [rehypeSlug],
-          [
-            rehypeAutoLinkHeadings,
-            {
-              behavior: "wrap",
-              properties: {
-                className: "heading",
-              },
-            },
-          ],
-        ],
-        remarkPlugins: [
-          remarkGfm,
-          remarkFrontmatter,
-          [remarkExpressiveCode, remarkExpressiveCodeOptions],
-          remarkMath
-        ],
-      }),
-      { enforce: "pre" },
-    ],
-  },
-  server: {
-    preset: "vercel",
-  },
+				jsx: true,
+				jsxImportSource: "solid-js",
+				providerImportSource: "solid-mdx",
+				rehypePlugins: [
+					// rehypeMathJaxSVG,
+					() => rehypeKatex({ output: "html" }),
+					[
+						rehypeRaw,
+						{
+							passThrough: nodeTypes,
+						},
+					],
+					[rehypeSlug],
+					[
+						rehypeAutoLinkHeadings,
+						{
+							behavior: "wrap",
+							properties: {
+								className: "heading",
+							},
+						},
+					],
+				],
+				remarkPlugins: [
+					remarkGfm,
+					remarkFrontmatter,
+					[remarkExpressiveCode, remarkExpressiveCodeOptions],
+					remarkMath,
+				],
+			}),
+			{ enforce: "pre" },
+		],
+	},
+	server: {
+		preset: "vercel",
+	},
 });
