@@ -48,7 +48,7 @@ export default function Me() {
 							<Reveal>Secirian</Reveal>
 						</div>
 						<div class="text-zinc-500 font-mono leading-snug md:ml-1.5">
-							<p>BEng 3rd Y.</p>
+							<p>BEng 3rd Year</p>
 						</div>
 
 						<div class="mw-auto text-[13px] md:ml-1.5 flex flex-col gap-px">
