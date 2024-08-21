@@ -37,7 +37,7 @@ export default function Me() {
               <Reveal>Secirian</Reveal>
             </div>
             <div class="text-zinc-500 mt-1.5">
-              BEng 3rd Year
+              BEng 3rd Y.
             </div>
             <div class="text-zinc-500">
               Internet Wanderer
