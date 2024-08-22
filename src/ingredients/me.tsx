@@ -47,14 +47,11 @@ export default function Me() {
 						<div class="text-stone-500 text-2xl font-bold">
 							<Reveal>Secirian</Reveal>
 						</div>
-						<div class="text-zinc-500 font-mono leading-snug md:ml-px">
-							<p>BEng 3rd Year</p>
-						</div>
 						<div class="mw-auto text-[13px] md:ml-px flex flex-col gap-px">
 							<div class="text-zinc-500">UTC + 8-8</div>
-							<div class="text-zinc-500">she / her</div>
 							<div class="text-zinc-500">BEng 3rd year</div>
 							<div class="text-zinc-500">ZHO / ENG / CDO / JPN</div>
+							<div class="text-zinc-500">she / her</div>
 							<div class="text-zinc-400 not-prose">
 								廿一世紀 末日未接近時出生
 							</div>
