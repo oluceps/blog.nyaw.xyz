@@ -43,7 +43,7 @@ export default function Me() {
 							<Online />
 						</div>
 					</div>
-					<div class="text-center md:text-left not-prose flex flex-col leading-snug mx-6 pb-8 md:pb-0 justify-between gap-4">
+					<div class="text-center md:text-left not-prose flex flex-col leading-snug mx-6 pb-8 md:pb-0 justify-between gap-4 md:gap-8">
 						<div class="text-stone-500 text-2xl font-bold">
 							<Reveal>Secirian</Reveal>
 						</div>
@@ -52,7 +52,7 @@ export default function Me() {
 							<div class="text-zinc-500">BEng 3rd year</div>
 							<div class="text-zinc-500">UTC + 8-8</div>
 							<div class="text-zinc-500">she / her</div>
-							<div class="text-zinc-400 not-prose">
+							<div class="text-zinc-400 not-prose mt-2 md:mt-4">
 								廿一世紀 末日未接近時出生
 							</div>
 						</div>
