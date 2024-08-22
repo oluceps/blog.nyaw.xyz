@@ -3,25 +3,25 @@ import {
 	type Component,
 	For,
 	Show,
-	createResource,
+	createMemo,
 	createSignal,
 } from "solid-js";
 import cfg from "../constant";
 import { IconChevronLeft } from "@tabler/icons-solidjs";
 
-export interface Data {
-	title: string;
-	date: Date;
-	description?: string;
-	draft?: boolean;
-	featured_image?: string;
-	categories?: Array<string>;
-	tags?: Array<string>;
-	toc?: boolean;
-	hideLevel?: number;
-	math?: boolean;
-	noBanner?: boolean;
-}
+// export interface Data {
+// 	title: string;
+// 	date: Date;
+// 	description?: string;
+// 	draft?: boolean;
+// 	featured_image?: string;
+// 	categories?: Array<string>;
+// 	tags?: Array<string>;
+// 	toc?: boolean;
+// 	hideLevel?: number;
+// 	math?: boolean;
+// 	noBanner?: boolean;
+// }
 
 const [showCate, setShowCate] = createSignal("");
 
@@ -36,26 +36,25 @@ const seeFull = () => {
 import data from "../routes/data.json";
 
 export const Arti: Component = () => {
-	const [ctx] = createSignal(
-		new Set(
-			data.map((i) => {
-				return { ...i, date: new Date(i.date) };
-			}),
-		),
+
+	const ctxFiltered = createMemo(() =>
+		data.map((i) => {
+			return { ...i, date: new Date(i.date) };
+		})
+			.filter((i) => {
+				return showCate() ? i.categories?.[0] === showCate() : true;
+			})
+			.filter((i) => {
+				const itemHideLvl = i.hideLevel || 5;
+				return cfg.hideLevel < itemHideLvl && !i.draft;
+			})
 	);
 
 	return (
 		<>
 			<For
-				each={[...ctx()]
-					.filter((item) => {
-						return showCate() ? item.categories?.[0] === showCate() : true;
-					})
-					.filter((item) => {
-						const itemHideLvl = item.hideLevel || 5;
-						return cfg.hideLevel < itemHideLvl && !item.draft;
-					}) // rearange date basic on current content
-					.map((item, index, arr) => {
+				each={
+					ctxFiltered().map((item, index, arr) => {
 						if (index === 0) {
 							return { ...item, showYear: true };
 						}
