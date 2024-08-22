@@ -43,7 +43,7 @@ export default function Me() {
 							<Online />
 						</div>
 					</div>
-					<div class="text-center md:text-left not-prose flex flex-col leading-snug mx-6 pb-8 md:pb-0 justify-between gap-4 md:gap-8">
+					<div class="text-center md:text-left not-prose flex flex-col leading-snug mx-6 pb-8 md:pb-0 justify-between gap-4 md:gap-6">
 						<div class="text-stone-500 text-2xl font-bold">
 							<Reveal>Secirian</Reveal>
 						</div>
