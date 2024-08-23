@@ -31,44 +31,39 @@ const [showCate, setShowCate] = createSignal("");
 import data from "../routes/data.json";
 import { ReactiveMap } from "@solid-primitives/map";
 
-export const ctxFiltered =
-	data.map((i) => {
+export const ctxFiltered = data
+	.map((i) => {
 		return { ...i, date: new Date(i.date) };
 	})
-		.filter((i) => {
-			return showCate() ? i.categories?.[0] === showCate() : true;
-		})
-		.filter((i) => {
-			const itemHideLvl = i.hideLevel || 5;
-			return cfg.hideLevel < itemHideLvl && !i.draft;
-		})
-	;
-
+	.filter((i) => {
+		return showCate() ? i.categories?.[0] === showCate() : true;
+	})
+	.filter((i) => {
+		const itemHideLvl = i.hideLevel || 5;
+		return cfg.hideLevel < itemHideLvl && !i.draft;
+	});
 
 export const Arti: Component = () => {
-
 	const orgByear = createMemo(() => {
 		const o = new Map<number, typeof ctxFiltered>();
-		let ty = Infinity;
+		let ty = Number.POSITIVE_INFINITY;
 		for (const s of ctxFiltered) {
 			const artiYear = s.date.getFullYear();
 			if (artiYear < ty) {
 				ty = artiYear;
-				o.set(artiYear, [s])
+				o.set(artiYear, [s]);
 			} else {
-				o.set(artiYear, Array.prototype.concat(o.get(artiYear), s))
+				o.set(artiYear, Array.prototype.concat(o.get(artiYear), s));
 			}
 		}
-		return o.values()
-	})
+		return o.values();
+	});
 
 	const navigate = useNavigate();
 
 	return (
 		<>
-			<For
-				each={Array.from(orgByear())}
-			>
+			<For each={Array.from(orgByear())}>
 				{(attr) => {
 					return (
 						<For each={Array.from(attr.values())}>
@@ -115,10 +110,15 @@ export const Arti: Component = () => {
 											</article>
 
 											<div class="flex justify-end">
-												<Show when={innerAttr.categories} fallback={<div class="h-4" />}>
+												<Show
+													when={innerAttr.categories}
+													fallback={<div class="h-4" />}
+												>
 													<button
 														class="pl-6 text-xs 2xl:text-base text-slate-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
-														onClick={() => navigate("/taxonomy#" + innerAttr.categories?.[0])}
+														onClick={() =>
+															navigate("/taxonomy#" + innerAttr.categories?.[0])
+														}
 													>
 														{innerAttr.categories?.[0]}
 														<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
@@ -127,7 +127,7 @@ export const Arti: Component = () => {
 											</div>
 										</div>
 									</Suspense>
-								)
+								);
 							}}
 						</For>
 					);
