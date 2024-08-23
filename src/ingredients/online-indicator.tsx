@@ -14,6 +14,7 @@ const OnlineIndicator: Component = () => {
 	const misskeyInstance = "https://nyaw.xyz";
 
 	const fetchOnlineStatus = async () => {
+		"use server"
 		try {
 			const response = await ky
 				.post(`${misskeyInstance}/api/users/show`, {
