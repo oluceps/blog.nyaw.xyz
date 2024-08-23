@@ -6,7 +6,6 @@ interface UserResponse {
 	onlineStatus: string;
 }
 const OnlineIndicator: Component = () => {
-	"use server";
 	const [isOnline, setIsOnline] = createSignal(false);
 	const qBody = {
 		i: "RWKGJuqW8xcIsSd2kfKhgHOPzePHWMNu",

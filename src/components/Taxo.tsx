@@ -1,19 +1,15 @@
 import { createEffect, createSignal, For } from "solid-js";
-import data from "../routes/data.json";
 import { A } from "@solidjs/router";
 import cfg from "../constant";
-import { Data } from "./Arti";
 import { Title } from "@solidjs/meta";
+import { ctxFiltered } from "./Arti";
 
 export default function Taxo() {
 	const [checked, setChecked] = createSignal(false);
 	// createEffect(() => {
 	//   console.log(checked())
 	// })
-	let reData = data.filter((item) => {
-		const itemHideLvl = item.hideLevel || 5;
-		return cfg.hideLevel < itemHideLvl && !item.draft;
-	});
+	let reData = ctxFiltered;
 
 	const allTags = new Set(
 		reData.reduce<string[]>((acc, item) => {

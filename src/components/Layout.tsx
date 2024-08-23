@@ -1,7 +1,6 @@
 import { Link, Meta, MetaProvider } from "@solidjs/meta";
 import cfg from "../constant";
-import Header from "./Header";
-import { lazy } from "solid-js";
+import { lazy, Suspense } from "solid-js";
 import {
 	Match,
 	type ParentProps,
@@ -18,6 +17,7 @@ import Footer from "./Footer";
 import Me from "~/ingredients/me";
 
 const BackTopBtn = lazy(() => import("./BackTopBtn"));
+const Header = lazy(() => import("./Header"));
 
 export function Layout(props: ParentProps) {
 	const location = useLocation();
@@ -48,7 +48,9 @@ export function Layout(props: ParentProps) {
 				<Meta property="og:title" content={cfg.title} />
 				<Meta property="og:description" content={cfg.description} />
 				<div class="flex flex-col bg-zinc-50 dark:bg-[#171717] min-h-screen items-center">
-					<Header sticky={isRoot()} />
+					<Suspense>
+						<Header sticky={isRoot()} />
+					</Suspense>
 					<Switch
 						fallback={
 							<div class="flex flex-col flex-1 grow pb-12 w-11/12 md:w-full">
@@ -66,7 +68,9 @@ export function Layout(props: ParentProps) {
 							<Me />
 						</Match>
 					</Switch>
-					<BackTopBtn />
+					<Suspense>
+						<BackTopBtn />
+					</Suspense>
 					<Footer />
 				</div>
 			</PageStateProvider>
