@@ -6,6 +6,7 @@ interface UserResponse {
 	onlineStatus: string;
 }
 const OnlineIndicator: Component = () => {
+	"use server";
 	const [isOnline, setIsOnline] = createSignal(false);
 	const qBody = {
 		i: "RWKGJuqW8xcIsSd2kfKhgHOPzePHWMNu",
@@ -14,7 +15,6 @@ const OnlineIndicator: Component = () => {
 	const misskeyInstance = "https://nyaw.xyz";
 
 	const fetchOnlineStatus = async () => {
-		"use server"
 		try {
 			const response = await ky
 				.post(`${misskeyInstance}/api/users/show`, {
