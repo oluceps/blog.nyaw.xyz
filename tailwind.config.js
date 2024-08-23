@@ -26,13 +26,20 @@ export default {
 				"4xl": "2560px",
 			},
 			fontFamily: {
-				sans: ["MiSans", ...defaultTheme.fontFamily.sans],
-				serif: ["MiSans", ...defaultTheme.fontFamily.serif],
+				sans: [
+					"PingFang SC",
+					"Hiragino Sans GB",
+					"Microsoft YaHei",
+					...defaultTheme.fontFamily.sans],
+				serif: [
+					"PingFang SC",
+					"Hiragino Sans GB",
+					"Microsoft YaHei",
+					...defaultTheme.fontFamily.serif],
 				mono: [
 					"var(--font-geist-mono)",
 					"PingFang SC",
 					"Hiragino Sans GB",
-					"MiSans",
 					...defaultTheme.fontFamily.mono,
 				],
 			},
