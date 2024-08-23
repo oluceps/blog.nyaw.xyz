@@ -72,5 +72,8 @@ export default defineConfig({
 	},
 	server: {
 		preset: "vercel",
+		prerender: {
+			crawlLinks: true
+		}
 	},
 });
