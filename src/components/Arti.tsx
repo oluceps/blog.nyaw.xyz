@@ -5,12 +5,8 @@ import {
 	Show,
 	Suspense,
 	createMemo,
-	createSignal,
-	onMount,
 } from "solid-js";
 import cfg from "../constant";
-import { IconChevronLeft } from "@tabler/icons-solidjs";
-import { useNavigate } from "@solidjs/router";
 
 // export interface Data {
 // 	title: string;
@@ -26,17 +22,12 @@ import { useNavigate } from "@solidjs/router";
 // 	noBanner?: boolean;
 // }
 
-const [showCate, setShowCate] = createSignal("");
 
 import data from "../routes/data.json";
-import { ReactiveMap } from "@solid-primitives/map";
 
 export const ctxFiltered = data
 	.map((i) => {
 		return { ...i, date: new Date(i.date) };
-	})
-	.filter((i) => {
-		return showCate() ? i.categories?.[0] === showCate() : true;
 	})
 	.filter((i) => {
 		const itemHideLvl = i.hideLevel || 5;
@@ -58,8 +49,6 @@ export const Arti: Component = () => {
 		}
 		return o.values();
 	});
-
-	const navigate = useNavigate();
 
 	return (
 		<>
@@ -114,15 +103,13 @@ export const Arti: Component = () => {
 													when={innerAttr.categories}
 													fallback={<div class="h-4" />}
 												>
-													<button
+													<A
 														class="pl-6 text-xs 2xl:text-base text-slate-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
-														onClick={() =>
-															navigate("/taxonomy#" + innerAttr.categories?.[0])
-														}
+														href={"/taxonomy#" + innerAttr.categories?.[0]}
 													>
 														{innerAttr.categories?.[0]}
 														<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
-													</button>
+													</A>
 												</Show>
 											</div>
 										</div>

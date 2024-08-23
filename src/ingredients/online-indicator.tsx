@@ -40,12 +40,13 @@ const OnlineIndicator: Component = () => {
 			<Show when={isOnline()}>
 				<div class="absolute top-1.5 right-1.5 w-4 h-4 md:w-6 md:h-6 md:-top-2 md:-right-2 z-20 bg-sprout-200 rounded-full animate-ping pointer-events-none" />
 			</Show>
-			<div
+			<a
 				data-tip={isOnline() ? "online" : "offline"}
 				class={twMerge(
 					`absolute tooltip ring-2 z-10 ring-sprout-50 top-1.5 right-1.5 w-4 h-4 md:w-6 md:h-6 md:-top-2 md:-right-2 rounded-full`,
 					isOnline() ? "bg-sprout-200" : "bg-slate-300",
 				)}
+				href="https://nyaw.xyz/@lyo"
 			/>
 		</>
 	);
