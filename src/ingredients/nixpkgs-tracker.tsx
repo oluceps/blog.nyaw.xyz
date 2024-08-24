@@ -207,10 +207,9 @@ const Tracker = () => {
 								<>
 									<div class="flex items-center">
 										<div
-											class={twMerge(
-												`text-sprout-300`,
-												k[1] ? `text-red-400` : `text-slate-300`,
-											)}
+											class={
+												k[1] ? `text-sprout-400` : `text-slate-300`
+											}
 										>
 											{k}
 										</div>
