@@ -1,7 +1,6 @@
 import ky from "ky";
 import { createEffect, createSignal, For, Show } from "solid-js";
 import { ReactiveMap } from "@solid-primitives/map";
-import { TiTick } from "solid-icons/ti";
 import { twMerge } from "tailwind-merge";
 
 const Tracker = () => {
@@ -192,8 +191,8 @@ const Tracker = () => {
 							onClick={() =>
 								queryStatus()[0] != ""
 									? window.open(
-											"https://github.com/nixos/nixpkgs/pull/" + qnum(),
-										)
+										"https://github.com/nixos/nixpkgs/pull/" + qnum(),
+									)
 									: ""
 							}
 						>
@@ -216,7 +215,7 @@ const Tracker = () => {
 											{k}
 										</div>
 										<Show when={k[1]}>
-											<TiTick />
+											〇
 										</Show>
 									</div>
 								</>

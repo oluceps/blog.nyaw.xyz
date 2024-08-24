@@ -35,9 +35,6 @@ importers:
       solid-collapse:
         specifier: ^1.1.0
         version: 1.1.0(solid-js@1.8.20)
-      solid-icons:
-        specifier: ^1.1.0
-        version: 1.1.0(solid-js@1.8.20)
       solid-js:
         specifier: ^1.8.20
         version: 1.8.20
@@ -3132,11 +3129,6 @@ packages:
     resolution: {integrity: sha512-u6BMdFLvkJnvUGYzdFcWp1wvJ4hb9Y1zd3AbZ9D3bUmmiy9jBzNZX+RcqBCI2EKRvdQwAb1UB9bkESfqfhayDg==}
     peerDependencies:
       solid-js: '>= ^1.2.5'
-
-  solid-icons@1.1.0:
-    resolution: {integrity: sha512-IesTfr/F1ElVwH2E1110s2RPXH4pujKfSs+koT8rwuTAdleO5s26lNSpqJV7D1+QHooJj18mcOiz2PIKs0ic+A==}
-    peerDependencies:
-      solid-js: '*'
 
   solid-js@1.8.20:
     resolution: {integrity: sha512-SsgaExCJ97mPm9WpAusjZ484Z8zTp8ggiueQOsrm81iAP7UaxaN+wiOgnPcJ9u6B2SQpoQ4FiDPAZBqVWi1V4g==}
@@ -7241,10 +7233,6 @@ snapshots:
       solid-js: 1.8.20
 
   solid-heroicons@3.2.4(solid-js@1.8.20):
-    dependencies:
-      solid-js: 1.8.20
-
-  solid-icons@1.1.0(solid-js@1.8.20):
     dependencies:
       solid-js: 1.8.20
 
