@@ -5,6 +5,7 @@ import {
 	Show,
 	Suspense,
 	createMemo,
+	lazy,
 } from "solid-js";
 import cfg from "../constant";
 
@@ -21,9 +22,7 @@ import cfg from "../constant";
 // 	math?: boolean;
 // 	noBanner?: boolean;
 // }
-
-
-import data from "../routes/data.json";
+import data from "../routes/data.json"
 
 export const ctxFiltered = data
 	.map((i) => {
