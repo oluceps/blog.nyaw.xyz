@@ -68,7 +68,7 @@ export const Arti: Component = () => {
 										<div class="antialiased flex flex-col mx-3 md:mx-8 2xl:mx-12">
 											<article class="flex overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
 												<a
-													class="no-underline font-light leading-snug font-mono text-slate-600 min-w-12"
+													class="no-underline font-light leading-snug text-slate-600 min-w-12"
 													href={`https://en.wikipedia.org/wiki/${new Intl.DateTimeFormat(
 														"en-US",
 														{
