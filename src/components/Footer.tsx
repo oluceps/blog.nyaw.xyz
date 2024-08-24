@@ -1,10 +1,10 @@
 import type { Component } from "solid-js";
 import cfg from "../constant";
-import data from "../routes/data.json";
 import time from "../../time.json";
+import { ctxFiltered } from "./Arti";
 
 const Footer: Component = () => {
-	const years = data.reduce<number[]>((acc, item) => {
+	const years = ctxFiltered.reduce<number[]>((acc, item) => {
 		// @ts-ignore
 		return acc.concat(new Date(item.date).getFullYear());
 	}, []);
