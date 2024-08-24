@@ -37,7 +37,7 @@ export default {
 					"Microsoft YaHei",
 					...defaultTheme.fontFamily.serif],
 				mono: [
-					"var(--font-geist-mono)",
+					"Geist Mono",
 					"PingFang SC",
 					"Hiragino Sans GB",
 					...defaultTheme.fontFamily.mono,

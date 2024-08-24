@@ -1,6 +1,6 @@
 @import "./styles/prism.css";
 @import "./styles/expressive-code.css";
-@import "./styles/fonts.css";
+@import url("https://cdn.jsdelivr.net/npm/@fontsource/geist-mono@5.0.3/latin.min.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
