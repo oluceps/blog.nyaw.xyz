@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For } from "solid-js";
+import { createSignal, Index } from "solid-js";
 import { A } from "@solidjs/router";
 import cfg from "../constant";
 import { Title } from "@solidjs/meta";
@@ -6,9 +6,6 @@ import { ctxFiltered } from "./Arti";
 
 export default function Taxo() {
 	const [checked, setChecked] = createSignal(false);
-	// createEffect(() => {
-	//   console.log(checked())
-	// })
 	let reData = ctxFiltered;
 
 	const allTags = new Set(
@@ -110,7 +107,7 @@ export default function Taxo() {
 			<div class="w-full flex flex-col">
 				<p class="text-neutral-700 font-bold">All</p>
 				<div class="flex flex-wrap text-sm justify-center">
-					<For
+					<Index
 						each={Array.from(checked() ? allTags.values() : allCate.values())}
 					>
 						{(cat) => {
@@ -119,30 +116,30 @@ export default function Taxo() {
 									class="px-2 py-1 2xl:text-base text-neutral-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
 									onClick={() => {
 										document
-											.getElementById(cat)!
+											.getElementById(cat())!
 											.scrollIntoView({ behavior: "smooth" });
 									}}
 								>
-									{cat}
+									{cat()}
 									<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
 								</button>
 							);
 						}}
-					</For>
+					</Index>
 				</div>
 			</div>
 
 			<div class="divider" />
 
 			<div class="antialiased flex flex-col sm:mx-3 md:mx-10 2xl:mx-16">
-				<For each={Array.from(checked() ? allTags.values() : allCate.values())}>
+				<Index each={Array.from(checked() ? allTags.values() : allCate.values())}>
 					{(outerAttr) => {
 						return (
 							<>
-								<p class={checked() ? "mt-6" : "mt-4"} id={outerAttr}>
-									{outerAttr}
+								<p class={checked() ? "mt-6" : "mt-4"} id={outerAttr()}>
+									{outerAttr()}
 								</p>
-								<For
+								<Index
 									each={[...ctx()]
 										.map((item, index, arr) => {
 											if (index === 0) {
@@ -159,10 +156,10 @@ export default function Taxo() {
 										.filter((item) => {
 											return checked()
 												? item.tags
-													? item.tags.includes(outerAttr)
+													? item.tags.includes(outerAttr())
 													: false
 												: item.categories
-													? item.categories.includes(outerAttr)
+													? item.categories.includes(outerAttr())
 													: false;
 										})}
 								>
@@ -170,7 +167,7 @@ export default function Taxo() {
 										return (
 											<article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
 												<div class="no-underline mb-px font-light leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12">
-													{attr.date
+													{attr().date
 														.toLocaleDateString("en-CA", {
 															year: "numeric",
 															month: "2-digit",
@@ -180,20 +177,20 @@ export default function Taxo() {
 														.replace(/-/g, "/")}
 												</div>
 												<A
-													href={`/${attr.path}`}
+													href={`/${attr().path}`}
 													class="no-underline text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-slug"
 												>
-													{attr.title}
+													{attr().title}
 													<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
 												</A>
 											</article>
 										);
 									}}
-								</For>
+								</Index>
 							</>
 						);
 					}}
-				</For>
+				</Index>
 			</div>
 		</div>
 	);
