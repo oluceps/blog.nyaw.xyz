@@ -58,7 +58,7 @@ export const Arti: Component = () => {
 						<For each={Array.from(attr.values())}>
 							{(innerAttr, i) => {
 								return (
-									<>
+									<Suspense fallback="h-8 my-3 w-full skeleton">
 										<Show when={i() == 0}>
 											<div class="text-lg 2xl:text-2xl font-bold font-normal text-slate-700 dark:text-chill-100">
 												{innerAttr.date.getFullYear()}
@@ -113,7 +113,7 @@ export const Arti: Component = () => {
 												</Show>
 											</div>
 										</div>
-									</>
+									</Suspense>
 								);
 							}}
 						</For>
