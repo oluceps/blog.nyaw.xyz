@@ -67,20 +67,8 @@ export const Arti: Component = () => {
 
 										<div class="antialiased flex flex-col mx-3 md:mx-8 2xl:mx-12">
 											<article class="flex overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
-												<a
-													class="no-underline font-light leading-snug text-slate-600 min-w-12"
-													href={`https://en.wikipedia.org/wiki/${new Intl.DateTimeFormat(
-														"en-US",
-														{
-															month: "long",
-															day: "numeric",
-															timeZone: "UTC",
-														},
-													)
-														.format(innerAttr.date)
-														.replace(/\s+/g, "_")}`}
-													target="_blank"
-													rel="noreferrer"
+												<div
+													class="no-underline font-light leading-snug font-mono text-slate-600 min-w-12"
 												>
 													{innerAttr.date
 														.toLocaleDateString("en-US", {
@@ -88,7 +76,7 @@ export const Arti: Component = () => {
 															day: "2-digit",
 														})
 														.toString()}
-												</a>
+												</div>
 												<A
 													href={`/${innerAttr.path}`}
 													class="no-underline text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-loose"
