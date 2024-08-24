@@ -191,8 +191,8 @@ const Tracker = () => {
 							onClick={() =>
 								queryStatus()[0] != ""
 									? window.open(
-										"https://github.com/nixos/nixpkgs/pull/" + qnum(),
-									)
+											"https://github.com/nixos/nixpkgs/pull/" + qnum(),
+										)
 									: ""
 							}
 						>
@@ -206,16 +206,10 @@ const Tracker = () => {
 							return (
 								<>
 									<div class="flex items-center">
-										<div
-											class={
-												k[1] ? `text-sprout-400` : `text-slate-300`
-											}
-										>
+										<div class={k[1] ? `text-sprout-400` : `text-slate-300`}>
 											{k}
 										</div>
-										<Show when={k[1]}>
-											〇
-										</Show>
+										<Show when={k[1]}>〇</Show>
 									</div>
 								</>
 							);

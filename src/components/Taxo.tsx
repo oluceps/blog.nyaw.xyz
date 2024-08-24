@@ -132,7 +132,9 @@ export default function Taxo() {
 			<div class="divider" />
 
 			<div class="antialiased flex flex-col sm:mx-3 md:mx-10 2xl:mx-16">
-				<Index each={Array.from(checked() ? allTags.values() : allCate.values())}>
+				<Index
+					each={Array.from(checked() ? allTags.values() : allCate.values())}
+				>
 					{(outerAttr) => {
 						return (
 							<>
@@ -167,8 +169,8 @@ export default function Taxo() {
 										return (
 											<article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
 												<div class="no-underline mb-px font-light leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12">
-													{attr().date
-														.toLocaleDateString("en-CA", {
+													{attr()
+														.date.toLocaleDateString("en-CA", {
 															year: "numeric",
 															month: "2-digit",
 															day: "2-digit",
