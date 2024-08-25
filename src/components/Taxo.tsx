@@ -1,7 +1,7 @@
 import { createSignal, Index, Show, Suspense } from "solid-js";
 import { A, cache, createAsync } from "@solidjs/router";
 import cfg from "../constant";
-import { Link, Meta, Title } from "@solidjs/meta";
+import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { docsData } from "solid:collection";
 
 export default function Taxo() {
@@ -82,9 +82,11 @@ export default function Taxo() {
 			<Show when={rawData()}>
 				{(ctx) =>
 					<div class="mx-auto sm:w-2/3 2xl:w-7/12 flex flex-col grow w-11/12 space-y-8 mt-20">
-						<Title>分类 - {cfg.title}</Title>
-						<Link rel="canonical" href={cfg.base_url + "/taxonomy"} />
-						<Meta property="og:description" content="taxonomy page" />
+						<MetaProvider>
+							<Title>分类 - {cfg.title}</Title>
+							<Link rel="canonical" href={cfg.base_url + "/taxonomy"} />
+							<Meta property="og:description" content="taxonomy page" />
+						</MetaProvider>
 						<div class="flex space-x-2 items-center">
 							<div
 								class={`px-2 py-px tansition-all duration-300 ${!checked() ? "bg-sprout-200/80 text-neutral-600 rounded-md" : "text-neutral-500"}`}
