@@ -4,12 +4,14 @@ import cfg from "../constant";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { docsData } from "solid:collection";
 
+function isIn<T>(values: readonly T[], x: any): x is T {
+	return values.includes(x);
+}
+
 export default function Taxo() {
 	const [checked, setChecked] = createSignal(false);
 
-	function isIn<T>(values: readonly T[], x: any): x is T {
-		return values.includes(x);
-	}
+
 	type UnionToTuple<U> =
 		(U extends any ? (arg: U) => void : never) extends
 		(arg: infer T) => void ? [...UnionToTuple<Exclude<U, T>>, T] : [];
@@ -166,20 +168,48 @@ export default function Taxo() {
 											<Index
 												each={ctx().data}>
 												{(attr) => {
-													const finalAttr = (attr() as any).filter((item: any) => {
-														return checked()
-															? item.tags
-																? isIn(item.tags, outerAttr())
-																: false
-															: item.categories
-																? isIn(item.categories, outerAttr())
-																: false;
-													})
-
+													const a = attr()
+													interface A {
+														date: Date
+														description: string
+														categories: string[]
+														tags: string[]
+														toc: boolean
+														title: string
+														path: string
+														draft: boolean
+														hideLevel: number
+														author: string
+														math: boolean
+														featured_image: string
+													}
+													function instantiaz(value: typeof a): A {
+														return {
+															date: value.date,
+															description: value.description,
+															categories: [...value.categories], // 如果是数组，需要解构以防止引用修改
+															tags: [...value.tags],
+															toc: value.toc,
+															title: value.title,
+															path: value.path,
+															draft: value.draft,
+															hideLevel: value.hideLevel,
+															author: value.author,
+															math: value.math,
+															featured_image: value.featured_image,
+														};
+													}
+													let judge;
+													const ist = instantiaz(attr());
+													if (checked()) {
+														isIn(ist.tags, outerAttr()) ? judge = true : judge = false
+													} else {
+														isIn(ist.categories, outerAttr()) ? judge = true : judge = false
+													}
 													return (
 														<article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
 															<div class="no-underline mb-px font-light leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12">
-																{finalAttr
+																{ist
 																	.date.toLocaleDateString("en-CA", {
 																		year: "numeric",
 																		month: "2-digit",
@@ -189,10 +219,10 @@ export default function Taxo() {
 																	.replace(/-/g, "/")}
 															</div>
 															<A
-																href={`/${finalAttr.path}`}
+																href={`/${ist.path}`}
 																class="no-underline text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-slug"
 															>
-																{finalAttr.title}
+																{ist.title}
 																<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
 															</A>
 														</article>
