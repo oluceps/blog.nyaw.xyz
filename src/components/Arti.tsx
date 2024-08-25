@@ -33,7 +33,10 @@ export const Arti: Component = () => {
 
 	return (
 		<>
-			<Suspense>
+			<Suspense fallback={
+				<div class="flex flex-col h-full items-center justify-center grow w-full">
+					<div class="loading loading-infinity loading-lg text-sprout-300 " />
+				</div>}>
 				<Show when={ctx()}>
 					{(data) =>
 						<Index each={Array.from(data().keys())}>
@@ -91,7 +94,7 @@ export const Arti: Component = () => {
 							}}
 						</Index>}
 				</Show>
-			</Suspense>
+			</Suspense >
 		</>
 	);
 };
