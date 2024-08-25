@@ -24,7 +24,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 	const ctx = createAsync(() => cache(async () => {
 		"use server";
 		return docsData
-	}, "global-rawData")(), { deferStream: true });
+	}, "global-rawData")(), { deferStream: false });
 
 
 	const currentUrl = `${cfg.base_url}${location.pathname}`;

@@ -13,7 +13,6 @@ import Page from "./Page";
 import Root from "./Root";
 import { PageStateProvider } from "./PageState";
 import Taxo from "./Taxo";
-// import Footer from "./Footer";
 import Me from "~/ingredients/me";
 import Footer from "./Footer";
 
