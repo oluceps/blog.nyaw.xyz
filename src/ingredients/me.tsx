@@ -8,7 +8,7 @@ export default function Me() {
 	return (
 		<>
 			<MetaProvider>
-				<Link rel="canonical" href={cfg.base_url} />
+				<Link rel="canonical" href={cfg.base_url + "/me"} />
 				<Meta
 					name="twitter:image"
 					content={cfg.base_url + "/" + "twitter-card.png"}
@@ -18,6 +18,8 @@ export default function Me() {
 					property="og:image"
 					content={cfg.base_url + "/" + "twitter-card.png"}
 				/>
+				<Meta name="description" content={"About Secirian"} />
+				<Meta name="author" content={cfg.author} />
 				<Meta property="og:url" content={cfg.base_url} />
 				<Meta property="og:site_name" content={cfg.title} />
 				<Meta property="og:title" content={cfg.title} />
