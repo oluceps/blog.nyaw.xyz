@@ -990,7 +990,9 @@ export default [
   {
     "date": "2020-02-24T00:59:03.000Z",
     "description": "",
-    "categories": "programming",
+    "categories": [
+      "programming"
+    ],
     "tags": [
       "编程",
       "高亮测试"
