@@ -10,11 +10,33 @@ import rehypeAutoLinkHeadings from "rehype-autolink-headings";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 
-/* @ts-ignore */
+import docs from "./src/routes/data.json"
+
+// @ts-expect-error missing types
 import pkg from "@vinxi/plugin-mdx";
 
 const { default: mdx } = pkg;
 
+function docsData() {
+	const virtualModuleId = "solid:collection";
+	const resolveVirtualModuleId = "\0" + virtualModuleId;
+
+	return {
+		name: "solid:collection",
+		resolveId(id: string) {
+			if (id === virtualModuleId) {
+				return resolveVirtualModuleId;
+			}
+		},
+		async load(id: string) {
+			if (id === resolveVirtualModuleId) {
+				return `
+				export const docsData = ${JSON.stringify(docs, null, 2)}
+				`;
+			}
+		},
+	};
+}
 const remarkExpressiveCodeOptions = {
 	themes: ["min-light", "rose-pine"],
 	themeCSSSelector: (theme: ExpressiveCodeTheme) =>
@@ -32,6 +54,7 @@ export default defineConfig({
 	extensions: ["mdx", "md", "tsx"],
 	vite: {
 		plugins: [
+			docsData(),
 			mdx.withImports({})({
 				define: {
 					"import.meta.env": `'import.meta.env'`,

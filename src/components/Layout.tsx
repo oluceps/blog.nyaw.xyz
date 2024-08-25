@@ -9,11 +9,11 @@ import {
 	createSignal,
 } from "solid-js";
 import { useLocation } from "@solidjs/router";
-import Page from "./Page";
+// import Page from "./Page";
 import Root from "./Root";
 import { PageStateProvider } from "./PageState";
-import Taxo from "./Taxo";
-import Footer from "./Footer";
+// import Taxo from "./Taxo";
+// import Footer from "./Footer";
 import Me from "~/ingredients/me";
 
 const BackTopBtn = lazy(() => import("./BackTopBtn"));
@@ -54,15 +54,11 @@ export function Layout(props: ParentProps) {
 					<Switch
 						fallback={
 							<div class="flex flex-col flex-1 grow pb-12 w-11/12 md:w-full">
-								<Page>{props.children}</Page>
 							</div>
 						}
 					>
 						<Match when={isRoot()}>
 							<Root />
-						</Match>
-						<Match when={isTaxo()}>
-							<Taxo />
 						</Match>
 						<Match when={isMe()}>
 							<Me />
@@ -71,7 +67,6 @@ export function Layout(props: ParentProps) {
 					<Suspense>
 						<BackTopBtn />
 					</Suspense>
-					<Footer />
 				</div>
 			</PageStateProvider>
 		</MetaProvider>
