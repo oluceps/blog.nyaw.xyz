@@ -656,7 +656,9 @@ export default [
     "categories": [
       "作业"
     ],
-    "tags": [],
+    "tags": [
+      "现代化"
+    ],
     "toc": false,
     "title": "关于现代化",
     "path": "mordenlization",

@@ -9,10 +9,10 @@ import {
 	createSignal,
 } from "solid-js";
 import { useLocation } from "@solidjs/router";
-// import Page from "./Page";
+import Page from "./Page";
 import Root from "./Root";
 import { PageStateProvider } from "./PageState";
-// import Taxo from "./Taxo";
+import Taxo from "./Taxo";
 // import Footer from "./Footer";
 import Me from "~/ingredients/me";
 
@@ -54,6 +54,7 @@ export function Layout(props: ParentProps) {
 					<Switch
 						fallback={
 							<div class="flex flex-col flex-1 grow pb-12 w-11/12 md:w-full">
+								<Page>{props.children}</Page>
 							</div>
 						}
 					>
@@ -62,6 +63,9 @@ export function Layout(props: ParentProps) {
 						</Match>
 						<Match when={isMe()}>
 							<Me />
+						</Match>
+						<Match when={isTaxo()}>
+							<Taxo />
 						</Match>
 					</Switch>
 					<Suspense>

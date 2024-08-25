@@ -10,7 +10,7 @@ import rehypeAutoLinkHeadings from "rehype-autolink-headings";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 
-import docs from "./src/routes/data.json"
+import docs from "./src/routes/data"
 
 // @ts-expect-error missing types
 import pkg from "@vinxi/plugin-mdx";
