@@ -5,7 +5,7 @@ import { docsData } from "solid:collection";
 
 export const Arti: Component = () => {
 
-	const ctxFiltered = createAsync(() => cache(async () => {
+	const ctx = createAsync(() => cache(async () => {
 		"use server";
 		const t = docsData.map((i) => {
 			return { ...i, date: new Date(i.date) };
@@ -35,7 +35,7 @@ export const Arti: Component = () => {
 	return (
 		<>
 			<Suspense>
-				<Show when={ctxFiltered()}>
+				<Show when={ctx()}>
 					{(data) =>
 						<Index each={Array.from(data().keys())}>
 							{(attr) => {
@@ -76,9 +76,9 @@ export const Arti: Component = () => {
 																	{(artiAttr) =>
 																		<A
 																			class="pl-6 text-xs 2xl:text-base text-slate-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
-																			href={"/taxonomy#" + artiAttr()}
+																			href={"/taxonomy#" + artiAttr().categories}
 																		>
-																			{artiAttr().path}
+																			{artiAttr().categories || ""}
 																			<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
 																		</A>}
 																</Show>

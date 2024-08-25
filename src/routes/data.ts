@@ -17,8 +17,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-08-07T14:32:44.102Z",
@@ -38,8 +37,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-07-05T11:02:02.109Z",
@@ -63,8 +61,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-06-23T14:32:44.102Z",
@@ -82,8 +79,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-06-21T12:35:22.000Z",
@@ -97,8 +93,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-06-17T17:17:05.099Z",
@@ -117,8 +112,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-06-08T23:55:21.000Z",
@@ -134,8 +128,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-06-01T18:30:13.000Z",
@@ -154,8 +147,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-05-21T05:06:57.000Z",
@@ -174,8 +166,7 @@ export default [
     "hideLevel": 10,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-05-12T12:38:23.000Z",
@@ -194,8 +185,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-05-06T05:21:32.000Z",
@@ -216,8 +206,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-05-04T17:58:22.000Z",
@@ -237,8 +226,7 @@ export default [
     "hideLevel": 3,
     "author": "me",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-05-01T18:02:35.000Z",
@@ -252,8 +240,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": true,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-04-30T17:36:45.000Z",
@@ -271,8 +258,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": true,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2024-03-29T06:40:51.000Z",
@@ -291,8 +277,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-08-03T15:30:28.000Z",
@@ -310,8 +295,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "/images/hanataba.png",
-    "categorys": ""
+    "featured_image": "/images/hanataba.png"
   },
   {
     "date": "2023-07-16T22:53:00.000Z",
@@ -332,8 +316,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-07-05T18:22:05.000Z",
@@ -352,8 +335,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-06-29T12:02:52.000Z",
@@ -367,8 +349,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-06-25T14:54:29.000Z",
@@ -387,8 +368,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-06-13T23:38:06.000Z",
@@ -402,8 +382,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-06-08T17:36:21.000Z",
@@ -420,8 +399,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-06-06T16:37:57.000Z",
@@ -435,8 +413,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-05-30T14:52:24.000Z",
@@ -450,8 +427,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-05-30T14:13:18.000Z",
@@ -465,8 +441,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-05-29T14:27:49.000Z",
@@ -480,8 +455,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-05-28T16:37:07.000Z",
@@ -495,8 +469,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-05-21T14:50:40.000Z",
@@ -514,8 +487,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "/images/76473450_p0.png",
-    "categorys": ""
+    "featured_image": "/images/76473450_p0.png"
   },
   {
     "date": "2023-05-09T12:46:12.000Z",
@@ -534,8 +506,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-05-09T09:39:58.000Z",
@@ -549,8 +520,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-05-05T18:27:42.000Z",
@@ -568,8 +538,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-02-12T15:26:37.000Z",
@@ -587,8 +556,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "/images/shot_2023-05-16-021245.png",
-    "categorys": ""
+    "featured_image": "/images/shot_2023-05-16-021245.png"
   },
   {
     "date": "2023-01-20T08:38:27.000Z",
@@ -609,8 +577,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": true,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-01-06T12:29:53.000Z",
@@ -624,8 +591,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2023-01-04T23:42:17.000Z",
@@ -645,8 +611,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2022-11-21T21:21:06.000Z",
@@ -665,8 +630,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "/images/107192075_p0.jpg",
-    "categorys": ""
+    "featured_image": "/images/107192075_p0.jpg"
   },
   {
     "date": "2022-11-09T13:56:22.000Z",
@@ -684,8 +648,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2022-11-03T19:38:26.000Z",
@@ -701,8 +664,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2022-09-05T16:58:43.000Z",
@@ -721,8 +683,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2022-04-28T16:24:12.000Z",
@@ -740,8 +701,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "/images/speculo.png",
-    "categorys": ""
+    "featured_image": "/images/speculo.png"
   },
   {
     "date": "2022-03-05T18:33:06.000Z",
@@ -759,8 +719,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2021-10-01T16:16:18.000Z",
@@ -778,8 +737,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "/images/spring_wind.png",
-    "categorys": ""
+    "featured_image": "/images/spring_wind.png"
   },
   {
     "date": "2021-09-23T22:44:34.000Z",
@@ -796,8 +754,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2021-09-17T11:06:34.000Z",
@@ -816,8 +773,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2021-07-18T14:44:16.000Z",
@@ -831,8 +787,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2021-07-08T12:36:50.000Z",
@@ -853,8 +808,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2021-06-25T12:36:50.000Z",
@@ -871,8 +825,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2021-02-09T13:14:13.000Z",
@@ -888,8 +841,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2020-08-07T20:55:06.000Z",
@@ -907,8 +859,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2020-08-04T19:00:26.000Z",
@@ -924,8 +875,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2020-05-29T12:12:10.000Z",
@@ -943,8 +893,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2020-04-01T18:44:13.000Z",
@@ -960,8 +909,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2020-03-24T10:18:27.000Z",
@@ -980,8 +928,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2020-03-23T10:59:03.000Z",
@@ -999,8 +946,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2020-03-15T16:55:26.000Z",
@@ -1019,8 +965,7 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2020-03-05T16:30:37.000Z",
@@ -1038,13 +983,12 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": ""
+    "featured_image": ""
   },
   {
     "date": "2020-02-24T00:59:03.000Z",
     "description": "",
-    "categories": [],
+    "categories": "programming",
     "tags": [
       "编程",
       "高亮测试"
@@ -1056,7 +1000,6 @@ export default [
     "hideLevel": 5,
     "author": "",
     "math": false,
-    "featured_image": "",
-    "categorys": "programming"
+    "featured_image": ""
   }
 ] as const;

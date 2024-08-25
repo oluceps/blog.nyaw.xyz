@@ -43,7 +43,6 @@ getAllMdxFiles(directoryPath)
         author: frontMatter.author || "",
         math: frontMatter.math || false,
         featured_image: frontMatter.featured_image || "",
-        categorys: frontMatter.categorys || "",
       };
     });
 
