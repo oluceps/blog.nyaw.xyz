@@ -50,17 +50,13 @@ export default function Taxo() {
 				uniqueTagsArtiMap.get(its) ?
 					uniqueTagsArtiMap.set(its, [t, ...uniqueTagsArtiMap.get(its)])
 					: uniqueTagsArtiMap.set(its, [t])
+
 			}
 		}
 
-		allTags = allTags.filter((i) => !isIn(uniqueTags, i))
-
-
-		for (const i of allTags) {
+		for (const i of new Set(allTags)) {
 			uniqueTagsArtiMap.set([i], preData.filter((n) => isIn(n.tags, i)))
 		}
-
-		// console.log(uniqueTagsArtiMap)
 
 		// ===========
 
@@ -71,7 +67,7 @@ export default function Taxo() {
 		const uniqueCategArtiMap = new Map()
 
 		for (const i of allCateg) {
-			uniqueCategArtiMap.set([i], preData.filter((n) => n.categories == i))
+			uniqueCategArtiMap.set([i], preData.filter((n) => isIn(n.categories, i)))
 		}
 
 		return { cate: uniqueCategArtiMap, tag: uniqueTagsArtiMap }
@@ -79,7 +75,7 @@ export default function Taxo() {
 	}, "global-taxoData")(), { deferStream: false });
 
 	return (
-		<Suspense fallback={<PageLoading />}>
+		<Suspense fallback={<div class="loading loading-infinity loading-lg mt-20 text-sprout-400"/>}>
 			<Show when={rawData()}>
 				{(ctx) =>
 					<div class="mx-auto sm:w-2/3 2xl:w-7/12 flex flex-col grow w-11/12 space-y-8 mt-20">
