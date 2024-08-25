@@ -15,6 +15,7 @@ import { PageStateProvider } from "./PageState";
 import Taxo from "./Taxo";
 // import Footer from "./Footer";
 import Me from "~/ingredients/me";
+import Footer from "./Footer";
 
 const BackTopBtn = lazy(() => import("./BackTopBtn"));
 const Header = lazy(() => import("./Header"));
@@ -71,6 +72,7 @@ export function Layout(props: ParentProps) {
 					<Suspense>
 						<BackTopBtn />
 					</Suspense>
+					<Footer />
 				</div>
 			</PageStateProvider>
 		</MetaProvider>
