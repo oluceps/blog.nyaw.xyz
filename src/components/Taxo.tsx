@@ -85,7 +85,9 @@ export default function Taxo() {
 						<MetaProvider>
 							<Title>分类 - {cfg.title}</Title>
 							<Link rel="canonical" href={cfg.base_url + "/taxonomy"} />
-							<Meta property="og:description" content="taxonomy page" />
+							<Meta property="og:description" content={"taxonomy page for " + cfg.base_url} />
+							<Meta name="description" content={"taxonomy page for " + cfg.base_url} />
+							<Meta name="author" content={cfg.author} />
 						</MetaProvider>
 						<div class="flex space-x-2 items-center">
 							<div
