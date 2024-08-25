@@ -11,10 +11,10 @@ function isIn<T>(values: readonly T[], x: any): x is T {
 export default function Taxo() {
 	const [checked, setChecked] = createSignal(false);
 
-
 	type UnionToTuple<U> =
 		(U extends any ? (arg: U) => void : never) extends
 		(arg: infer T) => void ? [...UnionToTuple<Exclude<U, T>>, T] : [];
+
 	function intersect<T>(arr1: readonly T[], arr2: readonly T[]): T[] {
 		return arr1.filter(item => arr2.includes(item));
 	}
@@ -97,7 +97,7 @@ export default function Taxo() {
 			tag: allTags
 		}
 
-	}, "global-taxoData")(), { deferStream: false });
+	}, "global-taxoData")(), { deferStream: true });
 
 	return (
 		<Suspense fallback={<div class="loading loading-infinity loading-lg text-sprout-300 grow" />}>
