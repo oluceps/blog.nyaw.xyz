@@ -3,7 +3,6 @@ import { A, cache, createAsync } from "@solidjs/router";
 import cfg from "../constant";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { docsData } from "solid:collection";
-import PageLoading from "./Loading";
 
 export default function Taxo() {
 	const [checked, setChecked] = createSignal(false);
@@ -28,13 +27,18 @@ export default function Taxo() {
 		}
 
 		let allTags =
-			preData.reduce<string[]>((acc, item) => {
+			new Set(preData.reduce<string[]>((acc, item) => {
 				return item.tags ? acc.concat(item.tags) : acc;
-			}, [])
+			}, []))
 
-		const uniqueTags = findUniqueElements(allTags);
+		let allCate = new Set(
+			preData.reduce<string[]>((acc, item) => {
+				return item.categories ? acc.concat(item.categories) : acc;
+			}, []),
+		);
 
-		const uniqueTagsArtiMap = new Map()
+		// find all only one article tag
+		const onlyTag: Map<string, string> = new Map();
 
 		function isIn<T>(values: readonly T[], x: any): x is T {
 			return values.includes(x);
@@ -44,38 +48,64 @@ export default function Taxo() {
 			return arr1.filter(item => arr2.includes(item));
 		}
 
-		for (const t of preData) {
-			if (t.tags.some((i) => isIn(uniqueTags, i))) {
-				const its = intersect(t.tags, uniqueTags);
-				uniqueTagsArtiMap.get(its) ?
-					uniqueTagsArtiMap.set(its, [t, ...uniqueTagsArtiMap.get(its)])
-					: uniqueTagsArtiMap.set(its, [t])
-
+		for (const t of allTags) {
+			let count = 0;
+			let last;
+			for (const it of preData) {
+				if (isIn(it.tags, t)) {
+					count++;
+					last = it.title;
+				}
+			}
+			if (count == 1 && last) {
+				onlyTag.set(t, last);
+				allTags.delete(t);
 			}
 		}
+		// [A -> bbb, B -> bbb] => [ [A, B] -> bbb ]
+		const outputMap = new Map<string[], string>();
+		const tempMap = new Map<string, string[]>();
 
-		for (const i of new Set(allTags)) {
-			uniqueTagsArtiMap.set([i], preData.filter((n) => isIn(n.tags, i)))
+		onlyTag.forEach((value, key) => {
+			if (!tempMap.has(value)) {
+				tempMap.set(value, []);
+			}
+			tempMap.get(value)?.push(key);
+		});
+		tempMap.forEach((keys, value) => {
+			outputMap.set(keys, value);
+		});
+
+		for (const i of outputMap.keys()) {
+			allTags.add(i.join(" / "));
 		}
 
-		// ===========
+		const reversedMap: Map<string, string[]> = new Map();
 
-		let allCateg = Array.from(new Set(preData.reduce<string[]>((acc, item) => {
-			return item.categories ? acc.concat(item.categories) : acc;
-		}, [])))
-
-		const uniqueCategArtiMap = new Map()
-
-		for (const i of allCateg) {
-			uniqueCategArtiMap.set([i], preData.filter((n) => isIn(n.categories, i)))
+		outputMap.forEach((value, key) => {
+			reversedMap.set(value, key);
+		});
+		return {
+			data: preData.reduce<typeof preData>((acc, item) => {
+				if (Array.from(outputMap.values()).includes(item.title)) {
+					const updatedTags = (item
+						.tags!.filter((tag) => !Array.from(onlyTag.keys()).includes(tag)) as ReadonlyArray<string>)
+						.concat(reversedMap.get(item.title)?.join(" / ") || []);
+					// @ts-ignore
+					acc.push({ ...item, tags: updatedTags });
+					return acc;
+				}
+				acc.push({ ...item });
+				return acc;
+			}, []),
+			cate: allCate,
+			tag: allTags
 		}
-
-		return { cate: uniqueCategArtiMap, tag: uniqueTagsArtiMap }
 
 	}, "global-taxoData")(), { deferStream: false });
 
 	return (
-		<Suspense fallback={<div class="loading loading-infinity loading-lg text-sprout-300 grow"/>}>
+		<Suspense fallback={<div class="loading loading-infinity loading-lg text-sprout-300 grow" />}>
 			<Show when={rawData()}>
 				{(ctx) =>
 					<div class="mx-auto sm:w-2/3 2xl:w-7/12 flex flex-col grow w-11/12 space-y-8 mt-20">
@@ -120,7 +150,7 @@ export default function Taxo() {
 														.scrollIntoView({ behavior: "smooth" });
 												}}
 											>
-												{cat()[0].join('/')}
+												{cat()}
 												<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
 											</button>
 										);
@@ -138,15 +168,24 @@ export default function Taxo() {
 									return (
 										<>
 											<p class={checked() ? "mt-6" : "mt-4"} id={outerAttr()[0]}>
-												{outerAttr()[0].join(' / ')}
+												{outerAttr()}
 											</p>
 											<Index
-												each={outerAttr()[1]}>
+												each={ctx().data}>
 												{(attr) => {
+													const finalAttr = Array.from(attr()).filter((item) => {
+											return checked()
+												? item.tags
+													? item.tags.includes(outerAttr)
+													: false
+												: item.categories
+													? item.categories.includes(outerAttr)
+													: false;
+										})}
 													return (
 														<article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
 															<div class="no-underline mb-px font-light leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12">
-																{attr()
+																{finalAttr
 																	.date.toLocaleDateString("en-CA", {
 																		year: "numeric",
 																		month: "2-digit",
@@ -156,10 +195,10 @@ export default function Taxo() {
 																	.replace(/-/g, "/")}
 															</div>
 															<A
-																href={`/${attr().path}`}
+																href={`/${finalAttr.path}`}
 																class="no-underline text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-slug"
 															>
-																{attr().title}
+																{finalAttr.title}
 																<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
 															</A>
 														</article>
