@@ -3,6 +3,7 @@ import { A, cache, createAsync } from "@solidjs/router";
 import cfg from "../constant";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { docsData } from "solid:collection";
+import PageLoading from "./Loading";
 
 export default function Taxo() {
 	const [checked, setChecked] = createSignal(false);
@@ -75,10 +76,10 @@ export default function Taxo() {
 
 		return { cate: uniqueCategArtiMap, tag: uniqueTagsArtiMap }
 
-	}, "global-taxoData")(), { deferStream: true });
+	}, "global-taxoData")(), { deferStream: false });
 
 	return (
-		<Suspense>
+		<Suspense fallback={<PageLoading />}>
 			<Show when={rawData()}>
 				{(ctx) =>
 					<div class="mx-auto sm:w-2/3 2xl:w-7/12 flex flex-col grow w-11/12 space-y-8 mt-20">
