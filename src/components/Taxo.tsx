@@ -207,25 +207,27 @@ export default function Taxo() {
 														isIn(ist.categories, outerAttr()) ? judge = true : judge = false
 													}
 													return (
-														<article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
-															<div class="no-underline mb-px font-light leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12">
-																{ist
-																	.date.toLocaleDateString("en-CA", {
-																		year: "numeric",
-																		month: "2-digit",
-																		day: "2-digit",
-																	})
-																	.toString()
-																	.replace(/-/g, "/")}
-															</div>
-															<A
-																href={`/${ist.path}`}
-																class="no-underline text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-slug"
-															>
-																{ist.title}
-																<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
-															</A>
-														</article>
+														<Show when={judge}>
+															<article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
+																<div class="no-underline mb-px font-light leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12">
+																	{ist
+																		.date.toLocaleDateString("en-CA", {
+																			year: "numeric",
+																			month: "2-digit",
+																			day: "2-digit",
+																		})
+																		.toString()
+																		.replace(/-/g, "/")}
+																</div>
+																<A
+																	href={`/${ist.path}`}
+																	class="no-underline text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-slug"
+																>
+																	{ist.title}
+																	<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
+																</A>
+															</article>
+														</Show>
 													);
 												}
 												}
