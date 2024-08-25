@@ -75,7 +75,7 @@ export default function Taxo() {
 	}, "global-taxoData")(), { deferStream: false });
 
 	return (
-		<Suspense fallback={<div class="loading loading-infinity loading-lg mt-20 text-sprout-400"/>}>
+		<Suspense fallback={<div class="loading loading-infinity loading-lg text-sprout-300 grow"/>}>
 			<Show when={rawData()}>
 				{(ctx) =>
 					<div class="mx-auto sm:w-2/3 2xl:w-7/12 flex flex-col grow w-11/12 space-y-8 mt-20">
