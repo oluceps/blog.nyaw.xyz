@@ -7,6 +7,16 @@ import { docsData } from "solid:collection";
 export default function Taxo() {
 	const [checked, setChecked] = createSignal(false);
 
+	function isIn<T>(values: readonly T[], x: any): x is T {
+		return values.includes(x);
+	}
+	type UnionToTuple<U> =
+		(U extends any ? (arg: U) => void : never) extends
+		(arg: infer T) => void ? [...UnionToTuple<Exclude<U, T>>, T] : [];
+	function intersect<T>(arr1: readonly T[], arr2: readonly T[]): T[] {
+		return arr1.filter(item => arr2.includes(item));
+	}
+
 	const rawData = createAsync(() => cache(async () => {
 		"use server";
 		let preData = docsData.map((i) => {
@@ -16,15 +26,6 @@ export default function Taxo() {
 				const itemHideLvl = i.hideLevel || 5;
 				return cfg.hideLevel < itemHideLvl && !i.draft;
 			})
-
-		function findUniqueElements<T>(arr: T[]): T[] {
-			const elementCount: Record<string, number> = {};
-			arr.forEach((item) => {
-				const key = JSON.stringify(item);
-				elementCount[key] = (elementCount[key] || 0) + 1;
-			});
-			return arr.filter((item) => elementCount[JSON.stringify(item)] === 1);
-		}
 
 		let allTags =
 			new Set(preData.reduce<string[]>((acc, item) => {
@@ -39,14 +40,6 @@ export default function Taxo() {
 
 		// find all only one article tag
 		const onlyTag: Map<string, string> = new Map();
-
-		function isIn<T>(values: readonly T[], x: any): x is T {
-			return values.includes(x);
-		}
-
-		function intersect<T>(arr1: readonly T[], arr2: readonly T[]): T[] {
-			return arr1.filter(item => arr2.includes(item));
-		}
 
 		for (const t of allTags) {
 			let count = 0;
@@ -173,15 +166,16 @@ export default function Taxo() {
 											<Index
 												each={ctx().data}>
 												{(attr) => {
-													const finalAttr = Array.from(attr()).filter((item) => {
-											return checked()
-												? item.tags
-													? item.tags.includes(outerAttr)
-													: false
-												: item.categories
-													? item.categories.includes(outerAttr)
-													: false;
-										})}
+													const finalAttr = (attr() as any).filter((item: any) => {
+														return checked()
+															? item.tags
+																? isIn(item.tags, outerAttr())
+																: false
+															: item.categories
+																? isIn(item.categories, outerAttr())
+																: false;
+													})
+
 													return (
 														<article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
 															<div class="no-underline mb-px font-light leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12">
@@ -203,7 +197,8 @@ export default function Taxo() {
 															</A>
 														</article>
 													);
-												}}
+												}
+												}
 											</Index>
 										</>
 									);
