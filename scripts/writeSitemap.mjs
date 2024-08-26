@@ -5,7 +5,7 @@ const baseURL = "https://blog.nyaw.xyz";
 
 const readData = async () => {
 	const filePath = path.resolve("src/routes/data.ts");
-	const data = (await fs.readFile(filePath, "utf-8")).slice(15,-10);
+	const data = (await fs.readFile(filePath, "utf-8")).slice(15, -10);
 	return JSON.parse(data);
 };
 

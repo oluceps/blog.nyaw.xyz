@@ -1,8 +1,5 @@
 declare module "solid:collection" {
+	import docsData from "src/routes/data";
 
-  import docsData from "src/routes/data"
-
-  export {
-    docsData
-  };
+	export { docsData };
 }

@@ -2,7 +2,6 @@ import type { Component } from "solid-js";
 import cfg from "../constant";
 
 const Footer: Component = () => {
-
 	return (
 		<div class="relative bottom-0 w-full justify-end text-[10px] group flex-nowrap">
 			<div class="group-hover:block hidden">

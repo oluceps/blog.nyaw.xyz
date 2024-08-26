@@ -4,41 +4,48 @@ import cfg from "../constant";
 import { docsData } from "solid:collection";
 
 export const Arti: Component = () => {
+	const ctx = createAsync(
+		() =>
+			cache(async () => {
+				"use server";
+				const t = docsData
+					.map((i) => {
+						return { ...i, date: new Date(i.date) };
+					})
+					.filter((i: any) => {
+						const itemHideLvl = i.hideLevel || 5;
+						return cfg.hideLevel < itemHideLvl && !i.draft;
+					});
 
-	const ctx = createAsync(() => cache(async () => {
-		"use server";
-		const t = docsData.map((i) => {
-			return { ...i, date: new Date(i.date) };
-		})
-			.filter((i: any) => {
-				const itemHideLvl = i.hideLevel || 5;
-				return cfg.hideLevel < itemHideLvl && !i.draft;
-			})
+				// Convince v8.
+				const o = new Map<number, typeof t>();
+				let ty = Number.POSITIVE_INFINITY;
+				for (const s of t) {
+					const artiYear = s.date.getFullYear();
+					if (artiYear < ty) {
+						ty = artiYear;
+						o.set(artiYear, [s]);
+					} else {
+						o.set(artiYear, Array.prototype.concat(o.get(artiYear), s));
+					}
+				}
 
-		// Convince v8.
-		const o = new Map<number, typeof t>();
-		let ty = Number.POSITIVE_INFINITY;
-		for (const s of t) {
-			const artiYear = s.date.getFullYear();
-			if (artiYear < ty) {
-				ty = artiYear;
-				o.set(artiYear, [s]);
-			} else {
-				o.set(artiYear, Array.prototype.concat(o.get(artiYear), s));
-			}
-		}
-
-		return o
-	}, "global-docData")(), { deferStream: true });
+				return o;
+			}, "global-docData")(),
+		{ deferStream: true },
+	);
 
 	return (
 		<>
-			<Suspense fallback={
-				<div class="flex flex-col h-full items-center justify-center grow w-full">
-					<div class="loading loading-infinity loading-lg text-sprout-300 " />
-				</div>}>
+			<Suspense
+				fallback={
+					<div class="flex flex-col h-full items-center justify-center grow w-full">
+						<div class="loading loading-infinity loading-lg text-sprout-300 " />
+					</div>
+				}
+			>
 				<Show when={ctx()}>
-					{(data) =>
+					{(data) => (
 						<Index each={Array.from(data().keys())}>
 							{(attr) => {
 								return (
@@ -70,14 +77,15 @@ export const Arti: Component = () => {
 															</article>
 
 															<div class="flex justify-end">
-
 																<Show
 																	when={inner().categories.length !== 0}
 																	fallback={<div class="h-4" />}
 																>
 																	<A
 																		class="pl-6 text-xs 2xl:text-base text-slate-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
-																		href={"/taxonomy#" + inner().categories[0] || ""}
+																		href={
+																			"/taxonomy#" + inner().categories[0] || ""
+																		}
 																	>
 																		{inner().categories[0] as string}
 																		<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
@@ -92,10 +100,10 @@ export const Arti: Component = () => {
 									</>
 								);
 							}}
-						</Index>}
+						</Index>
+					)}
 				</Show>
-			</Suspense >
+			</Suspense>
 		</>
 	);
 };
-

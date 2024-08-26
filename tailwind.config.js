@@ -30,12 +30,14 @@ export default {
 					"PingFang SC",
 					"Hiragino Sans GB",
 					"Microsoft YaHei",
-					...defaultTheme.fontFamily.sans],
+					...defaultTheme.fontFamily.sans,
+				],
 				serif: [
 					"PingFang SC",
 					"Hiragino Sans GB",
 					"Microsoft YaHei",
-					...defaultTheme.fontFamily.serif],
+					...defaultTheme.fontFamily.serif,
+				],
 				mono: [
 					"Geist Mono",
 					"PingFang SC",

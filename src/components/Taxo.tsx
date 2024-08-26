@@ -11,104 +11,123 @@ function isIn<T>(values: readonly T[], x: any): x is T {
 export default function Taxo() {
 	const [checked, setChecked] = createSignal(false);
 
-	type UnionToTuple<U> =
-		(U extends any ? (arg: U) => void : never) extends
-		(arg: infer T) => void ? [...UnionToTuple<Exclude<U, T>>, T] : [];
+	type UnionToTuple<U> = (U extends any ? (arg: U) => void : never) extends (
+		arg: infer T,
+	) => void
+		? [...UnionToTuple<Exclude<U, T>>, T]
+		: [];
 
 	function intersect<T>(arr1: readonly T[], arr2: readonly T[]): T[] {
-		return arr1.filter(item => arr2.includes(item));
+		return arr1.filter((item) => arr2.includes(item));
 	}
 
-	const rawData = createAsync(() => cache(async () => {
-		"use server";
-		let preData = docsData.map((i) => {
-			return { ...i, date: new Date(i.date) };
-		})
-			.filter((i: any) => {
-				const itemHideLvl = i.hideLevel || 5;
-				return cfg.hideLevel < itemHideLvl && !i.draft;
-			})
+	const rawData = createAsync(
+		() =>
+			cache(async () => {
+				"use server";
+				let preData = docsData
+					.map((i) => {
+						return { ...i, date: new Date(i.date) };
+					})
+					.filter((i: any) => {
+						const itemHideLvl = i.hideLevel || 5;
+						return cfg.hideLevel < itemHideLvl && !i.draft;
+					});
 
-		let allTags =
-			new Set(preData.reduce<string[]>((acc, item) => {
-				return item.tags ? acc.concat(item.tags) : acc;
-			}, []))
+				let allTags = new Set(
+					preData.reduce<string[]>((acc, item) => {
+						return item.tags ? acc.concat(item.tags) : acc;
+					}, []),
+				);
 
-		let allCate = new Set(
-			preData.reduce<string[]>((acc, item) => {
-				return item.categories ? acc.concat(item.categories) : acc;
-			}, []),
-		);
+				let allCate = new Set(
+					preData.reduce<string[]>((acc, item) => {
+						return item.categories ? acc.concat(item.categories) : acc;
+					}, []),
+				);
 
-		// find all only one article tag
-		const onlyTag: Map<string, string> = new Map();
+				// find all only one article tag
+				const onlyTag: Map<string, string> = new Map();
 
-		for (const t of allTags) {
-			let count = 0;
-			let last;
-			for (const it of preData) {
-				if (isIn(it.tags, t)) {
-					count++;
-					last = it.title;
+				for (const t of allTags) {
+					let count = 0;
+					let last;
+					for (const it of preData) {
+						if (isIn(it.tags, t)) {
+							count++;
+							last = it.title;
+						}
+					}
+					if (count == 1 && last) {
+						onlyTag.set(t, last);
+						allTags.delete(t);
+					}
 				}
-			}
-			if (count == 1 && last) {
-				onlyTag.set(t, last);
-				allTags.delete(t);
-			}
-		}
-		// [A -> bbb, B -> bbb] => [ [A, B] -> bbb ]
-		const outputMap = new Map<string[], string>();
-		const tempMap = new Map<string, string[]>();
+				// [A -> bbb, B -> bbb] => [ [A, B] -> bbb ]
+				const outputMap = new Map<string[], string>();
+				const tempMap = new Map<string, string[]>();
 
-		onlyTag.forEach((value, key) => {
-			if (!tempMap.has(value)) {
-				tempMap.set(value, []);
-			}
-			tempMap.get(value)?.push(key);
-		});
-		tempMap.forEach((keys, value) => {
-			outputMap.set(keys, value);
-		});
+				onlyTag.forEach((value, key) => {
+					if (!tempMap.has(value)) {
+						tempMap.set(value, []);
+					}
+					tempMap.get(value)?.push(key);
+				});
+				tempMap.forEach((keys, value) => {
+					outputMap.set(keys, value);
+				});
 
-		for (const i of outputMap.keys()) {
-			allTags.add(i.join(" / "));
-		}
-
-		const reversedMap: Map<string, string[]> = new Map();
-
-		outputMap.forEach((value, key) => {
-			reversedMap.set(value, key);
-		});
-		return {
-			data: preData.reduce<typeof preData>((acc, item) => {
-				if (Array.from(outputMap.values()).includes(item.title)) {
-					const updatedTags = (item
-						.tags!.filter((tag) => !Array.from(onlyTag.keys()).includes(tag)) as ReadonlyArray<string>)
-						.concat(reversedMap.get(item.title)?.join(" / ") || []);
-					// @ts-ignore
-					acc.push({ ...item, tags: updatedTags });
-					return acc;
+				for (const i of outputMap.keys()) {
+					allTags.add(i.join(" / "));
 				}
-				acc.push({ ...item });
-				return acc;
-			}, []),
-			cate: allCate,
-			tag: allTags
-		}
 
-	}, "global-taxoData")(), { deferStream: true });
+				const reversedMap: Map<string, string[]> = new Map();
+
+				outputMap.forEach((value, key) => {
+					reversedMap.set(value, key);
+				});
+				return {
+					data: preData.reduce<typeof preData>((acc, item) => {
+						if (Array.from(outputMap.values()).includes(item.title)) {
+							const updatedTags = (
+								item.tags!.filter(
+									(tag) => !Array.from(onlyTag.keys()).includes(tag),
+								) as ReadonlyArray<string>
+							).concat(reversedMap.get(item.title)?.join(" / ") || []);
+							// @ts-ignore
+							acc.push({ ...item, tags: updatedTags });
+							return acc;
+						}
+						acc.push({ ...item });
+						return acc;
+					}, []),
+					cate: allCate,
+					tag: allTags,
+				};
+			}, "global-taxoData")(),
+		{ deferStream: true },
+	);
 
 	return (
-		<Suspense fallback={<div class="loading loading-infinity loading-lg text-sprout-300 grow" />}>
+		<Suspense
+			fallback={
+				<div class="loading loading-infinity loading-lg text-sprout-300 grow" />
+			}
+		>
 			<Show when={rawData()}>
-				{(ctx) =>
+				{(ctx) => (
 					<div class="mx-auto sm:w-2/3 2xl:w-7/12 flex flex-col grow w-11/12 space-y-8 mt-20">
 						<MetaProvider>
 							<Title>分类 - {cfg.title}</Title>
 							<Link rel="canonical" href={cfg.base_url + "/taxonomy"} />
-							<Meta property="og:description" content={"taxonomy page for " + cfg.base_url} />
-							<Meta name="description" content={"taxonomy page for " + cfg.base_url} />
+							<Meta
+								property="og:description"
+								content={"taxonomy page for " + cfg.base_url}
+							/>
+							<Meta
+								name="description"
+								content={"taxonomy page for " + cfg.base_url}
+							/>
 							<Meta name="author" content={cfg.author} />
 						</MetaProvider>
 						<div class="flex space-x-2 items-center">
@@ -132,9 +151,7 @@ export default function Taxo() {
 						<div class="w-full flex flex-col">
 							<p class="text-neutral-700 font-bold">All</p>
 							<div class="flex flex-wrap text-sm justify-center">
-								<Index
-									each={Array.from(checked() ? ctx().tag : ctx().cate)}
-								>
+								<Index each={Array.from(checked() ? ctx().tag : ctx().cate)}>
 									{(cat) => {
 										return (
 											<button
@@ -157,31 +174,32 @@ export default function Taxo() {
 						<div class="divider" />
 
 						<div class="antialiased flex flex-col sm:mx-3 md:mx-10 2xl:mx-16">
-							<Index
-								each={Array.from(checked() ? ctx().tag : ctx().cate)}>
+							<Index each={Array.from(checked() ? ctx().tag : ctx().cate)}>
 								{(outerAttr) => {
 									return (
 										<>
-											<p class={checked() ? "mt-6" : "mt-4"} id={outerAttr()[0]}>
+											<p
+												class={checked() ? "mt-6" : "mt-4"}
+												id={outerAttr()[0]}
+											>
 												{outerAttr()}
 											</p>
-											<Index
-												each={ctx().data}>
+											<Index each={ctx().data}>
 												{(attr) => {
-													const a = attr()
+													const a = attr();
 													interface A {
-														date: Date
-														description: string
-														categories: string[]
-														tags: string[]
-														toc: boolean
-														title: string
-														path: string
-														draft: boolean
-														hideLevel: number
-														author: string
-														math: boolean
-														featured_image: string
+														date: Date;
+														description: string;
+														categories: string[];
+														tags: string[];
+														toc: boolean;
+														title: string;
+														path: string;
+														draft: boolean;
+														hideLevel: number;
+														author: string;
+														math: boolean;
+														featured_image: string;
 													}
 													function instantiaz(value: typeof a): A {
 														return {
@@ -202,16 +220,20 @@ export default function Taxo() {
 													let judge;
 													const ist = instantiaz(attr());
 													if (checked()) {
-														isIn(ist.tags, outerAttr()) ? judge = true : judge = false
+														isIn(ist.tags, outerAttr())
+															? (judge = true)
+															: (judge = false);
 													} else {
-														isIn(ist.categories, outerAttr()) ? judge = true : judge = false
+														isIn(ist.categories, outerAttr())
+															? (judge = true)
+															: (judge = false);
 													}
 													return (
 														<Show when={judge}>
 															<article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
 																<div class="no-underline mb-px font-light leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12">
-																	{ist
-																		.date.toLocaleDateString("en-CA", {
+																	{ist.date
+																		.toLocaleDateString("en-CA", {
 																			year: "numeric",
 																			month: "2-digit",
 																			day: "2-digit",
@@ -229,8 +251,7 @@ export default function Taxo() {
 															</article>
 														</Show>
 													);
-												}
-												}
+												}}
 											</Index>
 										</>
 									);
@@ -238,7 +259,7 @@ export default function Taxo() {
 							</Index>
 						</div>
 					</div>
-				}
+				)}
 			</Show>
 		</Suspense>
 	);
