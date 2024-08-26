@@ -98,6 +98,9 @@ export default defineConfig({
 		preset: "vercel-edge",
 		prerender: {
 			crawlLinks: true,
+			autoSubfolderIndex: false,
+			failOnError: true,
+			ignore: [/\{\getPath}/, /.*?emojiSvg\(.*/],
 		},
 	},
 });
