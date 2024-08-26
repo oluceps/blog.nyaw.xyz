@@ -28,6 +28,7 @@
 
           # broken `nix flake show` but doesn't matter.
           devenv.shells.default = {
+            dotenv.enable = true;
             languages.javascript = {
               enable = true;
               npm.install.enable = false;

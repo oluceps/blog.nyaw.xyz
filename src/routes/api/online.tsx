@@ -6,8 +6,8 @@ export async function GET() {
 	}
 
 	const qBody = {
-		i: "RWKGJuqW8xcIsSd2kfKhgHOPzePHWMNu",
-		userId: "9wmrojkev8wp001z",
+		i: import.meta.env.VITE_MSKY_TOKEN,
+		userId: import.meta.env.VITE_MSKY_USER_ID,
 	};
 	const misskeyInstance = "https://nyaw.xyz";
 

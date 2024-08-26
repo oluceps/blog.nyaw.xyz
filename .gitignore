@@ -1,3 +1,4 @@
+.env
 /public/sitemap.xml
 /src/routes/data.json
 /src/routes/data.ts
