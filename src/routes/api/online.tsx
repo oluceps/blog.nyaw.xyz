@@ -19,10 +19,10 @@ export async function GET() {
 				})
 				.json<UserResponse>();
 
-			return response.onlineStatus === "online";
+			return response.onlineStatus === "online" ? 1 : 0;
 		} catch (error) {
 			console.error("Failed to fetch user status:", error);
-			return false;
+			return 0;
 		}
 	};
 
