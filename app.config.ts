@@ -51,6 +51,7 @@ const remarkExpressiveCodeOptions = {
 };
 
 export default defineConfig({
+	middleware: "src/middleware/index.ts",
 	extensions: ["mdx", "md", "tsx"],
 	vite: {
 		plugins: [
