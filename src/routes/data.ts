@@ -1,4 +1,5 @@
 export default [
+
   {
     "date": "2024-08-14T22:23:26.995Z",
     "description": "自签 AVB 并在获取 root 后锁定Bootloader",
