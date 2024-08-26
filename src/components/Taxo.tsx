@@ -25,7 +25,7 @@ export default function Taxo() {
 		() =>
 			cache(async () => {
 				"use server";
-				let preData = docsData
+				const preData = docsData
 					.map((i) => {
 						return { ...i, date: new Date(i.date) };
 					})
@@ -34,13 +34,13 @@ export default function Taxo() {
 						return cfg.hideLevel < itemHideLvl && !i.draft;
 					});
 
-				let allTags = new Set(
+				const allTags = new Set(
 					preData.reduce<string[]>((acc, item) => {
 						return item.tags ? acc.concat(item.tags) : acc;
 					}, []),
 				);
 
-				let allCate = new Set(
+				const allCate = new Set(
 					preData.reduce<string[]>((acc, item) => {
 						return item.categories ? acc.concat(item.categories) : acc;
 					}, []),
