@@ -1,27 +1,14 @@
-import { onCleanup, Show, type Component, type ParentProps } from "solid-js";
+import { onCleanup, Show, type Component } from "solid-js";
 import { createSignal, onMount } from "solid-js";
 import ky from "ky";
 import { twMerge } from "tailwind-merge";
-interface UserResponse {
-	onlineStatus: string;
-}
 const OnlineIndicator: Component = () => {
 	const [isOnline, setIsOnline] = createSignal(false);
-	const qBody = {
-		i: "RWKGJuqW8xcIsSd2kfKhgHOPzePHWMNu",
-		userId: "9wmrojkev8wp001z",
-	};
-	const misskeyInstance = "https://nyaw.xyz";
 
 	const fetchOnlineStatus = async () => {
 		try {
-			const response = await ky
-				.post(`${misskeyInstance}/api/users/show`, {
-					json: qBody,
-				})
-				.json<UserResponse>();
-
-			setIsOnline(response.onlineStatus === "online");
+			const response = await ky.get(`/api/online`).json<boolean>();
+			setIsOnline(response);
 		} catch (error) {
 			console.error("Failed to fetch user status:", error);
 			setIsOnline(false);
