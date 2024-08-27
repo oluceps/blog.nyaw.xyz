@@ -95,11 +95,14 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 		);
 	});
 
+	const textAttr = "no-underline font-normal hover:font-bold hover:text-slate-600";
+	const olAttr = "pl-1.5 text-xs text-slate-500 list-disc decoration-sprout-300 active:font-bold hover:text-slate-700 active:text-sprout-600 space-y-0.5";
+
 	return (
 		<div class="w-full">
 			<ol
 				role="list"
-				class="text-xs list-none marker:text-sprout-400 mt-2 p-0 flex flex-col pl-2.5 space-y-1"
+				class={olAttr}
 			>
 				<Index each={pageSections.sections}>
 					{(section) => {
@@ -110,10 +113,10 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 										<a
 											href={`#${section().id}`}
 											classList={{
-												"text-sprout-600 hover:text-slate-700 font-bold":
+												"text-sprout-600 hover:text-slate-700":
 													currentSection() === section().id,
 											}}
-											class="no-underline hover:font-bold hover:text-slate-700"
+											class={textAttr}
 											target="_self"
 										>
 											{section().text}
@@ -123,18 +126,14 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 									<Show when={section().children.length !== 0}>
 										<ol
 											role="list"
-											class="pl-2.5 text-slate-500 list-disc decoration-sprout-300 active:font-bold hover:text-slate-700 font-bold active:text-sprout-600 space-y-0.5"
+											class={olAttr}
 										>
 											<Index each={section().children}>
 												{(subSection, idxSubSec) => (
 													<li class="pl-1.5 pt-0 space-y-px list-disc marker:text-sprout-400 my-0">
 														<a
 															href={`#${subSection().id}`}
-															classList={{
-																"text-sprout-600 hover:text-slate-700 font-bold":
-																	currentSection() === subSection().id,
-															}}
-															class="no-underline hover:font-bold hover:text-slate-700"
+															class={textAttr}
 															target="_self"
 														>
 															{subSection().text}
@@ -143,7 +142,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 														<Show when={section().children.length !== 0}>
 															<ol
 																role="list"
-																class="pl-1.5 text-slate-500 list-disc decoration-sprout-300 active:font-bold hover:text-slate-700 active:text-sprout-600 space-y-0.5"
+																class={olAttr}
 															>
 																<Index
 																	each={section().children[idxSubSec].children}
@@ -152,12 +151,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 																		<li class="my-0">
 																			<a
 																				href={`#${subSectionSub().id}`}
-																				classList={{
-																					"text-sprout-600 hover:text-slate-700":
-																						currentSection() ===
-																						subSectionSub().id,
-																				}}
-																				class="no-underline hover:font-bold hover:text-slate-700"
+																				class={textAttr}
 																				target="_self"
 																			>
 																				{subSectionSub().text}
