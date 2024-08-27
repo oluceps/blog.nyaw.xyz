@@ -143,7 +143,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 														<Show when={section().children.length !== 0}>
 															<ol
 																role="list"
-																class="pl-1.5 text-slate-500 list-disc decoration-sprout-300 active:font-bold hover:text-slate-700 font-bold active:text-sprout-600 space-y-0.5"
+																class="pl-1.5 text-slate-500 list-disc decoration-sprout-300 active:font-bold hover:text-slate-700 active:text-sprout-600 space-y-0.5"
 															>
 																<Index
 																	each={section().children[idxSubSec].children}
@@ -153,7 +153,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 																			<a
 																				href={`#${subSectionSub().id}`}
 																				classList={{
-																					"text-sprout-600 hover:text-slate-700 font-bold":
+																					"text-sprout-600 hover:text-slate-700":
 																						currentSection() ===
 																						subSectionSub().id,
 																				}}
