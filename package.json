@@ -9,6 +9,9 @@
 	},
 	"dependencies": {
 		"@mdx-js/mdx": "^2.3.0",
+		"@myriaddreamin/typst-ts-renderer": "0.5.0-rc7",
+		"@myriaddreamin/typst-ts-web-compiler": "0.5.0-rc7",
+		"@myriaddreamin/typst.ts": "0.5.0-rc7",
 		"@solid-primitives/map": "^0.4.11",
 		"@solid-primitives/script-loader": "^2.2.0",
 		"@solidjs/router": "^0.13.6",

@@ -11,6 +11,15 @@ importers:
       '@mdx-js/mdx':
         specifier: ^2.3.0
         version: 2.3.0
+      '@myriaddreamin/typst-ts-renderer':
+        specifier: 0.5.0-rc7
+        version: 0.5.0-rc7
+      '@myriaddreamin/typst-ts-web-compiler':
+        specifier: 0.5.0-rc7
+        version: 0.5.0-rc7
+      '@myriaddreamin/typst.ts':
+        specifier: 0.5.0-rc7
+        version: 0.5.0-rc7(@myriaddreamin/typst-ts-renderer@0.5.0-rc7)(@myriaddreamin/typst-ts-web-compiler@0.5.0-rc7)
       '@solid-primitives/map':
         specifier: ^0.4.11
         version: 0.4.11(solid-js@1.8.20)
@@ -703,6 +712,23 @@ packages:
 
   '@motionone/utils@10.18.0':
     resolution: {integrity: sha512-3XVF7sgyTSI2KWvTf6uLlBJ5iAgRgmvp3bpuOiQJvInd4nZ19ET8lX5unn30SlmRH7hXbBbH+Gxd0m0klJ3Xtw==}
+
+  '@myriaddreamin/typst-ts-renderer@0.5.0-rc7':
+    resolution: {integrity: sha512-QavrR0TnkCh31bS+Rk54Uf13MOI703LmDwaizikQ99BfHorUikCpkPm8IxUFHXqM3NEbkcSeKUPDHC+NS03P7g==}
+
+  '@myriaddreamin/typst-ts-web-compiler@0.5.0-rc7':
+    resolution: {integrity: sha512-+XNeYZfpCiC+eSkPKkni9nT7Hi+Ghqe6f7YsZw4k5/HD6pd6gTrvh00ATA15v8pjrvrtZ8MkY24Jt0A1q/Nh8Q==}
+
+  '@myriaddreamin/typst.ts@0.5.0-rc7':
+    resolution: {integrity: sha512-4Oc8zUb2reQ5wbtn+YnPzSpOAe0dE+To7d1YzLTCy8VVtxM8hBoKmWKZPJUiW0NW7E0rpwvnvXeRrhvPG6LxRg==}
+    peerDependencies:
+      '@myriaddreamin/typst-ts-renderer': ^0.5.0-rc7
+      '@myriaddreamin/typst-ts-web-compiler': ^0.5.0-rc7
+    peerDependenciesMeta:
+      '@myriaddreamin/typst-ts-renderer':
+        optional: true
+      '@myriaddreamin/typst-ts-web-compiler':
+        optional: true
 
   '@netlify/functions@2.8.1':
     resolution: {integrity: sha512-+6wtYdoz0yE06dSa9XkP47tw5zm6g13QMeCwM3MmHx1vn8hzwFa51JtmfraprdkL7amvb7gaNM+OOhQU1h6T8A==}
@@ -2045,6 +2071,9 @@ packages:
   human-signals@5.0.0:
     resolution: {integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==}
     engines: {node: '>=16.17.0'}
+
+  idb@7.1.1:
+    resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
 
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
@@ -4163,6 +4192,17 @@ snapshots:
       hey-listen: 1.0.8
       tslib: 2.6.3
 
+  '@myriaddreamin/typst-ts-renderer@0.5.0-rc7': {}
+
+  '@myriaddreamin/typst-ts-web-compiler@0.5.0-rc7': {}
+
+  '@myriaddreamin/typst.ts@0.5.0-rc7(@myriaddreamin/typst-ts-renderer@0.5.0-rc7)(@myriaddreamin/typst-ts-web-compiler@0.5.0-rc7)':
+    dependencies:
+      idb: 7.1.1
+    optionalDependencies:
+      '@myriaddreamin/typst-ts-renderer': 0.5.0-rc7
+      '@myriaddreamin/typst-ts-web-compiler': 0.5.0-rc7
+
   '@netlify/functions@2.8.1':
     dependencies:
       '@netlify/serverless-functions-api': 1.19.1
@@ -5669,6 +5709,8 @@ snapshots:
   human-signals@4.3.1: {}
 
   human-signals@5.0.0: {}
+
+  idb@7.1.1: {}
 
   ieee754@1.2.1: {}
 
