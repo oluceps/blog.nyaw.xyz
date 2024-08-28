@@ -5,14 +5,14 @@ import { MDXProvider } from "solid-mdx";
 import Mdx from "./components/Mdx";
 import "./style.css";
 import { Layout } from "./components/Layout";
-import NotFound from "./components/NotFound";
+import IErr from "./components/IErr";
 
 export default function App() {
 	return (
 		<Router
 			root={(props) => (
 				<main>
-					<ErrorBoundary fallback={<NotFound />}>
+					<ErrorBoundary fallback={<IErr/>}>
 						<Layout>
 							<MDXProvider components={Mdx}>
 								<Suspense>{props.children}</Suspense>
