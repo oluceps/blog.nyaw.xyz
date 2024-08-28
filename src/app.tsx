@@ -13,7 +13,11 @@ export default function App() {
 		<Router
 			root={(props) => (
 				<main>
-					<ErrorBoundary fallback={e => e.message == 404 ? <NotFound /> : <IErr>{e.message}</IErr>}>
+					<ErrorBoundary
+						fallback={(e) =>
+							e.message == 404 ? <NotFound /> : <IErr>{e.message}</IErr>
+						}
+					>
 						<Layout>
 							<MDXProvider components={Mdx}>
 								<Suspense>{props.children}</Suspense>

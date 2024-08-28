@@ -95,15 +95,14 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 		);
 	});
 
-	const textAttr = "no-underline font-normal hover:font-bold hover:text-slate-600";
-	const olAttr = "pl-3 text-xs text-slate-500 list-disc decoration-sprout-300 active:font-bold hover:text-slate-700 active:text-sprout-600 space-y-0.5";
+	const textAttr =
+		"no-underline font-normal hover:font-bold hover:text-slate-600";
+	const olAttr =
+		"pl-3 text-xs text-slate-500 list-disc decoration-sprout-300 active:font-bold hover:text-slate-700 active:text-sprout-600 space-y-0.5";
 
 	return (
 		<div class="w-full">
-			<ol
-				role="list"
-				class={olAttr}
-			>
+			<ol role="list" class={olAttr}>
 				<Index each={pageSections.sections}>
 					{(section) => {
 						return (
@@ -124,10 +123,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 									</span>
 
 									<Show when={section().children.length !== 0}>
-										<ol
-											role="list"
-											class={olAttr}
-										>
+										<ol role="list" class={olAttr}>
 											<Index each={section().children}>
 												{(subSection, idxSubSec) => (
 													<li class="pl-1.5 pt-0 space-y-px list-disc marker:text-sprout-400 my-0">
@@ -140,10 +136,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 														</a>
 
 														<Show when={section().children.length !== 0}>
-															<ol
-																role="list"
-																class={olAttr}
-															>
+															<ol role="list" class={olAttr}>
 																<Index
 																	each={section().children[idxSubSec].children}
 																>

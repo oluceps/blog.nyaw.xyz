@@ -83,9 +83,7 @@ export const Arti: Component = () => {
 																>
 																	<A
 																		class="pl-6 text-xs 2xl:text-base text-slate-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
-																		href={
-																			"/taxonomy"
-																		}
+																		href={"/taxonomy"}
 																	>
 																		{inner().categories[0] as string}
 																		<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />

@@ -1,10 +1,5 @@
 import { Link, Meta, Title } from "@solidjs/meta";
-import {
-	Show,
-	type ParentComponent,
-	children,
-	Suspense,
-} from "solid-js";
+import { Show, type ParentComponent, children, Suspense } from "solid-js";
 import cfg from "../constant";
 import { cache, createAsync, useLocation } from "@solidjs/router";
 import { TableOfContents } from "./Toc";
@@ -89,7 +84,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 					}
 					// TODO: This must tolerate the delay
 					// No frontmatter here
-					return (resolved())
+					return resolved();
 				}}
 			</Show>
 		</Suspense>
