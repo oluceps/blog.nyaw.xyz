@@ -1,3 +1,3 @@
-import NotFound from "~/components/NotFound";
-
-export default NotFound;
+export default function NoEntry() {
+	throw new Error("404");
+}
