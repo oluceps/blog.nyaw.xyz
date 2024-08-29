@@ -5,7 +5,7 @@ import { HttpStatusCode } from "@solidjs/start";
 const IErr = (props: ParentProps) => {
 	return (
 		<Layout>
-			<div class="flex flex-col w-full items-center justify-center h-full grow text-lg font-mono text-red-400">
+			<div class="flex flex-col w-full items-center justify-center h-full grow text-lg text-red-400">
 				<HttpStatusCode code={500} />
 				{props.children} (ﾟд⊙)
 			</div>

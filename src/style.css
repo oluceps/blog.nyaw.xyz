@@ -1,5 +1,3 @@
-@import "./styles/prism.css";
-@import "./styles/expressive-code.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
