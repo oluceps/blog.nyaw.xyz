@@ -4,6 +4,7 @@ import cfg from "../constant";
 import { cache, createAsync, useLocation } from "@solidjs/router";
 import { TableOfContents } from "./Toc";
 import { docsData } from "solid:collection";
+import "../styles/fonts.css"
 
 function formatDate(date: Date | undefined) {
 	if (date === undefined) {
