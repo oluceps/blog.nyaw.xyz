@@ -129,6 +129,11 @@ export default function Taxo() {
 								content={"taxonomy page for " + cfg.base_url}
 							/>
 							<Meta name="author" content={cfg.author} />
+							<Link
+								rel="stylesheet"
+								crossOrigin="anonymous"
+								href="https://cdn.jsdelivr.net/npm/@fontsource/geist-mono@5.0.3/latin.min.css"
+							/>
 						</MetaProvider>
 						<div class="flex space-x-2 items-center">
 							<div
