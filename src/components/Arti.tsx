@@ -59,7 +59,7 @@ export const Arti: Component = () => {
 													<Suspense fallback="h-8 my-3 w-full skeleton">
 														<div class="antialiased flex flex-col mx-3 md:mx-8 2xl:mx-12">
 															<article class="flex overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
-																<div class="no-underline font-light leading-snug font-mono text-slate-600 min-w-12">
+																<div class="no-underline font-light leading-snug text-slate-600 min-w-12">
 																	{inner()
 																		.date.toLocaleDateString("en-US", {
 																			month: "2-digit",
