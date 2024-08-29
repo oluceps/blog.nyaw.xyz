@@ -27,7 +27,7 @@ const cstomLink = (props: ParentProps & { href: string }) => {
 
 	return (
 		<A
-			class="underline-offset-4 decoration-dashed inline items-center space-x-px group break-all pr-0.5"
+			class="underline-offset-4 decoration-dashed inline items-center space-x-px group break-all pr-0.5 font-normal"
 			target="_blank"
 			rel="noopener noreferrer nofollow"
 			{...rest}
