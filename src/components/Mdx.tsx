@@ -11,7 +11,6 @@ import { Emph, type EmphProps } from "../ingredients/emph";
 import Col from "~/ingredients/collapse";
 import cfg from "../constant";
 import { Icon } from "solid-heroicons";
-import { link } from "solid-heroicons/solid";
 import Reveal from "~/ingredients/rand-reveal";
 
 const cstomLink = (props: ParentProps & { href: string }) => {
@@ -28,16 +27,12 @@ const cstomLink = (props: ParentProps & { href: string }) => {
 
 	return (
 		<A
-			class="underline-offset-4 inline items-center space-x-px group break-all pr-0.5"
+			class="underline-offset-4 decoration-dashed inline items-center space-x-px group break-all pr-0.5"
 			target="_blank"
 			rel="noopener noreferrer nofollow"
 			{...rest}
 		>
 			<span>{resolved()}</span>
-			<Icon
-				path={link}
-				class="group-hover:animate-shaking inline w-3.5 h-3.5 mb-0.5"
-			/>
 		</A>
 	);
 };
