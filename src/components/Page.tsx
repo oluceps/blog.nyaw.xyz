@@ -68,16 +68,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 									crossOrigin="anonymous"
 									href="https://cdn.jsdelivr.net/npm/@fontsource/geist-mono@5.0.3/latin.min.css"
 								/>
-								<Link
-									rel="stylesheet"
-									crossOrigin="anonymous"
-									href="../styles/prism.css"
-								/>
-								<Link
-									rel="stylesheet"
-									crossOrigin="anonymous"
-									href="../styles/expressive-code.css"
-								/>
+
 								<h1>{article?.title}</h1>
 								<div class="text-zinc-500 font-serif mb-2 font-light text-sm 2xl:text-lg">
 									{formatDate(date)}
