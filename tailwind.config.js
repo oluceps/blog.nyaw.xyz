@@ -10,6 +10,9 @@ const em = (px, base) => `${round(px / base)}em`;
 const rem = (px) => `${round(px / 16)}rem`;
 
 export default {
+	purge: [
+		"./src/**/*.{ts,tsx}"
+	],
 	content: [
 		"./src/**/*.{js,jsx,ts,tsx,md,mdx}",
 		"./content/**/*.{js,jsx,ts,tsx,md,mdx}",
