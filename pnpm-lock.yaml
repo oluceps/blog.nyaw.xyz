@@ -57,6 +57,9 @@ importers:
         specifier: ^0.4.1
         version: 0.4.1(@types/node@22.1.0)(ioredis@5.4.1)(terser@5.31.5)
     devDependencies:
+      '@fullhuman/postcss-purgecss':
+        specifier: ^6.0.0
+        version: 6.0.0(postcss@8.4.41)
       '@solid-primitives/scroll':
         specifier: ^2.0.23
         version: 2.0.23(solid-js@1.8.20)
@@ -87,6 +90,9 @@ importers:
       postcss:
         specifier: ^8.4.41
         version: 8.4.41
+      purgecss:
+        specifier: ^6.0.0
+        version: 6.0.0
       rehype-autolink-headings:
         specifier: ^7.1.0
         version: 7.1.0
@@ -662,6 +668,11 @@ packages:
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
+
+  '@fullhuman/postcss-purgecss@6.0.0':
+    resolution: {integrity: sha512-sUvk5PV7O5xvTJcxDYrQ00xlKtSxivvJdZrwgxE8F1GmNMs7w9U+dSbr83N/qEs9b+f+6QsZKXDs0k8nMjBIqA==}
+    peerDependencies:
+      postcss: ^8.0.0
 
   '@ioredis/commands@1.2.0':
     resolution: {integrity: sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==}
@@ -1496,6 +1507,10 @@ packages:
 
   comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
+
+  commander@12.1.0:
+    resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
+    engines: {node: '>=18'}
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -3170,6 +3185,10 @@ packages:
   property-information@6.5.0:
     resolution: {integrity: sha512-PgTgs/BlvHxOu8QuEN7wi5A0OmXaBcHpmCSTehcs6Uuu9IkDIEo13Hy7n898RHfrQ49vKCoGeWZSaAK01nwVig==}
 
+  purgecss@6.0.0:
+    resolution: {integrity: sha512-s3EBxg5RSWmpqd0KGzNqPiaBbWDz1/As+2MzoYVGMqgDqRTLBhJW6sywfTBek7OwNfoS/6pS0xdtvChNhFj2cw==}
+    hasBin: true
+
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
@@ -4349,6 +4368,11 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
+  '@fullhuman/postcss-purgecss@6.0.0(postcss@8.4.41)':
+    dependencies:
+      postcss: 8.4.41
+      purgecss: 6.0.0
+
   '@ioredis/commands@1.2.0': {}
 
   '@isaacs/cliui@8.0.2':
@@ -5251,6 +5275,8 @@ snapshots:
   colord@2.9.3: {}
 
   comma-separated-tokens@2.0.3: {}
+
+  commander@12.1.0: {}
 
   commander@2.20.3: {}
 
@@ -7485,6 +7511,13 @@ snapshots:
   process@0.11.10: {}
 
   property-information@6.5.0: {}
+
+  purgecss@6.0.0:
+    dependencies:
+      commander: 12.1.0
+      glob: 10.4.5
+      postcss: 8.4.41
+      postcss-selector-parser: 6.1.2
 
   queue-microtask@1.2.3: {}
 
