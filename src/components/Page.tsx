@@ -4,7 +4,7 @@ import cfg from "../constant";
 import { cache, createAsync, useLocation } from "@solidjs/router";
 import { TableOfContents } from "./Toc";
 import { docsData } from "solid:collection";
-import "../styles/fonts.css"
+import "../styles/fonts.css";
 import "../styles/prism.css";
 import "../styles/expressive-code.css";
 

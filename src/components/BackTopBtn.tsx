@@ -15,7 +15,7 @@ const ScrollTopBtn: Component = () => {
 				>
 					<Icon path={chevronUp} class={`h-full w-full`} />
 				</button>
-			</Show >
+			</Show>
 		</>
 	);
 };
