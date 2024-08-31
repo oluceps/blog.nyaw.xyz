@@ -62,7 +62,7 @@ export default function Me() {
 				</div>
 
 				<div class="flex flex-col grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 gap-3">
-					<QuickLinks title="Matrix" href="https://matrix.to/#/@sec:nyaw.xyz" />
+					<QuickLinks title="Matrix" href="https://matrix.to/#/@sec:nyaw.xyz"></QuickLinks>
 					<QuickLinks title="Mailbox" href="mailto:i@nyaw.xyz" />
 					<QuickLinks title="Telegram" href="https://t.me/Secpm_bot" />
 					<QuickLinks title="Pubkey" href="https://github.com/oluceps.keys" />

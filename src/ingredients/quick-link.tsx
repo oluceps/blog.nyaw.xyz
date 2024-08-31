@@ -9,6 +9,7 @@ export const isExternalURL = (url: string) =>
 export type QuickLinksProps = {
 	title: string;
 	href: string;
+	description?: string;
 	children?: JSXElement;
 };
 
@@ -70,40 +71,32 @@ const icons = {
 export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
 	return (
 		<div class="group relative rounded-xl shadow-md border">
-			<div class="absolute -inset-px rounded-xl border-transparent opacity-0 transition-all [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sprout.100)),var(--quick-links-hover-bg,theme(colors.sprout.100)))_padding-box,linear-gradient(to_top,theme(colors.sprout.500),theme(colors.sprout.300))_border-box] group-hover:opacity-70" />
-			<div class="relative overflow-hidden rounded-xl flex items-center justify-start xl:justify-center pl-4 xl:pl-0 py-4">
-				<div class="flex items-center">
-					<Dynamic component={icons[props.title as keyof typeof icons]} />
-					<div class="text-xl text-slate-900 dark:text-white capitalize no-underline pl-2 xl:pl-3 flex items-center w-full justify-center">
-						<Show
-							when={isExternalURL(props.href)}
-							fallback={
-								<A
-									href={props.href}
-									class="no-underline font-semibold bg-gradient-to-br from-sprout-400 to-sprout-700 inline-block text-transparent bg-clip-text"
-								>
-									<span class="absolute -inset-px rounded-xl" />
-									{props.title}
-								</A>
-							}
-						>
-							<a
-								href={props.href}
-								class="no-underline font-semibold bg-gradient-to-br from-sprout-500 to-sprout-600 inline-block text-transparent bg-clip-text"
-							>
-								<span class="absolute -inset-px rounded-xl" />
-								{props.title}
-							</a>
-						</Show>
-					</div>
-				</div>
+			<div class="absolute -inset-px rounded-xl border-transparent opacity-0 transition-all [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sprout.100)),var(--quick-links-hover-bg,theme(colors.sprout.100)))_padding-box,linear-gradient(to_top,theme(colors.sprout.500),theme(colors.sprout.300))_border-box] group-hover:opacity-80" />
 
-				<Show when={props.children}>
-					<p class="text-[0.91rem] pl-1 text-balance text-slate-800 dark:text-slate-300 not-prose mt-2.5">
-						{props.children}
-					</p>
-				</Show>
+			<div class="relative overflow-hidden h-full w-full grow">
+				<a href={props.href}><span class="absolute -inset-px rounded-xl" /></a>
+				<div class="m-4">
+					<div class="flex w-full grow justify-start items-center overflow-hidden">
+						<Dynamic component={icons[props.title as keyof typeof icons]} />
+						<p class="flex shrink grow pl-2 pr-5 sm:pr-0 justify-center sm:justify-start items-center no-underline font-semibold bg-gradient-to-br from-sprout-400 to-sprout-700 inline-block text-transparent bg-clip-text text-xl w-full">
+							{props.title}
+						</p>
+					</div>
+					<Show when={props.description}>
+						{s =>
+							<div class="text-slate-500 ml-1">
+								{s()}
+							</div>
+						}
+					</Show>
+					<Show when={props.children}>
+						{s => <div class="px-1">
+							{s()}
+						</div>}
+					</Show>
+				</div>
 			</div>
+
 		</div>
 	);
 };

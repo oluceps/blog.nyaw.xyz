@@ -110,7 +110,7 @@ const components = {
 	},
 
 	QuickLinks: (props: QuickLinksProps) => (
-		<QuickLinks title={props.title} href={props.href}>
+		<QuickLinks title={props.title} href={props.href} description={props.description}>
 			{props.children}
 		</QuickLinks>
 	),
