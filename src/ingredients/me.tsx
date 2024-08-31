@@ -27,7 +27,7 @@ export default function Me() {
 				<Title>{`关于 - ${cfg.title}`}</Title>
 			</MetaProvider>
 			<div class="h-full grow flex flex-col justify-center w-11/12 md:w-3/5">
-				<div class="md:flex bg-sprout-50 rounded-xl my-4 items-center justify-left shadow-sm">
+				<div class="md:flex bg-sprout-50 rounded-xl my-4 items-center justify-left shadow-lg">
 					<div class="flex md:flex-col items-center justify-center">
 						<div class="relative m-8 md:m-16">
 							<img
