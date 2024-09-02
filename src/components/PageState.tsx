@@ -1,10 +1,8 @@
 import {
 	type SetStoreFunction,
-	StoreSetter,
 	createStore,
 } from "solid-js/store";
 import {
-	createEffect,
 	createContext,
 	type ParentProps,
 	useContext,
@@ -13,6 +11,39 @@ import {
 function usePageState() {
 	return useContext(PageStateContext);
 }
+
+function useTaxoState() {
+	return useContext(TaxoStateContext);
+}
+
+type TaxoStateStore = {
+	id: string | undefined,
+};
+
+const INITIAL_STATE_STORE = { id: undefined };
+
+const TaxoStateContext = createContext<{
+	taxoInfo: TaxoStateStore;
+	setTaxoInfo: SetStoreFunction<TaxoStateStore>;
+}>({
+	taxoInfo: INITIAL_STATE_STORE,
+	setTaxoInfo: () => { },
+});
+const TaxoStateProvider = (props: ParentProps) => {
+	const [taxoInfo, setTaxoInfo] = createStore<TaxoStateStore>(
+		INITIAL_STATE_STORE,
+	);
+
+	return (
+		<TaxoStateContext.Provider
+			value={{
+				taxoInfo, setTaxoInfo
+			}}
+		>
+			{props.children}
+		</TaxoStateContext.Provider>
+	);
+};
 
 type PageStateStore = {
 	sections: ParentSection[];
@@ -41,7 +72,7 @@ const PageStateContext = createContext<{
 	setPageSections: SetStoreFunction<PageStateStore>;
 }>({
 	pageSections: INITIAL_PAGE_STATE_STORE,
-	setPageSections: () => {},
+	setPageSections: () => { },
 });
 const PageStateProvider = (props: ParentProps) => {
 	const [pageSections, setPageSections] = createStore<PageStateStore>(
@@ -60,4 +91,7 @@ const PageStateProvider = (props: ParentProps) => {
 	);
 };
 
-export { PageStateProvider, usePageState };
+export {
+	PageStateProvider, usePageState,
+	TaxoStateProvider, useTaxoState
+};

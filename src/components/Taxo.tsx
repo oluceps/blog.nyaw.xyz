@@ -1,8 +1,9 @@
-import { createSignal, Index, Show, Suspense } from "solid-js";
+import { createEffect, createSignal, Index, onMount, Show, Suspense } from "solid-js";
 import { A, cache, createAsync } from "@solidjs/router";
 import cfg from "../constant";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { docsData } from "solid:collection";
+import { useTaxoState } from "./PageState";
 
 function isIn<T>(values: readonly T[], x: any): x is T {
 	return values.includes(x);
@@ -10,6 +11,17 @@ function isIn<T>(values: readonly T[], x: any): x is T {
 
 export default function Taxo() {
 	const [checked, setChecked] = createSignal(false);
+	const { setTaxoInfo, taxoInfo } = useTaxoState();
+
+	const [element, setElement] = createSignal<HTMLDivElement>();
+	createEffect(() => {
+		if (element() && taxoInfo.id) {
+			const elm = document.getElementById(taxoInfo.id);
+			// TODO: whatever fuk
+			elm!.scrollIntoView({ behavior: "smooth" });
+			setTaxoInfo({ id: undefined })
+		}
+	});
 
 	type UnionToTuple<U> = (U extends any ? (arg: U) => void : never) extends (
 		arg: infer T,
@@ -116,7 +128,7 @@ export default function Taxo() {
 		>
 			<Show when={rawData()}>
 				{(ctx) => (
-					<div class="mx-auto sm:w-2/3 2xl:w-7/12 flex flex-col grow w-11/12 space-y-8 mt-20">
+					<div class="mx-auto sm:w-2/3 2xl:w-7/12 flex flex-col grow w-11/12 space-y-8 mt-20" ref={setElement}>
 						<MetaProvider>
 							<Title>分类 - {cfg.title}</Title>
 							<Link rel="canonical" href={cfg.base_url + "/taxonomy"} />
@@ -185,7 +197,7 @@ export default function Taxo() {
 										<>
 											<p
 												class={checked() ? "mt-6" : "mt-4"}
-												id={outerAttr()[0]}
+												id={outerAttr()}
 											>
 												{outerAttr()}
 											</p>
@@ -266,6 +278,6 @@ export default function Taxo() {
 					</div>
 				)}
 			</Show>
-		</Suspense>
+		</Suspense >
 	);
 }

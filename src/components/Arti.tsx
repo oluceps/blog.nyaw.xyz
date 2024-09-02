@@ -2,6 +2,7 @@ import { A, cache, createAsync } from "@solidjs/router";
 import { type Component, Index, Show, Suspense } from "solid-js";
 import cfg from "../constant";
 import { docsData } from "solid:collection";
+import { useTaxoState } from "./PageState";
 
 export const Arti: Component = () => {
 	const ctx = createAsync(
@@ -35,6 +36,7 @@ export const Arti: Component = () => {
 		{ deferStream: true },
 	);
 
+	const { setTaxoInfo } = useTaxoState();
 	return (
 		<>
 			<Suspense
@@ -83,7 +85,8 @@ export const Arti: Component = () => {
 																>
 																	<A
 																		class="pl-6 text-xs 2xl:text-base text-slate-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
-																		href={"/taxonomy"}
+																		href="/taxonomy"
+																		onClick={() => setTaxoInfo({ id: inner().categories[0] as string })}
 																	>
 																		{inner().categories[0] as string}
 																		<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
