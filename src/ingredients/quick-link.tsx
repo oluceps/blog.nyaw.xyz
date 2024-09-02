@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { type JSXElement, type ParentComponent, Show } from "solid-js";
+import { createEffect, type JSXElement, type ParentComponent, Show } from "solid-js";
 
 import { Dynamic } from "solid-js/web";
 
@@ -11,7 +11,9 @@ export type QuickLinksProps = {
 	href: string;
 	description?: string;
 	children?: JSXElement;
+	onlyIcon?: boolean;
 };
+
 
 const icons = {
 	Matrix: () => (
@@ -76,23 +78,27 @@ export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
 			<div class="relative overflow-hidden h-full w-full grow">
 				<a href={props.href}><span class="absolute -inset-px rounded-xl" /></a>
 				<div class="m-4">
-					<div class="flex w-full grow justify-start items-center overflow-hidden">
+					<div class="flex w-full grow justify-start lg:justify-center items-center overflow-hidden">
 						<Dynamic component={icons[props.title as keyof typeof icons]} />
-						<p class="flex shrink grow pl-2 pr-5 sm:pr-0 justify-center sm:justify-start items-center no-underline font-semibold bg-gradient-to-br from-sprout-400 to-sprout-700 inline-block text-transparent bg-clip-text text-xl w-full">
-							{props.title}
-						</p>
+						<Show when={!props.onlyIcon}>
+							<p class="flex shrink grow pl-2 pr-5 sm:pr-0 justify-center sm:justify-start items-center no-underline font-semibold bg-gradient-to-br from-sprout-400 to-sprout-700 inline-block text-transparent bg-clip-text text-lg md:text-normal w-full">
+								{props.title}
+							</p>
+						</Show>
 					</div>
-					<Show when={props.description}>
-						{s =>
-							<div class="text-slate-500 ml-1">
+					<Show when={!props.onlyIcon}>
+						<Show when={props.description}>
+							{s =>
+								<div class="text-slate-500 ml-1">
+									{s()}
+								</div>
+							}
+						</Show>
+						<Show when={props.children}>
+							{s => <div class="px-1">
 								{s()}
-							</div>
-						}
-					</Show>
-					<Show when={props.children}>
-						{s => <div class="px-1">
-							{s()}
-						</div>}
+							</div>}
+						</Show>
 					</Show>
 				</div>
 			</div>

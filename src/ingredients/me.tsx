@@ -3,8 +3,18 @@ import Reveal from "./rand-reveal";
 import cfg from "../constant";
 import { QuickLinks } from "./quick-link";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
+import { createSignal, onMount } from "solid-js";
 
 export default function Me() {
+	const [onlyIcon, setOnlyIcon] = createSignal<boolean>();
+
+	const set = () => {
+		setOnlyIcon(window.innerWidth > 1180)
+	}
+	onMount(() => {
+		window.addEventListener('resize', set);
+	});
+
 	return (
 		<>
 			<MetaProvider>
@@ -26,10 +36,10 @@ export default function Me() {
 				<Meta property="og:description" content={cfg.description} />
 				<Title>{`关于 - ${cfg.title}`}</Title>
 			</MetaProvider>
-			<div class="h-full grow flex flex-col justify-center w-11/12 md:w-3/5">
-				<div class="md:flex bg-sprout-50 rounded-xl my-4 items-center justify-left shadow-lg">
+			<div class="h-full grow flex flex-col justify-center w-11/12 md:w-3/5 xl:w-2/5">
+				<div class="md:flex bg-sprout-50 rounded-xl my-4 items-center justify-left xl:justify-center xl:gap-8 shadow-lg">
 					<div class="flex md:flex-col items-center justify-center">
-						<div class="relative m-8 md:m-16">
+						<div class="relative m-8 md:m-16 xl:my-24 xl:mr-28">
 							<img
 								class="w-28 h-28 md:w-48 md:h-48 md:rounded-xl rounded-full not-prose"
 								src="https://s3.nyaw.xyz/misskey//d8d5edcb-ab40-49fb-807e-e0954575ae4d.webp"
@@ -62,10 +72,10 @@ export default function Me() {
 				</div>
 
 				<div class="flex flex-col grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 gap-3">
-					<QuickLinks title="Matrix" href="https://matrix.to/#/@sec:nyaw.xyz"></QuickLinks>
-					<QuickLinks title="Mailbox" href="mailto:i@nyaw.xyz" />
-					<QuickLinks title="Telegram" href="https://t.me/Secpm_bot" />
-					<QuickLinks title="Pubkey" href="https://github.com/oluceps.keys" />
+					<QuickLinks title="Matrix" href="https://matrix.to/#/@sec:nyaw.xyz" onlyIcon={onlyIcon()}></QuickLinks>
+					<QuickLinks title="Mailbox" href="mailto:i@nyaw.xyz" onlyIcon={onlyIcon()} />
+					<QuickLinks title="Telegram" href="https://t.me/Secpm_bot" onlyIcon={onlyIcon()} />
+					<QuickLinks title="Pubkey" href="https://github.com/oluceps.keys" onlyIcon={onlyIcon()} />
 				</div>
 			</div>
 		</>
