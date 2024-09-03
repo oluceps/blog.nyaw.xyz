@@ -3,7 +3,7 @@ import Reveal from "./rand-reveal";
 import cfg from "../constant";
 import { QuickLinks } from "./quick-link";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
-import { createSignal, onMount } from "solid-js";
+import { createSignal, onCleanup, onMount } from "solid-js";
 
 export default function Me() {
 	const [onlyIcon, setOnlyIcon] = createSignal<boolean>();
@@ -14,6 +14,9 @@ export default function Me() {
 	onMount(() => {
 		window.addEventListener('resize', set);
 	});
+	onCleanup(() => {
+		window.removeEventListener('resize', set);
+	})
 
 	return (
 		<>

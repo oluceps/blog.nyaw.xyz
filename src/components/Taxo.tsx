@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Index, onMount, Show, Suspense } from "solid-js";
+import { createEffect, createSignal, Index, onCleanup, onMount, Show, Suspense } from "solid-js";
 import { A, cache, createAsync } from "@solidjs/router";
 import cfg from "../constant";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
@@ -150,16 +150,13 @@ export default function Taxo() {
 						<div class="flex space-x-2 items-center">
 							<div
 								class={`px-2 py-px tansition-all duration-300 ${!checked() ? "bg-sprout-200/80 text-neutral-600 rounded-md" : "text-neutral-500"}`}
+								onClick={() => setChecked(!checked())}
 							>
 								目录
 							</div>
-							<input
-								type="checkbox"
-								class="toggle border-sprout-400 bg-sprout-500 [--tglbg:#e4ecdb] hover:bg-sprout-600"
-								onInput={() => setChecked(!checked())}
-							/>
 							<div
 								class={`px-2 py-px tansition-all duration-300 ${checked() ? "bg-sprout-200/80 text-neutral-600 rounded-md" : "text-neutral-500"}`}
+								onClick={() => setChecked(!checked())}
 							>
 								标签
 							</div>
