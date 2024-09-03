@@ -71,7 +71,7 @@ export default function Me() {
 					</div>
 				</div>
 
-				<div class="flex flex-col grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 gap-3">
+				<div class="grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 gap-3">
 					<QuickLinks title="Matrix" href="https://matrix.to/#/@sec:nyaw.xyz" onlyIcon={onlyIcon()}></QuickLinks>
 					<QuickLinks title="Mailbox" href="mailto:i@nyaw.xyz" onlyIcon={onlyIcon()} />
 					<QuickLinks title="Telegram" href="https://t.me/Secpm_bot" onlyIcon={onlyIcon()} />

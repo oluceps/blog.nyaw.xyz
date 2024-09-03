@@ -3,43 +3,29 @@ import {
   defineConfig,
   presetAttributify,
   presetTypography,
-  presetUno
+  presetUno,
+  transformerDirectives
 } from 'unocss'
 import presetWind from '@unocss/preset-wind'
 import presetWebFonts from '@unocss/preset-web-fonts'
 import presetRemToPx from '@unocss/preset-rem-to-px'
-import { Theme } from '@unocss/preset-wind'
-
-const round = (num: number) =>
-  num
-    .toFixed(7)
-    .replace(/(\.[0-9]+?)0+$/, "$1")
-    .replace(/\.0$/, "");
-const em = (px: number, base: number) => `${round(px / base)}em`;
-const rem = (px: number) => `${round(px / 16)}rem`;
+import transformerCompileClass from '@unocss/transformer-compile-class'
 
 export default defineConfig({
 
-  // content: {
-  //   filesystem: [
-  //     "./src/**/*.{js,jsx,ts,tsx,md,mdx}",
-  //   ],
-  // },
+  transformers: [
+    transformerCompileClass(),
+    transformerDirectives(),
+  ],
+  shortcuts: {
+    'btn': 'py-2 px-4 font-semibold rounded-lg shadow-md',
+  },
 
   theme: {
     fontSize: {
       sm: "15px",
     },
 
-      breakpoints: {
-        'sm': '640px',
-        'md': '768px',
-        'lg': '1024px',
-        'xl': '1280px',
-        "2xl": "1440px",
-        "3xl": "1920px",
-        "4xl": "2560px",
-      },
     fontFamily: {
       sans: [
         "PingFang SC",
@@ -56,6 +42,16 @@ export default defineConfig({
         "PingFang SC",
         "Hiragino Sans GB",
       ],
+    },
+
+    breakpoints: {
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      "2xl": "1440px",
+      "3xl": "1920px",
+      "4xl": "2560px",
     },
     animation: {
       "accordion-down": "accordion-down 0.2s ease-out",
@@ -113,6 +109,15 @@ export default defineConfig({
       },
     },
   },
+  //   preflights: [
+  //   {
+  //     getCSS() {
+  //       return '
+
+  //      '
+  //     },
+  //   },
+  // ],
 
   presets: [
     presetAttributify(), // required when using attributify mode

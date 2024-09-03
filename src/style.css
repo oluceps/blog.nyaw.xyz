@@ -17,10 +17,6 @@ a {
 		color-scheme: dark;
 	}
 
-	.prose h1 {
-		@apply mt-0;
-	}
-
 	img {
 		@apply rounded-xl;
 	}
