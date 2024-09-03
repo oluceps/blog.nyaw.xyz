@@ -29,7 +29,7 @@ const Header: Component<{ sticky: boolean }> = (props) => {
 							afterHover(),
 						)}
 					/>
-					<div class="absolute leading-none text-neutral-600 dark:text-slate-200 text-nowrap">
+					<div class="absolute leading-none text-neutral-600 dark:text-slate-200 text-nowrap font-sans">
 						{cfg.title}
 					</div>
 				</div>

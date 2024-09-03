@@ -52,7 +52,7 @@ export const Arti: Component = () => {
 							{(attr) => {
 								return (
 									<>
-										<div class="text-lg 2xl:text-2xl font-bold font-normal text-slate-700 dark:text-chill-100">
+										<div class="text-lg 2xl:text-2xl font-sans font-normal text-slate-700 dark:text-chill-100">
 											{attr()}
 										</div>
 										<Index each={data().get(attr())}>
@@ -61,7 +61,7 @@ export const Arti: Component = () => {
 													<Suspense fallback="h-8 my-3 w-full skeleton">
 														<div class="antialiased flex flex-col mx-3 md:mx-8 2xl:mx-12">
 															<article class="flex overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
-																<div class="no-underline font-light leading-snug text-slate-600 min-w-12">
+																<div class="no-underline font-sans font-light leading-snug text-slate-600 min-w-12">
 																	{inner()
 																		.date.toLocaleDateString("en-US", {
 																			month: "2-digit",
@@ -71,7 +71,7 @@ export const Arti: Component = () => {
 																</div>
 																<A
 																	href={`/${inner().path}`}
-																	class="no-underline text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-loose"
+																	class="no-underline font-sans text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-loose"
 																>
 																	{inner().title}
 																	<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
@@ -84,7 +84,7 @@ export const Arti: Component = () => {
 																	fallback={<div class="h-4" />}
 																>
 																	<A
-																		class="pl-6 text-xs 2xl:text-base text-slate-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
+																		class="pl-6 text-xs 2xl:text-base text-slate-600 font-sans dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
 																		href="/taxonomy"
 																		onClick={() => setTaxoInfo({ id: inner().categories[0] as string })}
 																	>

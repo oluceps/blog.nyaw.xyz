@@ -166,13 +166,13 @@ export default function Taxo() {
 						</div>
 
 						<div class="w-full flex flex-col">
-							<p class="text-neutral-700 font-bold">All</p>
+							<p class="text-neutral-700 text-md font-sans">All</p>
 							<div class="flex flex-wrap text-sm justify-center">
 								<Index each={Array.from(checked() ? ctx().tag : ctx().cate)}>
 									{(cat) => {
 										return (
 											<button
-												class="bg-transparent px-2 py-1 2xl:text-base text-neutral-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
+												class="bg-transparent px-2 py-1 2xl:text-base font-sans text-neutral-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
 												onClick={() => {
 													document
 														.getElementById(cat())!
@@ -196,7 +196,7 @@ export default function Taxo() {
 									return (
 										<>
 											<p
-												class={checked() ? "mt-6" : "mt-4"}
+												class={`${checked() ? "mt-6" : "mt-4"} font-sans`}
 												id={outerAttr()}
 											>
 												{outerAttr()}
@@ -260,7 +260,7 @@ export default function Taxo() {
 																</div>
 																<A
 																	href={`/${ist.path}`}
-																	class="no-underline text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-slug"
+																	class="no-underline font-sans text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-slug"
 																>
 																	{ist.title}
 																	<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
