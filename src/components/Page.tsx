@@ -48,7 +48,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 					if (article) {
 						const date = new Date(article.date);
 						return (
-							<article class="antialiased prose 2xl:prose-lg dark:prose-invert justify-self-center mx-auto mb-16 w-full mt-10 break-words">
+							<article class="antialiased prose md:max-w-2/3 2xl:prose-lg dark:prose-invert justify-self-center mx-auto mb-16 w-full mt-10 break-words">
 								<Title>{`${article?.title} - ${cfg.title}`}</Title>
 								<Link rel="canonical" href={currentUrl} />
 								<Meta property="og:url" content={currentUrl} />

@@ -1,4 +1,5 @@
 import { defineConfig } from "@solidjs/start/config";
+import UnoCSS from 'unocss/vite'
 import remarkFrontmatter from "remark-frontmatter";
 import rehypeRaw from "rehype-raw";
 import { nodeTypes } from "@mdx-js/mdx";
@@ -55,6 +56,7 @@ export default defineConfig({
 	extensions: ["mdx", "md", "tsx"],
 	vite: {
 		plugins: [
+			UnoCSS(),
 			docsData(),
 			mdx.withImports({})({
 				define: {

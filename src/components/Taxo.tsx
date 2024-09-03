@@ -172,7 +172,7 @@ export default function Taxo() {
 									{(cat) => {
 										return (
 											<button
-												class="px-2 py-1 2xl:text-base text-neutral-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
+												class="bg-transparent px-2 py-1 2xl:text-base text-neutral-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
 												onClick={() => {
 													document
 														.getElementById(cat()[0])!

@@ -96,13 +96,13 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 	});
 
 	const textAttr =
-		"no-underline font-normal hover:font-bold hover:text-slate-600";
+		"no-underline font-normal hover:font-bold";
 	const olAttr =
-		"pl-3 text-xs text-slate-500 list-disc decoration-sprout-300 active:font-bold hover:text-slate-700 active:text-sprout-600 space-y-0.5";
+		"pl-3 text-xs text-slate-500 list-disc decoration-sprout-300 active:font-bold active:text-sprout-600 space-y-0.5";
 
 	return (
 		<div class="w-full">
-			<ol role="list" class={olAttr}>
+			<ol role="list" class={olAttr + " " + "marker:text-sprout-400"}>
 				<Index each={pageSections.sections}>
 					{(section) => {
 						return (

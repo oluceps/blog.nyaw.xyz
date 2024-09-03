@@ -203,7 +203,7 @@ const components = {
 		</li>
 	),
 	ul: (props: ParentProps) => (
-		<ul {...props} class="pl-6 mb-2 list-disc decoration-sprout-300">
+		<ul {...props} class="pl-6 mb-2 list-disc decoration-sprout-300 marker:text-sprout-400">
 			{props.children}
 		</ul>
 	),

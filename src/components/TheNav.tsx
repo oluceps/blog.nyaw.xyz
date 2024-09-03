@@ -35,7 +35,7 @@ export default function Home() {
 						tabRefs()[idx] = el;
 					}}
 					class={twMerge(
-						`px-1.5 py-1 z-10 font-base text-neutral-500 hover:text-neutral-600 rounded-md transition ease-in delay-800`,
+						`bg-transparent px-1.5 py-1 z-10 font-base text-neutral-500 hover:text-neutral-600 rounded-md transition ease-in delay-800`,
 						useLocation().pathname == tab.url &&
 							!hoveredTab() &&
 							useLocation().pathname.length != 1
