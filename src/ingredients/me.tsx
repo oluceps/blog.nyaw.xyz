@@ -40,11 +40,11 @@ export default function Me() {
 				<Title>{`关于 - ${cfg.title}`}</Title>
 			</MetaProvider>
 			<div class="h-full grow flex flex-col justify-center w-11/12 md:w-3/5 xl:w-2/5">
-				<div class="md:flex bg-sprout-50 rounded-xl my-4 items-center justify-left xl:justify-center xl:gap-8 shadow-lg">
+				<div class="md:flex py-16 md:py-0 bg-sprout-50 rounded-xl my-4 items-center justify-left xl:justify-center xl:gap-8 shadow-lg">
 					<div class="flex md:flex-col items-center justify-center">
 						<div class="relative m-8 md:m-16 xl:my-24 xl:mr-28">
 							<img
-								class="w-28 h-28 md:w-48 md:h-48 md:rounded-xl rounded-full not-prose"
+								class="w-36 h-36 sm:w-28 sm:h-28 md:w-48 md:h-48 md:rounded-xl rounded-full not-prose"
 								src="https://s3.nyaw.xyz/misskey//d8d5edcb-ab40-49fb-807e-e0954575ae4d.webp"
 								alt="avatar brown hair girl from https://www.pixiv.net/users/20817694"
 								loading="lazy"
@@ -59,13 +59,13 @@ export default function Me() {
 						</div>
 					</div>
 					<div class="text-center md:text-left not-prose flex flex-col leading-snug mx-6 pb-8 md:pb-0 justify-between gap-4 md:gap-6">
-						<div class="text-stone-500 text-2xl font-bold">
+						<div class="text-stone-500 text-3xl md:text-2xl font-bold">
 							<Reveal>Secirian</Reveal>
 						</div>
-						<div class="mw-auto text-[13px] md:ml-px flex flex-col gap-1">
+						<div class="mw-auto text-[15px] sm:text-[13px] md:ml-px flex flex-col gap-2 sm:gap-1">
 							<div class="text-zinc-500">ZHO / ENG / CDO / JPN</div>
 							<div class="text-zinc-500">BEng 3rd year</div>
-							<div class="text-zinc-500">UTC + 8-8</div>
+							<div class="text-zinc-500">UTC + 8?</div>
 							<div class="text-zinc-500">she / her</div>
 							<div class="text-zinc-400 not-prose mt-2 md:mt-4">
 								廿一世紀 末日未接近時出生
