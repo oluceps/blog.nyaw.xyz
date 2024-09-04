@@ -4,15 +4,81 @@ import { createEffect, createSignal, onMount } from "solid-js";
 
 export interface TypstDocumentProps {
 	fill?: string;
-	artifact: Uint8Array;
+	artifact?: Uint8Array;
 	// todo: add vector format
 	format?: "json";
 }
 
+const htmlLayerCss = `
+.typst-html-semantics {
+  position: absolute;
+  z-index: 2;
+  color: transparent;
+  font-family: monospace;
+  white-space: pre;
+}
+
+.typst-html-semantics span {
+  color: transparent;
+  font-family: monospace;
+  transform-origin: left top;
+  position: absolute;
+  display: inline-block;
+  left: 0;
+  top: 0;
+}
+
+.typst-content-hint {
+  position: absolute;
+  display: inline-block;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.typst-html-semantics a {
+  position: absolute;
+  display: inline-block;
+}
+
+/* set transparent itself */
+.typst-content-group {
+  pointer-events: visible;
+}
+
+.typst-html-semantics span::-moz-selection {
+  color: transparent;
+  background: #7db9dea0;
+}
+
+.typst-html-semantics span::selection {
+  color: transparent;
+  background: #7db9dea0;
+}
+
+.typst-html-semantics *::-moz-selection {
+  color: transparent;
+  background: transparent;
+}
+
+.typst-html-semantics *::selection {
+  color: transparent;
+  background: transparent;
+}
+
+.typst-content-fallback {
+  color: transparent;
+  background: transparent;
+}
+
+.pseudo-link,
+.typst-text {
+  pointer-events: none;
+}`;
 let moduleInitOptions: typst.InitOptions = {
 	beforeBuild: [],
 	getModule: () =>
-		"/node_modules/@myriaddreamin/typst-ts-renderer/pkg/typst_ts_renderer_bg.wasm",
+		"_build/node_modules/@myriaddreamin/typst-ts-renderer/pkg/typst_ts_renderer_bg.wasm",
 };
 
 export const TypstDocument = ({
@@ -32,17 +98,17 @@ export const TypstDocument = ({
 		setPermissionInternal(false);
 		return false;
 	};
-	// createEffect(() => {
-	//   navigator.permissions.query({ name: 'local-fonts' as PermissionName }).then(status => {
-	//     if (setPermissionAndOk(status)) {
-	//       return false;
-	//     }
-	//     status.addEventListener('change', event => {
-	//       console.log(event, status);
-	//       setPermissionAndOk(status);
-	//     });
-	//   });
-	// });
+	createEffect(() => {
+		navigator.permissions.query({ name: 'local-fonts' as PermissionName }).then(status => {
+			if (setPermissionAndOk(status)) {
+				return false;
+			}
+			status.addEventListener('change', event => {
+				console.log(event, status);
+				setPermissionAndOk(status);
+			});
+		});
+	});
 
 	/// --- end: manipulate permission --- ///
 
@@ -51,19 +117,15 @@ export const TypstDocument = ({
 		HTMLDivElement | undefined
 	>();
 
-	const getDisplayLayerDiv = () => {
-		return displayDivRef();
-	};
-
 	createEffect(() => {
 		const doRender = (renderer: typst.TypstRenderer) => {
-			const divElem = getDisplayLayerDiv();
+			const divElem = displayDivRef();
 			if (!divElem) {
 				return;
 			}
 
 			return renderer.renderToCanvas({
-				artifactContent: artifact,
+				artifactContent: artifact || new Uint8Array(0),
 				format: "vector",
 				backgroundColor: fill,
 				container: divElem,
@@ -72,7 +134,7 @@ export const TypstDocument = ({
 		};
 
 		/// get display layer div
-		const divElem = getDisplayLayerDiv();
+		const divElem = displayDivRef();
 		if (!divElem) {
 			return;
 		}
@@ -83,19 +145,18 @@ export const TypstDocument = ({
 			return;
 		}
 
+		console.log(displayDivRef());
 		/// render after init
 		withGlobalRenderer(typst.createTypstRenderer, moduleInitOptions, doRender);
-	}, [permission, displayDivRef, fill, artifact, format]);
+	}, [permission, displayDivRef(), fill, artifact, format]);
 
 	/// --- end: update document --- ///
-	createEffect(() => {
-		console.log(displayDivRef());
-	});
 
 	return (
 		<div>
 			{/* todo: remove this embedded css */}
-			<div class="h-32" ref={(el) => setDisplayDivRef(el)}></div>
+			<style>{htmlLayerCss}</style>
+			<div ref={setDisplayDivRef}></div>
 		</div>
 	);
 };
