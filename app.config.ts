@@ -39,7 +39,7 @@ function docsData() {
 	};
 }
 const remarkExpressiveCodeOptions = {
-	themes: ["min-light", "rose-pine"],
+	themes: ["vitesse-light", "rose-pine"],
 	themeCSSSelector: (theme: ExpressiveCodeTheme) =>
 		`[data-theme="${theme.name}"]`,
 	// I dont like dark mode
