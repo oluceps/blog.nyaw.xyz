@@ -69,7 +69,7 @@ avbroot key generate-cert -k ota.key -o ota.crt
 
 ## 解压ota包
 假设ota包(.zip)在当前目录，
-```console
+```nushell
 mkdir build
 avbroot extract -i ./OTA_FILE --boot-only --directory build/
 ```
@@ -86,7 +86,7 @@ avbroot extract -i ./OTA_FILE --boot-only --directory build/
 
 为了从中提取GKI内核镜像并替换OTA包中的那个。
 
-```console
+```nushell
 # 这里的链接是示例，根据设备不同 KMI版本也不同
 http get "https://github.com/tiann/KernelSU/releases/download/v1.0.1/AnyKernel3-android14-5.15.148_2024-05.zip" | save ksu.zip
 mkdir build
@@ -103,7 +103,7 @@ rm ksu.zip ksu -r
 
 以下使用nushell。意思到了就好。
 
-```console
+```nushell
 ouch d magisk.zip
 let arch = uname | get machine
 mv $"magisk/lib/($arch)/libmagiskboot.so" build/
@@ -113,7 +113,7 @@ rm -r ./magisk*
 
 ### 重新打包 boot.img
 
-```
+```nushell
 cd build
 mv Image kernel
 ./libmagiskboot.so repack boot.img
@@ -126,7 +126,7 @@ mv Image kernel
 
 以下命令中的 key 和证书是 [上文](#生成密钥) 中生成的。怕你忘了
 
-```console
+```nushell
 (avbroot ota patch
     --key-avb ./avb.key
     --key-ota ./ota.key
@@ -154,7 +154,7 @@ fastboot flashing unlock
 3. 在首次设置时，设备必须已经运行正确的操作系统。如果需要，刷入原始未修补的 OTA。
 
 4. 从修补过的 OTA 中提取与原始版本不同的分区镜像。
-```bash
+```nushell
 avbroot ota extract \
     --input /path/to/ota.zip.patched \
     --directory extracted \
