@@ -1,3 +1,49 @@
+---
+date: 2024-09-08T05:25:45.441310109+08:00
+description:
+categories:
+  - 记录
+tags:
+  - 前端
+  - typst
+title: 在 SolidJS 中使用 typst
+---
+
+先上效果:
+
+<div class="w-60 mx-auto">
+  <QuickLinks title="Portal" href="https://blog.nyaw.xyz/typst-test" description="Typst.ts with SolidJS Demo"/>
+</div>
+
+主要使用了 [typst.ts](https://github.com/Myriad-Dreamin/typst.ts) 项目，因为有React的example所以适配起Solidjs的起来也十分方便。
+
+首先要用 `typst-ts-cli` 将typ文档编译成vector格式（后缀 artifact.sir.in）然后再加载。
+
+安装cli:
+```shell
+cargo install --locked --git https://github.com/Myriad-Dreamin/typst.ts typst-ts-cli
+```
+
+编译一下，用法和typst的cli基本相同:
+
+```shell title="typst Project Dir"
+typst-ts-cli compile --entry ./example.typ --format vector
+```
+
+然后把产生的 `example.artifact.sir.in` 当静态资源放着，比如`public`文件夹里。
+
+
+<Emph type="tips">截至24年9月，typst-ts-cli 不同版本似乎编译产物有很大差异，去年12月的release编译的vector数据不能被从主分支编译的wasm正常解析，建议版本对上号。</Emph>
+
+开始编写组件
+
+# SolidJS Cmpt 4 typst.ts
+
+因为有了react的前车之鉴所以这个非常简单。
+
+然后下文的 `local-font` permission query 只在 chromium 用得上，firefox似乎还没实现。
+
+```ts title="TypstDocument.ts"
 import { withGlobalRenderer } from "@myriaddreamin/typst.ts/dist/esm/contrib/global-renderer.mjs";
 import * as typst from "@myriaddreamin/typst.ts";
 import { createEffect, createSignal } from "solid-js";
@@ -5,7 +51,6 @@ import { createEffect, createSignal } from "solid-js";
 export interface TypstDocumentProps {
 	fill?: string;
 	artifact?: Uint8Array;
-	// todo: add vector format
 	format?: "vector";
 }
 
@@ -93,3 +138,33 @@ export const TypstDocument = ({
 TypstDocument.setWasmModuleInitOptions = (opts: typst.InitOptions) => {
 	moduleInitOptions = opts;
 };
+```
+
+
+# 使用
+
+```ts title="e.g. page.tsx"
+import { createEffect, createResource, createSignal, onMount } from "solid-js";
+import { TypstDocument } from "../lib/TypstDocument";
+
+export default function Typstest() {
+
+	const getArtifactData = async () => {
+		const response = await fetch(
+			'http://localhost:3000/readme.artifact.sir.in',
+		).then(response => response.arrayBuffer());
+
+		return (new Uint8Array(response));
+	};
+	const [a] = createResource(getArtifactData);
+
+	return (
+		<div class="w-full h-full justify-center items-center flex flex-col">
+			This is for testing the [WIP] typst solidjs component
+			<TypstDocument fill="#343541" artifact={a()} />
+		</div>
+	);
+}
+```
+
+最终看到的就是文章开头链接所指的景象了。

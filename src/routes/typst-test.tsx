@@ -5,7 +5,7 @@ export default function Typstest() {
 
 	const getArtifactData = async () => {
 		const response = await fetch(
-			'http://localhost:3000/a.artifact.sir.in',
+			'http://localhost:3000/readme.artifact.sir.in',
 		).then(response => response.arrayBuffer());
 
 		return (new Uint8Array(response));
