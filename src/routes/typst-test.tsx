@@ -12,7 +12,9 @@ export default function Typstest() {
 				if (import.meta.env.PROD) {
 					return cfg.base_url + suff;
 				}
-				return 'http://localhost:3000' + suff;
+				const ret = 'http://localhost:3000' + suff;
+				console.log(ret)
+				return ret;
 			})()
 		).then(response => response.arrayBuffer());
 
