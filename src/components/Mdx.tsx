@@ -189,7 +189,7 @@ const components = {
 	code: (props: ParentProps) => {
 		return (
 			<code
-				class="inline-block not-prose mx-px dark:opacity-70 break-all !font-mono font-semibold bg-sprout-100 text-spout-800 dark:bg-sprout-200 dark:text-zinc-800 px-2 py-0.5 rounded-md text-[0.8em] leading-snug"
+				class="inline-block not-prose mx-px dark:opacity-70 break-all !font-mono font-semibold bg-sprout-100 text-spout-800 dark:bg-sprout-200 dark:text-zinc-800 px-2 py-0.5 rounded-sm text-[0.8em] leading-snug"
 				{...props}
 			>
 				{props.children}
