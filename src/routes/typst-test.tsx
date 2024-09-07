@@ -1,11 +1,19 @@
-import { createEffect, createResource, createSignal, onMount } from "solid-js";
+import { createResource } from "solid-js";
 import { TypstDocument } from "../lib/TypstDocument";
+import cfg from "../constant";
 
 export default function Typstest() {
 
 	const getArtifactData = async () => {
 		const response = await fetch(
-			'http://localhost:3000/readme.artifact.sir.in',
+			(() => {
+				const suff = '/readme.artifact.sir.in';
+				// @ts-ignore
+				if (import.meta.env.PROD) {
+					return cfg.base_url + suff;
+				}
+				return 'http://localhost:3000' + suff;
+			})()
 		).then(response => response.arrayBuffer());
 
 		return (new Uint8Array(response));
