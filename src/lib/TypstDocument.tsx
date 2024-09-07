@@ -12,7 +12,7 @@ export interface TypstDocumentProps {
 let moduleInitOptions: typst.InitOptions = {
 	beforeBuild: [],
 	getModule: () =>
-		"_build/node_modules/@myriaddreamin/typst-ts-renderer/pkg/typst_ts_renderer_bg.wasm",
+		"https://cdn.jsdelivr.net/npm/@myriaddreamin/typst-ts-renderer/pkg/typst_ts_renderer_bg.wasm",
 };
 
 export const TypstDocument = ({
