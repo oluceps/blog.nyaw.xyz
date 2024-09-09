@@ -219,7 +219,7 @@ export default function Taxo() {
 														return {
 															date: value.date,
 															description: value.description,
-															categories: [...value.categories], // 如果是数组，需要解构以防止引用修改
+															categories: [...value.categories],
 															tags: [...value.tags],
 															toc: value.toc,
 															title: value.title,
@@ -234,13 +234,9 @@ export default function Taxo() {
 													let judge;
 													const ist = instantiaz(attr());
 													if (checked()) {
-														isIn(ist.tags, outerAttr())
-															? (judge = true)
-															: (judge = false);
+														judge = isIn(ist.tags, outerAttr());
 													} else {
-														isIn(ist.categories, outerAttr())
-															? (judge = true)
-															: (judge = false);
+														judge = isIn(ist.categories, outerAttr());
 													}
 													return (
 														<Show when={judge}>
