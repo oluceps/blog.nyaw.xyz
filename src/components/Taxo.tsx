@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Index, Show, Suspense } from "solid-js";
+import { createEffect, createSignal, For, Index, Show, Suspense } from "solid-js";
 import { A, cache, createAsync } from "@solidjs/router";
 import cfg from "../constant";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
@@ -35,7 +35,7 @@ export default function Taxo() {
 		() =>
 			cache(async () => {
 				"use server";
-				const preData = docsData
+				const data = docsData
 					.map((i) => {
 						return { ...i, date: new Date(i.date) };
 					})
@@ -45,13 +45,13 @@ export default function Taxo() {
 					});
 
 				const allTags = new Set(
-					preData.reduce<string[]>((acc, item) => {
+					data.reduce<string[]>((acc, item) => {
 						return item.tags ? acc.concat(item.tags) : acc;
 					}, []),
 				);
 
 				const allCate = new Set(
-					preData.reduce<string[]>((acc, item) => {
+					data.reduce<string[]>((acc, item) => {
 						return item.categories ? acc.concat(item.categories) : acc;
 					}, []),
 				);
@@ -62,7 +62,7 @@ export default function Taxo() {
 				for (const t of allTags) {
 					let count = 0;
 					let last;
-					for (const it of preData) {
+					for (const it of data) {
 						if (isIn(it.tags, t)) {
 							count++;
 							last = it.title;
@@ -98,36 +98,35 @@ export default function Taxo() {
 				});
 
 				// console.log(outputMap)
-				// console.log(reversedMap)
-
-				const data = preData.reduce<typeof preData>((acc, item) => {
-					if (Array.from(outputMap.values()).includes(item.title)) {
-						const updatedTags = (
-							item.tags!.filter(
-								(tag) => !Array.from(onlyTag.keys()).includes(tag),
-							) as ReadonlyArray<string>
-						).concat(reversedMap.get(item.title)?.join(" / ") || []);
-						// @ts-ignore
-						acc.push({ ...item, tags: updatedTags });
-						return acc;
-					}
-					acc.push({ ...item });
-					return acc;
-				}, [])
-
 				let dag: Map<string, typeof data> = new Map()
 
-				for (const i of data) {
-					for (const t of i.tags) {
-						const preV = dag.get(t) || []
-						dag.set(t, preV?.concat(i))
-					}
-					for (const c of i.categories) {
-						const preV = dag.get(c) || []
-						if (preV.some((ii) => ii.title == i.title)) break;
-						dag.set(c, preV.concat(i))
-					}
-				}
+				// console.log(data)
+				data.forEach((i) => {
+					i.tags.forEach((t) => {
+						if (Array.from(onlyTag.keys()).includes(t)) {
+							const a = Array.from(outputMap).find((i) => i[0].includes(t))!
+							if (a[1] == i.title) {
+								dag.set(a[0].join(' / '), [i])
+								console.log(a[0].join(' / '), i)
+							}
+						} else {
+							if (Array.from(dag.values()).some((ii) => ii.some((iii) => iii.title === i.title))) {
+							} else {
+								dag.set(t, dag.get(t)?.concat(i) || [i])
+							}
+						}
+					})
+				})
+
+				allCate.forEach((i) => {
+					dag.set(i, data.filter((a) => {
+						if (a.categories.length != 0) {
+							const t = a.categories[0]
+							return Array.from(a.categories).includes((i as typeof t))
+						}
+						return false
+					}))
+				})
 				return {
 					cate: allCate,
 					tag: allTags,
@@ -205,17 +204,23 @@ export default function Taxo() {
 						<div class="divider" />
 
 						<div class="antialiased flex flex-col sm:mx-3 md:mx-10 2xl:mx-16">
-							<Index each={Array.from(checked() ? ctx().tag : ctx().cate)}>
+							<For each={(() => {
+								const dag = Array.from(ctx().dag)
+
+								return checked()
+									? dag.filter(i => !ctx().cate.has(i[0]))
+									: dag.filter(i => ctx().cate.has(i[0]))
+							})()}>
 								{(outerAttr) => {
 									return (
 										<>
 											<p
 												class={`${checked() ? "mt-6" : "mt-4"} font-sans`}
-												id={outerAttr()}
+												id={outerAttr[0]}
 											>
-												{outerAttr()}
+												{outerAttr[0]}
 											</p>
-											<Index each={ctx().dag.get(outerAttr())}>
+											<Index each={outerAttr[1]}>
 												{(i) => {
 													const ist = i()
 													return <>
@@ -244,7 +249,7 @@ export default function Taxo() {
 										</>
 									);
 								}}
-							</Index>
+							</For>
 						</div>
 					</div>
 				)}
