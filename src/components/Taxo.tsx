@@ -4,10 +4,8 @@ import cfg from "../constant";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { docsData } from "solid:collection";
 import { useTaxoState } from "./PageState";
+import { isIn } from "~/lib/fn";
 
-function isIn<T>(values: readonly T[], x: any): x is T {
-	return values.includes(x);
-}
 
 export default function Taxo() {
 	const [checked, setChecked] = createSignal(false);
@@ -23,15 +21,6 @@ export default function Taxo() {
 		}
 	});
 
-	type UnionToTuple<U> = (U extends any ? (arg: U) => void : never) extends (
-		arg: infer T,
-	) => void
-		? [...UnionToTuple<Exclude<U, T>>, T]
-		: [];
-
-	function intersect<T>(arr1: readonly T[], arr2: readonly T[]): T[] {
-		return arr1.filter((item) => arr2.includes(item));
-	}
 
 	const rawData = createAsync(
 		() =>
@@ -231,15 +220,9 @@ export default function Taxo() {
 															featured_image: value.featured_image,
 														};
 													}
-													let judge;
 													const ist = instantiaz(attr());
-													if (checked()) {
-														judge = isIn(ist.tags, outerAttr());
-													} else {
-														judge = isIn(ist.categories, outerAttr());
-													}
 													return (
-														<Show when={judge}>
+														<Show when={checked() ? isIn(ist.tags, outerAttr()) : isIn(ist.categories, outerAttr())}>
 															<article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
 																<div class="no-underline mb-px font-light leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12">
 																	{ist.date
