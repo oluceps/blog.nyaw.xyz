@@ -16,10 +16,9 @@ export default function Taxo() {
 	const { setTaxoInfo, taxoInfo } = useTaxoState();
 	const [isHovered, setIsHovered] = createSignal<Bi>();
 
-	createEffect(() =>
-		setChecked(isHovered() == Bi.tag)
-	)
-
+	createEffect(() => {
+		setChecked(isHovered() == Bi.tag);
+	})
 
 	const [element, setElement] = createSignal<HTMLDivElement>();
 	createEffect(() => {
@@ -97,23 +96,42 @@ export default function Taxo() {
 				outputMap.forEach((value, key) => {
 					reversedMap.set(value, key);
 				});
-				return {
-					data: preData.reduce<typeof preData>((acc, item) => {
-						if (Array.from(outputMap.values()).includes(item.title)) {
-							const updatedTags = (
-								item.tags!.filter(
-									(tag) => !Array.from(onlyTag.keys()).includes(tag),
-								) as ReadonlyArray<string>
-							).concat(reversedMap.get(item.title)?.join(" / ") || []);
-							// @ts-ignore
-							acc.push({ ...item, tags: updatedTags });
-							return acc;
-						}
-						acc.push({ ...item });
+
+				// console.log(outputMap)
+				// console.log(reversedMap)
+
+				const data = preData.reduce<typeof preData>((acc, item) => {
+					if (Array.from(outputMap.values()).includes(item.title)) {
+						const updatedTags = (
+							item.tags!.filter(
+								(tag) => !Array.from(onlyTag.keys()).includes(tag),
+							) as ReadonlyArray<string>
+						).concat(reversedMap.get(item.title)?.join(" / ") || []);
+						// @ts-ignore
+						acc.push({ ...item, tags: updatedTags });
 						return acc;
-					}, []),
+					}
+					acc.push({ ...item });
+					return acc;
+				}, [])
+
+				let dag: Map<string, typeof data> = new Map()
+
+				for (const i of data) {
+					for (const t of i.tags) {
+						const preV = dag.get(t) || []
+						dag.set(t, preV?.concat(i))
+					}
+					for (const c of i.categories) {
+						const preV = dag.get(c) || []
+						if (preV.some((ii) => ii.title == i.title)) break;
+						dag.set(c, preV.concat(i))
+					}
+				}
+				return {
 					cate: allCate,
 					tag: allTags,
+					dag,
 				};
 			}, "global-taxoData")(),
 		{ deferStream: true },
@@ -197,63 +215,30 @@ export default function Taxo() {
 											>
 												{outerAttr()}
 											</p>
-											<Index each={ctx().data}>
-												{(attr) => {
-													const a = attr();
-													interface A {
-														date: Date;
-														description: string;
-														categories: string[];
-														tags: string[];
-														toc: boolean;
-														title: string;
-														path: string;
-														draft: boolean;
-														hideLevel: number;
-														author: string;
-														math: boolean;
-														featured_image: string;
-													}
-													function instantiaz(value: typeof a): A {
-														return {
-															date: value.date,
-															description: value.description,
-															categories: [...value.categories],
-															tags: [...value.tags],
-															toc: value.toc,
-															title: value.title,
-															path: value.path,
-															draft: value.draft,
-															hideLevel: value.hideLevel,
-															author: value.author,
-															math: value.math,
-															featured_image: value.featured_image,
-														};
-													}
-													const ist = instantiaz(attr());
-													return (
-														<Show when={checked() ? isIn(ist.tags, outerAttr()) : isIn(ist.categories, outerAttr())}>
-															<article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
-																<div class="no-underline mb-px font-light leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12">
-																	{ist.date
-																		.toLocaleDateString("en-CA", {
-																			year: "numeric",
-																			month: "2-digit",
-																			day: "2-digit",
-																		})
-																		.toString()
-																		.replace(/-/g, "/")}
-																</div>
-																<A
-																	href={`/${ist.path}`}
-																	class="no-underline font-sans text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-slug"
-																>
-																	{ist.title}
-																	<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
-																</A>
-															</article>
-														</Show>
-													);
+											<Index each={ctx().dag.get(outerAttr())}>
+												{(i) => {
+													const ist = i()
+													return <>
+														<article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
+															<div class="no-underline mb-px font-light leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12">
+																{ist.date
+																	.toLocaleDateString("en-CA", {
+																		year: "numeric",
+																		month: "2-digit",
+																		day: "2-digit",
+																	})
+																	.toString()
+																	.replace(/-/g, "/")}
+															</div>
+															<A
+																href={`/${ist.path}`}
+																class="no-underline font-sans text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-slug"
+															>
+																{ist.title}
+																<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
+															</A>
+														</article>
+													</>
 												}}
 											</Index>
 										</>
