@@ -1,4 +1,4 @@
-import { createEffect, createSignal, Index, onCleanup, onMount, Show, Suspense } from "solid-js";
+import { createEffect, createSignal, Index, Show, Suspense } from "solid-js";
 import { A, cache, createAsync } from "@solidjs/router";
 import cfg from "../constant";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
@@ -6,10 +6,20 @@ import { docsData } from "solid:collection";
 import { useTaxoState } from "./PageState";
 import { isIn } from "~/lib/fn";
 
+enum Bi {
+	tag,
+	cat
+}
 
 export default function Taxo() {
 	const [checked, setChecked] = createSignal(false);
 	const { setTaxoInfo, taxoInfo } = useTaxoState();
+	const [isHovered, setIsHovered] = createSignal<Bi>();
+
+	createEffect(() =>
+		setChecked(isHovered() == Bi.tag)
+	)
+
 
 	const [element, setElement] = createSignal<HTMLDivElement>();
 	createEffect(() => {
@@ -139,13 +149,13 @@ export default function Taxo() {
 						<div class="flex space-x-2 items-center">
 							<div
 								class={`px-2 py-px tansition-all duration-300 ${!checked() ? "bg-sprout-200/80 text-neutral-600 rounded-md" : "text-neutral-500"}`}
-								onClick={() => setChecked(!checked())}
+								onmouseover={() => setIsHovered(Bi.cat)}
 							>
 								目录
 							</div>
 							<div
 								class={`px-2 py-px tansition-all duration-300 ${checked() ? "bg-sprout-200/80 text-neutral-600 rounded-md" : "text-neutral-500"}`}
-								onClick={() => setChecked(!checked())}
+								onmouseover={() => setIsHovered(Bi.tag)}
 							>
 								标签
 							</div>
