@@ -7,8 +7,8 @@ import { useTaxoState } from "./PageState";
 import { isIn } from "~/lib/fn";
 
 enum Bi {
-	tag,
-	cat
+	tag = 0,
+	cat = 1
 }
 
 export default function Taxo() {
@@ -98,7 +98,7 @@ export default function Taxo() {
 				});
 
 				// console.log(outputMap)
-				let dag: Map<string, typeof data> = new Map()
+				const dag: Map<string, typeof data> = new Map()
 
 				// console.log(data)
 				data.forEach((i) => {

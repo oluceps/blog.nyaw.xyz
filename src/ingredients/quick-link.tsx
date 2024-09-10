@@ -87,7 +87,7 @@ export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
 			<div class="absolute -inset-px rounded-xl border-transparent opacity-0 transition-all [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sprout.100)),var(--quick-links-hover-bg,theme(colors.sprout.100)))_padding-box,linear-gradient(to_top,theme(colors.sprout.500),theme(colors.sprout.300))_border-box] group-hover:opacity-80" />
 
 			<div class="relative overflow-hidden h-full w-full grow">
-				<a href={props.href} target="_blank"><span class="absolute -inset-px rounded-xl" /></a>
+				<a href={props.href} target="_blank" rel="noreferrer"><span class="absolute -inset-px rounded-xl" /></a>
 				<div class="m-4">
 					<div class="flex w-full grow justify-start lg:justify-center items-center overflow-hidden">
 						<Dynamic component={icons[props.title as keyof typeof icons]} />
