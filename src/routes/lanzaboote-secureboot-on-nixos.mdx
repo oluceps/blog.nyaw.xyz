@@ -26,16 +26,15 @@ categories:
 Add following into flake inputs:
 
 ```nix
-    lanzaboote = {
-      url = "github:nix-community/lanzaboote";
-    };
-
+lanzaboote = {
+  url = "github:nix-community/lanzaboote";
+};
 ```
 
 并添加对应的module：
 
 ```nix
-   imports = [ lanzaboote.nixosModules.lanzaboote ];
+imports = [ lanzaboote.nixosModules.lanzaboote ];
 ```
 
 确认使用 UEFI 模式安装 NixOS:
