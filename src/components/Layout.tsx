@@ -1,6 +1,6 @@
 import { Link, Meta, MetaProvider } from "@solidjs/meta";
 import cfg from "../constant";
-import { lazy, onCleanup, onMount, Suspense } from "solid-js";
+import { lazy, Suspense } from "solid-js";
 import {
 	Match,
 	type ParentProps,
@@ -8,8 +8,7 @@ import {
 	createEffect,
 	createSignal,
 } from "solid-js";
-import { SolidLenis, useLenis } from '~/lib/lenis'
-
+import { SolidLenis } from '~/lib/lenis'
 import { useLocation } from "@solidjs/router";
 import Page from "./Page";
 import Root from "./Root";
@@ -17,8 +16,6 @@ import { PageStateProvider, TaxoStateProvider } from "./PageState";
 import Taxo from "./Taxo";
 import Me from "~/ingredients/me";
 import Footer from "./Footer";
-import { gsap } from "gsap";
-import Lenis from "lenis";
 
 const BackTopBtn = lazy(() => import("./BackTopBtn"));
 const Header = lazy(() => import("./Header"));
@@ -74,12 +71,14 @@ export function Layout(props: ParentProps) {
 									<Taxo />
 								</Match>
 							</Switch>
-							<Suspense>
-								<BackTopBtn />
-							</Suspense>
+
 							<Footer />
 						</div>
 					</SolidLenis>
+
+					<Suspense>
+						<BackTopBtn />
+					</Suspense>
 				</TaxoStateProvider>
 			</PageStateProvider>
 		</MetaProvider>
