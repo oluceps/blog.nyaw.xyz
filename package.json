@@ -44,6 +44,7 @@
 		"cssnano": "^7.0.6",
 		"daisyui": "^4.12.10",
 		"gray-matter": "^4.0.3",
+		"gsap": "^3.12.5",
 		"lenis": "^1.1.13",
 		"purgecss": "^6.0.0",
 		"rehype-autolink-headings": "^7.1.0",

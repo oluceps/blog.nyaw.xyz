@@ -1,6 +1,6 @@
 import { createContext, useContext, createEffect, onCleanup, createSignal } from 'solid-js';
 import { Store, useStore } from './store';
-import type { LenisContextValue, LenisProps, LenisRef } from './types';
+import type { LenisContextValue, LenisProps } from './types';
 import { onMount } from 'solid-js';
 import Tempus from '@darkroom.engineering/tempus';
 import Lenis, { ScrollCallback } from 'lenis';
@@ -12,7 +12,7 @@ const rootLenisContextStore = new Store<LenisContextValue | null>(null);
 const fallbackContext: Partial<LenisContextValue> = {};
 
 // Lenis hook in SolidJS
-export function useLenis(callback?: ScrollCallback, deps: any[] = [], priority = 0) {
+export function useLenis(callback?: ScrollCallback, priority = 0) {
   const localContext = useContext(LenisContext);
   const rootContext = useStore(rootLenisContextStore);
 
@@ -40,6 +40,7 @@ export function SolidLenis(props: LenisProps) {
   const [lenis, setLenis] = createSignal<Lenis | undefined>(undefined);
 
   onMount(() => {
+    console.log("solid lenis init")
     const lenisInstance = new Lenis({
       ...props.options,
       ...(props.root === false && {
