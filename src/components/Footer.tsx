@@ -6,7 +6,7 @@ const Footer: Component = () => {
 		<div class="relative bottom-0 w-full justify-end text-[10px] group flex-nowrap">
 			<div class="group-hover:block hidden">
 				<div class="flex justify-end items-center mr-3 space-x-1 flex-nowrap">
-					<p>BUILT WITH SolidJS & UnoCSS</p>
+					<p>Powered by SolidJS & UnoCSS</p>
 				</div>
 			</div>
 			<div class="group-hover:hidden flex justify-end items-center mr-3 space-x-1 flex-nowrap">
