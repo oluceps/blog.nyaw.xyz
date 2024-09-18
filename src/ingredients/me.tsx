@@ -6,17 +6,19 @@ import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { createSignal, onCleanup, onMount } from "solid-js";
 
 export default function Me() {
-	const [onlyIcon, setOnlyIcon] = createSignal<boolean>();
+	const [onlyIcon, setOnlyIcon] = createSignal<boolean>(false);
 
 	const set = () => {
 		setOnlyIcon(window.innerWidth > 1180)
 	}
 	onMount(() => {
 		window.addEventListener('resize', set);
+
+		onCleanup(() => {
+			window.removeEventListener('resize', set);
+		})
 	});
-	onCleanup(() => {
-		window.removeEventListener('resize', set);
-	})
+
 
 	return (
 		<>
