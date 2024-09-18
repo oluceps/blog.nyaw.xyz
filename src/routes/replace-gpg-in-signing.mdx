@@ -127,14 +127,14 @@ update: 用回ssh key了, 一下感觉 rebase 好快
 比如
 
 ```
-i@oluceps.uk sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NAIBFIalie2guY29tAAAAIH+HwSzDbhaisdjABAdibbdsvwqfla4GY6EuD1yGuNkX6QAAAaifAIfalAALjg5NTQzMzc1 ssh:1689543375
+i@some.com sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NAIBFIalie2guY29tAAAAIH+HwSzDbhaisdjABAdibbdsvwqfla4GY6EuD1yGuNkX6QAAAaifAIfalAALjg5NTQzMzc1 ssh:1689543375
 ```
 
 使用这个验证签名
 
 ```console
-  cat FILE | ssh-keygen -Y verify -f allowed_signers -I i@oluceps.uk -n FILE -s FILE.sig
-  Good "FILE" signature for i@oluceps.uk with ED25519-SK key SHA256:iabd+DxjcImivTYhsuQTlPhTIlYr2aHojF3YaisdbM
+  cat FILE | ssh-keygen -Y verify -f allowed_signers -I i@some.com -n FILE -s FILE.sig
+  Good "FILE" signature for i@some.com with ED25519-SK key SHA256:iabd+DxjcImivTYhsuQTlPhTIlYr2aHojF3YaisdbM
 ```
 
 > 作为 [这篇博文](https://www.agwa.name/blog/post/ssh_signatures) 的简短助记。

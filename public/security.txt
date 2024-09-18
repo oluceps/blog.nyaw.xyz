@@ -1,4 +1,4 @@
-Contact: mailto:i@oluceps.uk
+Contact: mailto:i@nyaw.xyz
 Expires: 2025-07-01T00:08:00.000Z
 Encryption: https://raw.githubusercontent.com/oluceps/oluceps/key/key.asc
 Preferred-Languages: zh-cn,en-us
