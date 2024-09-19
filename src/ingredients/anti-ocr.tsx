@@ -55,10 +55,12 @@ const AntiOCR = () => {
 	const textToImg = () => {
 		const text = txt();
 		let length = len();
+
 		if (text === "") {
 			alert("請輸入文字");
 			return;
 		}
+
 		if (length > text.length) {
 			length = text.length;
 		}
@@ -97,7 +99,7 @@ const AntiOCR = () => {
 				context.moveTo(x, y);
 				context.lineTo(
 					x + random(-random(0, canvas.width / 2), random(0, canvas.width / 2)),
-					y + random(-random(0, canvas.width / 2), random(0, canvas.width / 2)),
+					y + random(-random(0, canvas.width / 2), random(0, canvas.width / 2))
 				);
 				context.closePath();
 				context.stroke();
@@ -106,7 +108,7 @@ const AntiOCR = () => {
 			context.font = `${fontWeight()} ${fontSize()}px sans-serif`;
 			context.textBaseline = "top";
 
-			const fillTxt = (text: string) => {
+			const fillTxt = (text: string, yPosition: number) => {
 				let i = 0;
 				while (text.length > length) {
 					const txtLine = text.substring(0, length);
@@ -116,23 +118,25 @@ const AntiOCR = () => {
 					context.fillText(
 						txtLine,
 						10,
-						5 + fontSize() * 1.5 * i++,
-						canvas.width,
+						yPosition + fontSize() * 1.5 * i++,
+						canvas.width
 					);
 					context.rotate(-r);
 				}
-				context.fillText(text, 0, fontSize() * 1.5 * i, canvas.width);
+				context.fillText(text, 10, yPosition + fontSize() * 1.5 * i, canvas.width);
 			};
 
 			const txtArray = text.split("\n");
-			txtArray.forEach((line, j) => {
-				fillTxt(line);
-				context.fillText("\n", 0, fontSize() * 1.5 * j++, canvas.width);
+			let yPosition = 5; // Initial y position for the first line
+			txtArray.forEach((line) => {
+				fillTxt(line, yPosition);
+				yPosition += fontSize() * 1.5; // Update y position for each new line
 			});
 
 			img.src = canvas.toDataURL("image/png");
 		}
 	};
+
 
 	const changeColor = (name: string) => {
 		const red = (document.getElementById(`${name}_red`) as HTMLInputElement)
@@ -148,11 +152,6 @@ const AntiOCR = () => {
 			setBackColor(color);
 		}
 	};
-
-	// onMount(() => {
-	// 	changeColor("fontcolor");
-	// 	changeColor("backcolor");
-	// });
 
 	return (
 		<div class="flex flex-col w-full justify-center items-center">
