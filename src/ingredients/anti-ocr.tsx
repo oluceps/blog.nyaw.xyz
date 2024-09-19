@@ -18,9 +18,9 @@ const AntiOCR = () => {
 	};
 	const rgbToHex = (rgbString: string) => {
 		const parts = rgbString.slice(4, -1).split(",");
-		const r = Number.parseInt(parts[0]);
-		const g = Number.parseInt(parts[1]);
-		const b = Number.parseInt(parts[2]);
+		const r = Number.parseInt(parts[0] || "0");
+		const g = Number.parseInt(parts[1] || "0");
+		const b = Number.parseInt(parts[2] || "0");
 		const rt = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 		console.log(rt);
 		return rt;
@@ -40,11 +40,13 @@ const AntiOCR = () => {
 	const [fontColorHex, setFontColorHex] = createSignal("");
 	const [backColorHex, setBackColorHex] = createSignal("");
 
+	const [element, setElement] = createSignal<HTMLDivElement>();
+
 	createEffect(() => {
-		setFontColorHex(rgbToHex(fontColor()));
+		if (element()) setFontColorHex(rgbToHex(fontColor()));
 	});
 	createEffect(() => {
-		setBackColorHex(rgbToHex(backColor()));
+		if (element()) setBackColorHex(rgbToHex(backColor()));
 	});
 	const random = (min: number, max: number) => {
 		return Math.round(Math.random() * (max - min)) + min;
@@ -147,10 +149,10 @@ const AntiOCR = () => {
 		}
 	};
 
-	onMount(() => {
-		changeColor("fontcolor");
-		changeColor("backcolor");
-	});
+	// onMount(() => {
+	// 	changeColor("fontcolor");
+	// 	changeColor("backcolor");
+	// });
 
 	return (
 		<div class="flex flex-col w-full justify-center items-center">
@@ -167,7 +169,7 @@ const AntiOCR = () => {
 					/>
 				</div>
 
-				<div class="w-full h-full flex flex-col">
+				<div class="w-full h-full flex flex-col" ref={setElement}>
 					<label class="label">
 						<span class="label-text">字体大小</span>
 					</label>
