@@ -54,88 +54,101 @@ const AntiOCR = () => {
 
 	const textToImg = () => {
 		const text = txt();
-		let length = len();
+		const fontSizeValue = fontSize();
+		const padding = 10;
+		const lineHeight = fontSizeValue * 1.5; // 行间距
+		const maxWidth = len() * fontSizeValue; // 每行的最大宽度限制，基于字体大小和字符数
+		const canvasEl = document.createElement("canvas");
+		const context = canvasEl.getContext("2d");
+
+		if (!context) return;
 
 		if (text === "") {
 			alert("請輸入文字");
 			return;
 		}
 
-		if (length > text.length) {
-			length = text.length;
+		// 设置字体，便于测量文本宽度
+		context.font = `${fontWeight()} ${fontSizeValue}px sans-serif`;
+		context.textBaseline = "top";
+
+		// 拆分文本，并确保每行文字不会超过画布宽度
+		const lines = [];
+		const words = text.split(" "); // 按空格拆分单词
+		let currentLine = "";
+
+		words.forEach(word => {
+			const testLine = currentLine + word + " ";
+			const testWidth = context.measureText(testLine).width;
+
+			if (testWidth > maxWidth) {
+				// 如果当前行的长度超过最大宽度，推送当前行到行数组，并重新开始新行
+				lines.push(currentLine.trim());
+				currentLine = word + " ";
+			} else {
+				currentLine = testLine; // 否则继续拼接单词到当前行
+			}
+		});
+
+		// 添加最后一行
+		lines.push(currentLine.trim());
+
+		// 动态调整 Canvas 宽高
+		const canvasWidth = Math.min(maxWidth + padding * 2, canvasEl.width);
+		const canvasHeight = lines.length * lineHeight + padding * 2;
+		canvasEl.width = canvasWidth;
+		canvasEl.height = canvasHeight;
+
+		// 填充背景
+		context.fillStyle = backColor();
+		context.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+		// 设置文本颜色
+		context.fillStyle = fontColor();
+
+		// 绘制随机点
+		const numPoints = text.length * fontSizeValue * points();
+		for (let i = 0; i < numPoints; i++) {
+			const x = random(0, canvasEl.width);
+			const y = random(0, canvasEl.height);
+			context.lineWidth = pointSize();
+			context.beginPath();
+			context.moveTo(x, y);
+			context.lineTo(x + 1, y + 1);
+			context.closePath();
+			context.stroke();
 		}
 
-		canvas.width = fontSize() * length + 20;
-		canvas.height =
-			fontSize() * 1.5 * Math.ceil(text.length / length) +
-			text.split("\n").length * fontSize();
-
-		const context = canvas.getContext("2d");
-		if (context) {
-			context.clearRect(0, 0, canvas.width, canvas.height);
-			context.fillStyle = backColor();
-			context.fillRect(0, 0, canvas.width, canvas.height);
-			context.fillStyle = fontColor();
-			context.strokeStyle = fontColor();
-
-			const n = text.length / 5;
-			const n2 = text.length * fontSize() * points();
-			for (let i = 0; i < n2; i++) {
-				const x = random(0, canvas.width);
-				const y = random(0, canvas.height);
-				context.lineWidth = pointSize();
-				context.beginPath();
-				context.moveTo(x, y);
-				context.lineTo(x + 1, y + 1);
-				context.closePath();
-				context.stroke();
-			}
-
-			for (let i = 0; i < n; i++) {
-				const x = random(0, canvas.width);
-				const y = random(0, canvas.height);
-				context.lineWidth = lineSize();
-				context.beginPath();
-				context.moveTo(x, y);
-				context.lineTo(
-					x + random(-random(0, canvas.width / 2), random(0, canvas.width / 2)),
-					y + random(-random(0, canvas.width / 2), random(0, canvas.width / 2))
-				);
-				context.closePath();
-				context.stroke();
-			}
-
-			context.font = `${fontWeight()} ${fontSize()}px sans-serif`;
-			context.textBaseline = "top";
-
-			const fillTxt = (text: string, yPosition: number) => {
-				let i = 0;
-				while (text.length > length) {
-					const txtLine = text.substring(0, length);
-					text = text.substring(length);
-					const r = random(-1, 1) / random(50, 100);
-					context.rotate(r);
-					context.fillText(
-						txtLine,
-						10,
-						yPosition + fontSize() * 1.5 * i++,
-						canvas.width
-					);
-					context.rotate(-r);
-				}
-				context.fillText(text, 10, yPosition + fontSize() * 1.5 * i, canvas.width);
-			};
-
-			const txtArray = text.split("\n");
-			let yPosition = 5; // Initial y position for the first line
-			txtArray.forEach((line) => {
-				fillTxt(line, yPosition);
-				yPosition += fontSize() * 1.5; // Update y position for each new line
-			});
-
-			img.src = canvas.toDataURL("image/png");
+		// 绘制随机线条
+		const numLines = text.length / 5;
+		for (let i = 0; i < numLines; i++) {
+			const x = random(0, canvasEl.width);
+			const y = random(0, canvasEl.height);
+			context.lineWidth = lineSize();
+			context.beginPath();
+			context.moveTo(x, y);
+			context.lineTo(
+				x + random(-random(0, canvasEl.width / 2), random(0, canvasEl.width / 2)),
+				y + random(-random(0, canvasEl.height / 2), random(0, canvasEl.height / 2))
+			);
+			context.closePath();
+			context.stroke();
 		}
+
+		// 绘制文本
+		let yPosition = padding;
+		lines.forEach(line => {
+			context.fillText(line, padding, yPosition); // 绘制每一行文本
+			yPosition += lineHeight; // 增加 y 坐标以换行
+		});
+
+		// 将生成的 Canvas 转为图片
+		const img = document.createElement("img");
+		img.src = canvasEl.toDataURL("image/png");
+		document.body.appendChild(img); // 将图片添加到页面显示
 	};
+
+
 
 
 	const changeColor = (name: string) => {
@@ -354,10 +367,6 @@ const AntiOCR = () => {
 				生成图片
 			</button>
 			<canvas ref={canvas!} class="hidden"></canvas>
-
-			<div class="mt-4">
-				<img ref={img!} class="rounded-none" />
-			</div>
 		</div>
 	);
 };
