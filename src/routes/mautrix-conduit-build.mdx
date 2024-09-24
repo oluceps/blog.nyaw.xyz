@@ -24,6 +24,10 @@ title: mautrix telegram <=> conduit
 
 # 配置
 
+[source](https://github.com/oluceps/nixos-config/blob/trival/repack/mautrix-telegram.nix)
+
+参考了nickcao的[配置](https://github.com/NickCao/flakes)
+
 ```nix title="nixos module"
 systemd.services = {
   mautrix-telegram.serviceConfig.RuntimeMaxSec = 86400;
