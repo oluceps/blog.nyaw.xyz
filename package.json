@@ -15,15 +15,15 @@
 		"@solid-primitives/map": "^0.4.12",
 		"@solid-primitives/script-loader": "^2.2.0",
 		"@solidjs/router": "^0.13.6",
-		"@solidjs/start": "^1.0.6",
+		"@solidjs/start": "^1.0.8",
 		"@unocss/reset": "^0.62.4",
 		"@vinxi/plugin-mdx": "^3.7.2",
 		"ky": "^1.7.2",
 		"rehype-katex": "^7.0.1",
 		"solid-collapse": "^1.1.0",
-		"solid-js": "^1.8.22",
+		"solid-js": "^1.9.1",
 		"solid-mdx": "^0.0.7",
-		"solid-motionone": "^1.0.1",
+		"solid-motionone": "^1.0.2",
 		"vinxi": "^0.4.3"
 	},
 	"engines": {
@@ -34,7 +34,7 @@
 		"@fullhuman/postcss-purgecss": "^6.0.0",
 		"@solid-primitives/scroll": "^2.0.23",
 		"@solidjs/meta": "^0.29.4",
-		"@tabler/icons-solidjs": "^3.17.0",
+		"@tabler/icons-solidjs": "^3.19.0",
 		"@types/js-cookie": "^3.0.6",
 		"@unocss/preset-rem-to-px": "^0.62.4",
 		"@unocss/preset-web-fonts": "^0.62.4",
@@ -57,6 +57,6 @@
 		"solid-heroicons": "^3.2.4",
 		"tailwind-merge": "^2.5.2",
 		"unocss": "^0.62.4",
-		"vercel": "^37.4.2"
+		"vercel": "^37.6.0"
 	}
 }
