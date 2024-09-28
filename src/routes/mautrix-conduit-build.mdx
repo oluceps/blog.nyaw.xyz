@@ -18,7 +18,7 @@ title: mautrix telegram <=> conduit
 
 # 目标
 
-我也不太清楚 大概就是给已有的 telegram room 创建 matrix room 镜像，然后以自己的matrix账号发信可以在telegram用对应的telegram账号发信。
+大概就是给已有的 telegram room 创建 matrix room 镜像，然后以自己的matrix账号发信可以在telegram用对应的telegram账号发信。
 
 应该是可以实现的吧？本文边实践边记录的。
 
@@ -74,6 +74,7 @@ services.mautrix-telegram = {
       };
     };
     telegram = {
+      # 抄 tdesktop 的
       api_id = 611335;
       api_hash = "d524b414d21f4d37f08684c1df41ac9c";
       device_info = {
@@ -96,4 +97,4 @@ services.mautrix-telegram = {
 
 然后在自己的 matrix client 私聊 `@telegrambot:domain.com` 再发help, 查看后续攻略。
 
-可以直接 `login` 登陆telegram账号。
+可以直接 `login` 登陆telegram账号。到达基本使用的步骤基本就这些，但是文档一大堆东西混在一起混乱不堪，令人费解。
