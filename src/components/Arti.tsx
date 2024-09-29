@@ -14,6 +14,8 @@ export const Arti: Component = () => {
 						return { ...i, date: new Date(i.date) };
 					})
 					.filter((i: any) => {
+						// @ts-ignore
+						if (import.meta.env.DEV) return true;
 						const itemHideLvl = i.hideLevel || 5;
 						return cfg.hideLevel < itemHideLvl && !i.draft;
 					});
