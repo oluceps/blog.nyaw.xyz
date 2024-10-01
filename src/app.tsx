@@ -11,6 +11,11 @@ import 'virtual:uno.css'
 import '@unocss/reset/tailwind-compat.css'
 
 export default function App() {
+	document.addEventListener('visibilitychange', () => {
+		if (document.visibilityState == "visible") {
+			navigator.wakeLock.request('screen');
+		}
+	});
 	return (
 		<Router
 			root={(props) => (
