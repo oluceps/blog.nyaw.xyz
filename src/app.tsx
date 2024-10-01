@@ -1,6 +1,6 @@
 import { Router } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
-import { ErrorBoundary, Suspense } from "solid-js";
+import { ErrorBoundary, onMount, Suspense } from "solid-js";
 import { MDXProvider } from "solid-mdx";
 import Mdx from "./components/Mdx";
 import "./style.css";
@@ -11,11 +11,13 @@ import 'virtual:uno.css'
 import '@unocss/reset/tailwind-compat.css'
 
 export default function App() {
-	document.addEventListener('visibilitychange', () => {
-		if (document.visibilityState == "visible") {
-			navigator.wakeLock.request('screen');
-		}
-	});
+	onMount(() => {
+		document.addEventListener('visibilitychange', () => {
+			if (document.visibilityState == "visible") {
+				navigator.wakeLock.request('screen');
+			}
+		});
+	})
 	return (
 		<Router
 			root={(props) => (
