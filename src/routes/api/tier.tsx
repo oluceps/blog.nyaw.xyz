@@ -1,8 +1,8 @@
+import { APIEvent } from '@solidjs/start/server';
 import { geolocation } from '@vercel/functions';
 
-export function GET(request: Request) {
-	const { country } = geolocation(request);
-	// return country === "CN" ? 1 : 0;
+export function GET(event: APIEvent) {
+	const { country } = geolocation(event.request);
 	return new Response((country === "CN" ? 1 : 0).toString(), {
 		headers: { 'content-type': 'application/json' },
 	});
