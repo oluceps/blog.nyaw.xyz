@@ -9,7 +9,7 @@ export const Arti: Component = () => {
 		() =>
 			cache(async () => {
 				"use server";
-				const t = docsData
+				return docsData
 					.map((i) => {
 						return { ...i, date: new Date(i.date) };
 					})
@@ -18,22 +18,7 @@ export const Arti: Component = () => {
 						if (import.meta.env.DEV) return true;
 						const itemHideLvl = i.hideLevel || 5;
 						return cfg.hideLevel < itemHideLvl && !i.draft;
-					});
-
-				// Convince v8.
-				const o = new Map<number, typeof t>();
-				let ty = Number.POSITIVE_INFINITY;
-				for (const s of t) {
-					const artiYear = s.date.getFullYear();
-					if (artiYear < ty) {
-						ty = artiYear;
-						o.set(artiYear, [s]);
-					} else {
-						o.set(artiYear, Array.prototype.concat(o.get(artiYear), s));
-					}
-				}
-
-				return o;
+					}).sort((a, b) => b.date > a.date ? 1 : -1);
 			}, "global-docData")(),
 		{ deferStream: true },
 	);
@@ -49,62 +34,71 @@ export const Arti: Component = () => {
 				}
 			>
 				<Show when={ctx()}>
-					{(data) => (
-						<Index each={Array.from(data().keys())}>
-							{(attr) => {
-								return (
-									<>
-										<div class="text-lg 2xl:text-2xl font-sans font-normal text-slate-700 dark:text-chill-100">
-											{attr()}
-										</div>
-										<Index each={data().get(attr())}>
-											{(inner) => {
-												return (
-													<Suspense fallback="h-8 my-3 w-full skeleton">
-														<div class="antialiased flex flex-col mx-3 md:mx-8 2xl:mx-12">
-															<article class="flex overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
-																<div class="no-underline font-sans font-light leading-snug text-slate-600 min-w-12">
-																	{inner()
-																		.date.toLocaleDateString("en-US", {
-																			month: "2-digit",
-																			day: "2-digit",
-																		})
-																		.toString()}
-																</div>
-																<A
-																	href={`/${inner().path}`}
-																	class="no-underline font-sans text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-loose"
-																>
-																	{inner().title}
-																	<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
-																</A>
-															</article>
+					{(data) => {
+						let dataArray = Array.from(data());
+						const getSeason = (d: Date) => Math.floor((d.getMonth() / 12 * 4)) % 4;
 
-															<div class="flex justify-end">
-																<Show
-																	when={inner().categories.length !== 0}
-																	fallback={<div class="h-4" />}
-																>
-																	<A
-																		class="pl-6 text-xs 2xl:text-base text-slate-600 font-sans dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
-																		href="/taxonomy"
-																		onClick={() => setTaxoInfo({ id: inner().categories[0] as string })}
-																	>
-																		{inner().categories[0] as string}
-																		<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
-																	</A>
-																</Show>
-															</div>
+						return (
+							<Index each={dataArray}>
+								{(attr, idx) => {
+									let prevArti = dataArray[idx - 1];
+									let prevYear = prevArti?.date.getFullYear(); // newer
+									let prevSeason = prevArti ? getSeason(prevArti.date) : undefined;
+									return (
+										<>
+											<Show when={prevYear !== attr().date.getFullYear()}>
+												<div class="text-lg 2xl:text-2xl font-sans font-normal text-slate-700 dark:text-chill-100">
+													{attr().date.getFullYear().toString()}
+												</div>
+											</Show>
+											<Show when={prevSeason !== getSeason(attr().date)}>
+												<div class="ml-1 md:ml-4 2xl:text-xl font-sans font-normal text-slate-700 dark:text-chill-100">
+													{["春", "夏", "秋", "冬"][getSeason(attr().date)]}
+												</div>
+											</Show>
+											<Suspense fallback="h-8 my-3 w-full skeleton">
+												<div class="antialiased flex flex-col mx-3 md:mx-8 2xl:mx-12">
+													<article class="flex overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
+														<div class="no-underline font-sans font-light leading-snug text-slate-600 min-w-12">
+															{attr()
+																.date.toLocaleDateString("en-US", {
+																	month: "2-digit",
+																	day: "2-digit",
+																})
+																.toString()}
 														</div>
-													</Suspense>
-												);
-											}}
-										</Index>
-									</>
-								);
-							}}
-						</Index>
-					)}
+														<A
+															href={`/${attr().path}`}
+															class="no-underline font-sans text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-loose"
+														>
+															{attr().title}
+															<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
+														</A>
+													</article>
+
+													<div class="flex justify-end">
+														<Show
+															when={attr().categories.length !== 0}
+															fallback={<div class="h-4" />}
+														>
+															<A
+																class="pl-6 text-xs 2xl:text-base text-slate-600 font-sans dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
+																href="/taxonomy"
+																onClick={() => setTaxoInfo({ id: attr().categories[0] as string })}
+															>
+																{attr().categories[0] as string}
+																<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
+															</A>
+														</Show>
+													</div>
+												</div>
+											</Suspense>
+										</>
+									);
+								}}
+							</Index>
+						)
+					}}
 				</Show>
 			</Suspense>
 		</>
