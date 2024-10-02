@@ -4,24 +4,33 @@ import cfg from "../constant";
 import { docsData } from "solid:collection";
 import { useTaxoState } from "./PageState";
 import tier from "~/tier";
+import { twMerge } from "tailwind-merge";
 
 export const Arti: Component = () => {
 	const ctx = createAsync(
 		() =>
 			cache(async () => {
 				"use server";
-				return Promise.all(docsData
-					.map((i) => {
-						return { ...i, date: new Date(i.date) };
-					})
-					.filter(async (i: any) => {
-						// @ts-ignore
+
+				const filteredDocs = await Promise.all(
+					docsData.map(async (i) => {
+						// Convert date
+						const updatedItem = { ...i, date: new Date(i.date) };
+
+						// Perform async filtering
 						const limit = await tier();
 						const toComp = limit ? 9 : cfg.hideLevel;
-						const itemHideLvl = i.hideLevel || 5;
-						const res = toComp < itemHideLvl && !i.draft;
-						return res;
-					}).sort((a, b) => b.date > a.date ? 1 : -1));
+						const shouldInclude = toComp < updatedItem.hideLevel && !updatedItem.draft;
+						// If should include, return the item, otherwise return null
+						// @ts-ignore
+						return shouldInclude ? updatedItem : null;
+					})
+				);
+
+				// Filter out null values and sort
+				return filteredDocs
+					.filter((i) => i !== null)
+					.sort((a, b) => (b.date > a.date ? 1 : -1));
 			}, "global-docData")(),
 		{ deferStream: true },
 	);
@@ -88,7 +97,7 @@ export const Arti: Component = () => {
 														</div>
 														<A
 															href={`/${attr().path}`}
-															class="no-underline font-sans text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-loose"
+															class={twMerge("no-underline font-sans text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-loose", attr().draft ? "text-slate-400" : null)}
 														>
 															{attr().title}
 															<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />

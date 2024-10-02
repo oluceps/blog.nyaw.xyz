@@ -39,7 +39,7 @@ getAllMdxFiles(directoryPath)
 				title: frontMatter.title || "",
 				path: data.path.split("/").pop()?.replace(".mdx", "") || "",
 				draft: frontMatter.draft || false,
-				hideLevel: frontMatter.hideLevel ?? 5, // Use nullish coalescing to check for undefined or null
+				hideLevel: frontMatter.hideLevel ?? 10, // Use nullish coalescing to check for undefined or null
 				author: frontMatter.author || "",
 				math: frontMatter.math || false,
 				featured_image: frontMatter.featured_image || "",
