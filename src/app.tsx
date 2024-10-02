@@ -7,17 +7,17 @@ import "./style.css";
 import { Layout } from "./components/Layout";
 import IErr from "./components/IErr";
 import NotFound from "./components/NotFound";
-import 'virtual:uno.css'
-import '@unocss/reset/tailwind-compat.css'
+import "virtual:uno.css";
+import "@unocss/reset/tailwind-compat.css";
 
 export default function App() {
 	onMount(() => {
-		document.addEventListener('visibilitychange', () => {
+		document.addEventListener("visibilitychange", () => {
 			if (document.visibilityState == "visible") {
-				navigator.wakeLock.request('screen');
+				navigator.wakeLock.request("screen");
 			}
 		});
-	})
+	});
 	return (
 		<Router
 			root={(props) => (

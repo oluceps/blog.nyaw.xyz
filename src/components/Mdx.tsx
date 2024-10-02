@@ -110,7 +110,12 @@ const components = {
 	},
 
 	QuickLinks: (props: QuickLinksProps) => (
-		<QuickLinks title={props.title} href={props.href} description={props.description} onlyIcon={props.onlyIcon}>
+		<QuickLinks
+			title={props.title}
+			href={props.href}
+			description={props.description}
+			onlyIcon={props.onlyIcon}
+		>
 			{props.children}
 		</QuickLinks>
 	),
@@ -203,7 +208,10 @@ const components = {
 		</li>
 	),
 	ul: (props: ParentProps) => (
-		<ul {...props} class="pl-6 mb-2 list-disc decoration-sprout-300 marker:text-sprout-400">
+		<ul
+			{...props}
+			class="pl-6 mb-2 list-disc decoration-sprout-300 marker:text-sprout-400"
+		>
 			{props.children}
 		</ul>
 	),

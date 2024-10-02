@@ -34,15 +34,17 @@ export const TypstDocument = ({
 	};
 	createEffect(() => {
 		/// only works in chromium
-		navigator.permissions.query({ name: 'local-fonts' as PermissionName }).then(status => {
-			if (setPermissionAndOk(status)) {
-				return false;
-			}
-			status.addEventListener('change', event => {
-				console.log(event, status);
-				setPermissionAndOk(status);
+		navigator.permissions
+			.query({ name: "local-fonts" as PermissionName })
+			.then((status) => {
+				if (setPermissionAndOk(status)) {
+					return false;
+				}
+				status.addEventListener("change", (event) => {
+					console.log(event, status);
+					setPermissionAndOk(status);
+				});
 			});
-		});
 	});
 
 	/// --- end: manipulate permission --- ///

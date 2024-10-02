@@ -13,7 +13,6 @@ export type QuickLinksProps = {
 	onlyIcon?: boolean;
 };
 
-
 const icons = {
 	Matrix: () => (
 		<svg
@@ -68,17 +67,22 @@ const icons = {
 		</svg>
 	),
 	Portal: () => (
-		<svg fill="none"
+		<svg
+			fill="none"
 			stroke-width="2"
 			xmlns="http://www.w3.org/2000/svg"
 			stroke="currentColor"
 			stroke-linecap="round"
 			stroke-linejoin="round"
 			viewBox="0 0 24 24"
-			height="24px" width="24px"
-			style="overflow: visible; color: currentcolor;">
-			<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-		</svg>)
+			height="24px"
+			width="24px"
+			style="overflow: visible; color: currentcolor;"
+		>
+			<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+			<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+		</svg>
+	),
 };
 
 export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
@@ -87,7 +91,9 @@ export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
 			<div class="absolute -inset-px rounded-xl border-transparent opacity-0 transition-all [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sprout.100)),var(--quick-links-hover-bg,theme(colors.sprout.100)))_padding-box,linear-gradient(to_top,theme(colors.sprout.500),theme(colors.sprout.300))_border-box] group-hover:opacity-80" />
 
 			<div class="relative overflow-hidden h-full w-full grow">
-				<a href={props.href} target="_blank" rel="noreferrer"><span class="absolute -inset-px rounded-xl" /></a>
+				<a href={props.href} target="_blank" rel="noreferrer">
+					<span class="absolute -inset-px rounded-xl" />
+				</a>
 				<div class="m-4">
 					<div class="flex w-full grow justify-start lg:justify-center items-center overflow-hidden">
 						<Dynamic component={icons[props.title as keyof typeof icons]} />
@@ -99,21 +105,14 @@ export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
 					</div>
 					<Show when={!props.onlyIcon}>
 						<Show when={props.description}>
-							{s =>
-								<div class="text-slate-500 ml-1">
-									{s()}
-								</div>
-							}
+							{(s) => <div class="text-slate-500 ml-1">{s()}</div>}
 						</Show>
 						<Show when={props.children}>
-							{s => <div class="px-1">
-								{s()}
-							</div>}
+							{(s) => <div class="px-1">{s()}</div>}
 						</Show>
 					</Show>
 				</div>
 			</div>
-
 		</div>
 	);
 };

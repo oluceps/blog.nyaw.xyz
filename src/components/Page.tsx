@@ -85,7 +85,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 									<TableOfContents children={resolved()} />
 								</Show>
 								{resolved()}
-								<div class="h-[30vh]"/>
+								<div class="h-[30vh]" />
 							</article>
 						);
 					}

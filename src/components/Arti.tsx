@@ -20,11 +20,12 @@ export const Arti: Component = () => {
 						// Perform async filtering
 						const limit = await tier();
 						const toComp = limit ? 9 : cfg.hideLevel;
-						const shouldInclude = toComp < updatedItem.hideLevel && !updatedItem.draft;
+						const shouldInclude =
+							toComp < updatedItem.hideLevel && !updatedItem.draft;
 						// If should include, return the item, otherwise return null
 						// @ts-ignore
 						return shouldInclude ? updatedItem : null;
-					})
+					}),
 				);
 
 				// Filter out null values and sort
@@ -47,9 +48,10 @@ export const Arti: Component = () => {
 			>
 				<Show when={ctx()}>
 					{(data) => {
-						let dataArray = Array.from(data());
-						const getSeason = (d: Date) => Math.floor((d.getMonth() / 12 * 4)) % 4;
-						let harvest: Array<number> = new Array();
+						const dataArray = Array.from(data());
+						const getSeason = (d: Date) =>
+							Math.floor((d.getMonth() / 12) * 4) % 4;
+						const harvest: Array<number> = new Array();
 
 						const HARVEST_LIMIT = 8;
 						let count = 0;
@@ -57,19 +59,21 @@ export const Arti: Component = () => {
 						for (const i of dataArray) {
 							const theY = i.date.getFullYear();
 							if (theY == prev) {
-								count++
-								if (count >= HARVEST_LIMIT) harvest.push(theY)
+								count++;
+								if (count >= HARVEST_LIMIT) harvest.push(theY);
 							} else {
-								count = 0
+								count = 0;
 							}
-							prev = theY
+							prev = theY;
 						}
 						return (
 							<Index each={dataArray}>
 								{(attr, idx) => {
-									let prevArti = dataArray[idx - 1];
-									let prevYear = prevArti?.date.getFullYear(); // newer
-									let prevSeason = prevArti ? getSeason(prevArti.date) : undefined;
+									const prevArti = dataArray[idx - 1];
+									const prevYear = prevArti?.date.getFullYear(); // newer
+									const prevSeason = prevArti
+										? getSeason(prevArti.date)
+										: undefined;
 
 									const theY = attr().date.getFullYear();
 									return (
@@ -79,7 +83,12 @@ export const Arti: Component = () => {
 													{attr().date.getFullYear().toString()}
 												</div>
 											</Show>
-											<Show when={harvest.includes(theY) && prevSeason !== getSeason(attr().date)}>
+											<Show
+												when={
+													harvest.includes(theY) &&
+													prevSeason !== getSeason(attr().date)
+												}
+											>
 												<div class="ml-1 md:ml-4 2xl:text-xl font-sans font-normal text-slate-500 dark:text-chill-100">
 													{["春", "夏", "秋", "冬"][getSeason(attr().date)]}
 												</div>
@@ -97,7 +106,10 @@ export const Arti: Component = () => {
 														</div>
 														<A
 															href={`/${attr().path}`}
-															class={twMerge("no-underline font-sans text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-loose", attr().draft ? "text-slate-400" : null)}
+															class={twMerge(
+																"no-underline font-sans text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-loose",
+																attr().draft ? "text-slate-400" : null,
+															)}
 														>
 															{attr().title}
 															<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
@@ -112,7 +124,11 @@ export const Arti: Component = () => {
 															<A
 																class="pl-6 text-xs 2xl:text-base text-slate-600 font-sans dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
 																href="/taxonomy"
-																onClick={() => setTaxoInfo({ id: attr().categories[0] as string })}
+																onClick={() =>
+																	setTaxoInfo({
+																		id: attr().categories[0] as string,
+																	})
+																}
 															>
 																{attr().categories[0] as string}
 																<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
@@ -125,7 +141,7 @@ export const Arti: Component = () => {
 									);
 								}}
 							</Index>
-						)
+						);
 					}}
 				</Show>
 			</Suspense>

@@ -95,8 +95,7 @@ export const TableOfContents: Component<{ children: ResolvedChildren }> = (
 		);
 	});
 
-	const textAttr =
-		"no-underline font-normal hover:font-bold";
+	const textAttr = "no-underline font-normal hover:font-bold";
 	const olAttr =
 		"pl-3 text-xs text-slate-700 list-disc decoration-sprout-300 active:font-bold active:text-sprout-600 space-y-0.5";
 

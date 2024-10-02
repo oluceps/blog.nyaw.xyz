@@ -7,14 +7,13 @@ import { twMerge } from "tailwind-merge";
 import tier from "~/tier";
 
 export default function Home() {
-	let menu = cfg.menu;
+	const menu = cfg.menu;
 
 	const [limit] = createResource(tier);
 
 	if (limit()) {
-		menu.splice(0, 1)
+		menu.splice(0, 1);
 	}
-
 
 	const navigate = useNavigate();
 

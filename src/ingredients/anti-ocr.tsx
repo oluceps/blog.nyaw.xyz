@@ -77,7 +77,7 @@ const AntiOCR = () => {
 		const words = text.split(" "); // 按空格拆分单词
 		let currentLine = "";
 
-		words.forEach(word => {
+		words.forEach((word) => {
 			const testLine = currentLine + word + " ";
 			const testWidth = context.measureText(testLine).width;
 
@@ -128,8 +128,13 @@ const AntiOCR = () => {
 			context.beginPath();
 			context.moveTo(x, y);
 			context.lineTo(
-				x + random(-random(0, canvasEl.width / 2), random(0, canvasEl.width / 2)),
-				y + random(-random(0, canvasEl.height / 2), random(0, canvasEl.height / 2))
+				x +
+					random(-random(0, canvasEl.width / 2), random(0, canvasEl.width / 2)),
+				y +
+					random(
+						-random(0, canvasEl.height / 2),
+						random(0, canvasEl.height / 2),
+					),
 			);
 			context.closePath();
 			context.stroke();
@@ -137,7 +142,7 @@ const AntiOCR = () => {
 
 		// 绘制文本
 		let yPosition = padding;
-		lines.forEach(line => {
+		lines.forEach((line) => {
 			context.fillText(line, padding, yPosition); // 绘制每一行文本
 			yPosition += lineHeight; // 增加 y 坐标以换行
 		});
@@ -147,9 +152,6 @@ const AntiOCR = () => {
 		img.src = canvasEl.toDataURL("image/png");
 		document.body.appendChild(img); // 将图片添加到页面显示
 	};
-
-
-
 
 	const changeColor = (name: string) => {
 		const red = (document.getElementById(`${name}_red`) as HTMLInputElement)

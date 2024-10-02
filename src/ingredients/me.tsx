@@ -9,16 +9,15 @@ export default function Me() {
 	const [onlyIcon, setOnlyIcon] = createSignal<boolean>(false);
 
 	const set = () => {
-		setOnlyIcon(window.innerWidth > 1180)
-	}
+		setOnlyIcon(window.innerWidth > 1180);
+	};
 	onMount(() => {
-		window.addEventListener('resize', set);
+		window.addEventListener("resize", set);
 
 		onCleanup(() => {
-			window.removeEventListener('resize', set);
-		})
+			window.removeEventListener("resize", set);
+		});
 	});
-
 
 	return (
 		<>
@@ -77,10 +76,26 @@ export default function Me() {
 				</div>
 
 				<div class="grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 gap-3">
-					<QuickLinks title="Matrix" href="https://matrix.to/#/@sec:nyaw.xyz" onlyIcon={onlyIcon()}></QuickLinks>
-					<QuickLinks title="Mailbox" href="mailto:i@nyaw.xyz" onlyIcon={onlyIcon()} />
-					<QuickLinks title="Telegram" href="https://t.me/Secpm_bot" onlyIcon={onlyIcon()} />
-					<QuickLinks title="Pubkey" href="https://github.com/oluceps.keys" onlyIcon={onlyIcon()} />
+					<QuickLinks
+						title="Matrix"
+						href="https://matrix.to/#/@sec:nyaw.xyz"
+						onlyIcon={onlyIcon()}
+					></QuickLinks>
+					<QuickLinks
+						title="Mailbox"
+						href="mailto:i@nyaw.xyz"
+						onlyIcon={onlyIcon()}
+					/>
+					<QuickLinks
+						title="Telegram"
+						href="https://t.me/Secpm_bot"
+						onlyIcon={onlyIcon()}
+					/>
+					<QuickLinks
+						title="Pubkey"
+						href="https://github.com/oluceps.keys"
+						onlyIcon={onlyIcon()}
+					/>
 				</div>
 			</div>
 		</>

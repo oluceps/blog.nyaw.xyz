@@ -1,5 +1,5 @@
 import { defineConfig } from "@solidjs/start/config";
-import UnoCSS from 'unocss/vite'
+import UnoCSS from "unocss/vite";
 import remarkFrontmatter from "remark-frontmatter";
 import rehypeRaw from "rehype-raw";
 import { nodeTypes } from "@mdx-js/mdx";

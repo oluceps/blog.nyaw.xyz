@@ -8,7 +8,7 @@ import {
 	createEffect,
 	createSignal,
 } from "solid-js";
-import { SolidLenis } from '~/lib/lenis'
+import { SolidLenis } from "~/lib/lenis";
 import { useLocation } from "@solidjs/router";
 import Page from "./Page";
 import Root from "./Root";

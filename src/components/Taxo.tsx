@@ -1,4 +1,11 @@
-import { createEffect, createSignal, For, Index, Show, Suspense } from "solid-js";
+import {
+	createEffect,
+	createSignal,
+	For,
+	Index,
+	Show,
+	Suspense,
+} from "solid-js";
 import { A, cache, createAsync } from "@solidjs/router";
 import cfg from "../constant";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
@@ -9,7 +16,7 @@ import tier from "~/tier";
 
 enum Bi {
 	tag = 0,
-	cat = 1
+	cat = 1,
 }
 
 export default function Taxo() {
@@ -19,7 +26,7 @@ export default function Taxo() {
 
 	createEffect(() => {
 		setChecked(isHovered() == Bi.tag);
-	})
+	});
 
 	const [element, setElement] = createSignal<HTMLDivElement>();
 	createEffect(() => {
@@ -27,29 +34,31 @@ export default function Taxo() {
 			const elm = document.getElementById(taxoInfo.id);
 			// TODO: whatever fuk
 			elm!.scrollIntoView({ behavior: "smooth" });
-			setTaxoInfo({ id: undefined })
+			setTaxoInfo({ id: undefined });
 		}
 	});
-
 
 	const rawData = createAsync(
 		() =>
 			cache(async () => {
 				"use server";
-				const data = (await Promise.all(
-					docsData.map(async (i) => {
-						// Convert date
-						const updatedItem = { ...i, date: new Date(i.date) };
+				const data = (
+					await Promise.all(
+						docsData.map(async (i) => {
+							// Convert date
+							const updatedItem = { ...i, date: new Date(i.date) };
 
-						// Perform async filtering
-						const limit = await tier();
-						const toComp = limit ? 9 : cfg.hideLevel;
-						const shouldInclude = toComp < updatedItem.hideLevel && !updatedItem.draft;
-						// If should include, return the item, otherwise return null
-						// @ts-ignore
-						return shouldInclude ? updatedItem : null;
-					})
-				))
+							// Perform async filtering
+							const limit = await tier();
+							const toComp = limit ? 9 : cfg.hideLevel;
+							const shouldInclude =
+								toComp < updatedItem.hideLevel && !updatedItem.draft;
+							// If should include, return the item, otherwise return null
+							// @ts-ignore
+							return shouldInclude ? updatedItem : null;
+						}),
+					)
+				)
 					.filter((i) => i !== null)
 					.sort((a, b) => (b.date > a.date ? 1 : -1));
 
@@ -107,35 +116,42 @@ export default function Taxo() {
 				});
 
 				// console.log(outputMap)
-				const dag: Map<string, typeof data> = new Map()
+				const dag: Map<string, typeof data> = new Map();
 
 				// console.log(data)
 				data.forEach((i) => {
 					i.tags.forEach((t) => {
 						if (Array.from(onlyTag.keys()).includes(t)) {
-							const a = Array.from(outputMap).find((i) => i[0].includes(t))!
+							const a = Array.from(outputMap).find((i) => i[0].includes(t))!;
 							if (a[1] == i.title) {
-								dag.set(a[0].join(' / '), [i])
-								console.log(a[0].join(' / '), i)
+								dag.set(a[0].join(" / "), [i]);
+								console.log(a[0].join(" / "), i);
 							}
 						} else {
-							if (Array.from(dag.values()).some((ii) => ii.some((iii) => iii.title === i.title))) {
+							if (
+								Array.from(dag.values()).some((ii) =>
+									ii.some((iii) => iii.title === i.title),
+								)
+							) {
 							} else {
-								dag.set(t, dag.get(t)?.concat(i) || [i])
+								dag.set(t, dag.get(t)?.concat(i) || [i]);
 							}
 						}
-					})
-				})
+					});
+				});
 
 				allCate.forEach((i) => {
-					dag.set(i, data.filter((a) => {
-						if (a.categories.length != 0) {
-							const t = a.categories[0]
-							return Array.from(a.categories).includes((i as typeof t))
-						}
-						return false
-					}))
-				})
+					dag.set(
+						i,
+						data.filter((a) => {
+							if (a.categories.length != 0) {
+								const t = a.categories[0];
+								return Array.from(a.categories).includes(i as typeof t);
+							}
+							return false;
+						}),
+					);
+				});
 				return {
 					cate: allCate,
 					tag: allTags,
@@ -153,7 +169,10 @@ export default function Taxo() {
 		>
 			<Show when={rawData()}>
 				{(ctx) => (
-					<div class="mx-auto sm:w-2/3 2xl:w-7/12 flex flex-col grow w-11/12 space-y-8 mt-20" ref={setElement}>
+					<div
+						class="mx-auto sm:w-2/3 2xl:w-7/12 flex flex-col grow w-11/12 space-y-8 mt-20"
+						ref={setElement}
+					>
 						<MetaProvider>
 							<Title>分类 - {cfg.title}</Title>
 							<Link rel="canonical" href={cfg.base_url + "/taxonomy"} />
@@ -213,13 +232,15 @@ export default function Taxo() {
 						<div class="divider" />
 
 						<div class="antialiased flex flex-col sm:mx-3 md:mx-10 2xl:mx-16">
-							<For each={(() => {
-								const dag = Array.from(ctx().dag)
+							<For
+								each={(() => {
+									const dag = Array.from(ctx().dag);
 
-								return checked()
-									? dag.filter(i => !ctx().cate.has(i[0]))
-									: dag.filter(i => ctx().cate.has(i[0]))
-							})()}>
+									return checked()
+										? dag.filter((i) => !ctx().cate.has(i[0]))
+										: dag.filter((i) => ctx().cate.has(i[0]));
+								})()}
+							>
 								{(outerAttr) => {
 									return (
 										<>
@@ -231,28 +252,30 @@ export default function Taxo() {
 											</p>
 											<Index each={outerAttr[1]}>
 												{(i) => {
-													const ist = i()
-													return <>
-														<article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
-															<div class="no-underline mb-px font-light leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12">
-																{ist.date
-																	.toLocaleDateString("en-CA", {
-																		year: "numeric",
-																		month: "2-digit",
-																		day: "2-digit",
-																	})
-																	.toString()
-																	.replace(/-/g, "/")}
-															</div>
-															<A
-																href={`/${ist.path}`}
-																class="no-underline font-sans text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-slug"
-															>
-																{ist.title}
-																<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
-															</A>
-														</article>
-													</>
+													const ist = i();
+													return (
+														<>
+															<article class="flex ml-4 sm:ml-6 lg:ml-10 my-px overflow-x-hidden overflow-y-visible text-slate-700 flex-1 items-center space-x-3 md:space-x-5 text-sm 2xl:text-lg">
+																<div class="no-underline mb-px font-light leading-loose font-mono text-slate-600 dark:text-chill-100 min-w-12">
+																	{ist.date
+																		.toLocaleDateString("en-CA", {
+																			year: "numeric",
+																			month: "2-digit",
+																			day: "2-digit",
+																		})
+																		.toString()
+																		.replace(/-/g, "/")}
+																</div>
+																<A
+																	href={`/${ist.path}`}
+																	class="no-underline font-sans text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-slug"
+																>
+																	{ist.title}
+																	<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
+																</A>
+															</article>
+														</>
+													);
 												}}
 											</Index>
 										</>
@@ -263,6 +286,6 @@ export default function Taxo() {
 					</div>
 				)}
 			</Show>
-		</Suspense >
+		</Suspense>
 	);
 }
