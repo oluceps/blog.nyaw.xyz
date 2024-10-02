@@ -6,7 +6,9 @@ export async function GET() {
 	}
 
 	const qBody = {
+		//@ts-ignore
 		i: import.meta.env.VITE_MSKY_TOKEN,
+		//@ts-ignore
 		userId: import.meta.env.VITE_MSKY_USER_ID,
 	};
 	const misskeyInstance = "https://nyaw.xyz";

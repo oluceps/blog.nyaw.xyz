@@ -3,22 +3,25 @@ import { type Component, Index, Show, Suspense } from "solid-js";
 import cfg from "../constant";
 import { docsData } from "solid:collection";
 import { useTaxoState } from "./PageState";
+import tier from "~/tier";
 
 export const Arti: Component = () => {
 	const ctx = createAsync(
 		() =>
 			cache(async () => {
 				"use server";
-				return docsData
+				return Promise.all(docsData
 					.map((i) => {
 						return { ...i, date: new Date(i.date) };
 					})
-					.filter((i: any) => {
+					.filter(async (i: any) => {
 						// @ts-ignore
-						if (import.meta.env.DEV) return true;
+						const limit = await tier();
+						const toComp = limit ? 9 : cfg.hideLevel;
 						const itemHideLvl = i.hideLevel || 5;
-						return cfg.hideLevel < itemHideLvl && !i.draft;
-					}).sort((a, b) => b.date > a.date ? 1 : -1);
+						const res = toComp < itemHideLvl && !i.draft;
+						return res;
+					}).sort((a, b) => b.date > a.date ? 1 : -1));
 			}, "global-docData")(),
 		{ deferStream: true },
 	);

@@ -40,6 +40,7 @@
 		"@unocss/preset-web-fonts": "^0.62.4",
 		"@unocss/preset-wind": "^0.62.4",
 		"@unocss/transformer-compile-class": "^0.62.4",
+		"@vercel/functions": "^1.4.1",
 		"autoprefixer": "^10.4.20",
 		"cssnano": "^7.0.6",
 		"daisyui": "^4.12.10",
