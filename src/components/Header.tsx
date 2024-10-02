@@ -1,5 +1,5 @@
 import { A } from "@solidjs/router";
-import { createEffect, createSignal, type Component } from "solid-js";
+import { createEffect, createSignal, Suspense, type Component } from "solid-js";
 import cfg from "../constant";
 import TheNav from "./TheNav";
 import { useWindowScrollPosition } from "@solid-primitives/scroll";
@@ -35,7 +35,9 @@ const Header: Component<{ sticky: boolean }> = (props) => {
 				</div>
 			</A>
 			<div class="pointer-events-auto backdrop-blur-sm rounded-bl-2xl">
-				<TheNav />
+				<Suspense>
+					<TheNav />
+				</Suspense>
 			</div>
 		</header>
 	);
