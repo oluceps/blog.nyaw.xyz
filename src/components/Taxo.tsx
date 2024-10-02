@@ -5,6 +5,7 @@ import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { docsData } from "solid:collection";
 import { useTaxoState } from "./PageState";
 import { isIn } from "~/lib/fn";
+import tier from "~/tier";
 
 enum Bi {
 	tag = 0,
@@ -35,16 +36,22 @@ export default function Taxo() {
 		() =>
 			cache(async () => {
 				"use server";
-				const data = docsData
-					.map((i) => {
-						return { ...i, date: new Date(i.date) };
-					})
-					.filter((i: any) => {
+				const data = (await Promise.all(
+					docsData.map(async (i) => {
+						// Convert date
+						const updatedItem = { ...i, date: new Date(i.date) };
+
+						// Perform async filtering
+						const limit = await tier();
+						const toComp = limit ? 9 : cfg.hideLevel;
+						const shouldInclude = toComp < updatedItem.hideLevel && !updatedItem.draft;
+						// If should include, return the item, otherwise return null
 						// @ts-ignore
-						if (import.meta.env.DEV) return true;
-						const itemHideLvl = i.hideLevel || 5;
-						return cfg.hideLevel < itemHideLvl && !i.draft;
-					});
+						return shouldInclude ? updatedItem : null;
+					})
+				))
+					.filter((i) => i !== null)
+					.sort((a, b) => (b.date > a.date ? 1 : -1));
 
 				const allTags = new Set(
 					data.reduce<string[]>((acc, item) => {
