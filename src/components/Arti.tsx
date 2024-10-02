@@ -68,7 +68,7 @@ export const Arti: Component = () => {
 												</div>
 											</Show>
 											<Show when={harvest.includes(theY) && prevSeason !== getSeason(attr().date)}>
-												<div class="ml-1 md:ml-4 2xl:text-xl font-sans font-normal text-slate-700 dark:text-chill-100">
+												<div class="ml-1 md:ml-4 2xl:text-xl font-sans font-normal text-slate-500 dark:text-chill-100">
 													{["春", "夏", "秋", "冬"][getSeason(attr().date)]}
 												</div>
 											</Show>
