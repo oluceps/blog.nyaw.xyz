@@ -37,21 +37,37 @@ export const Arti: Component = () => {
 					{(data) => {
 						let dataArray = Array.from(data());
 						const getSeason = (d: Date) => Math.floor((d.getMonth() / 12 * 4)) % 4;
+						let harvest: Array<number> = new Array();
 
+						const HARVEST_LIMIT = 8;
+						let count = 0;
+						let prev = 0;
+						for (const i of dataArray) {
+							const theY = i.date.getFullYear();
+							if (theY == prev) {
+								count++
+								if (count >= HARVEST_LIMIT) harvest.push(theY)
+							} else {
+								count = 0
+							}
+							prev = theY
+						}
 						return (
 							<Index each={dataArray}>
 								{(attr, idx) => {
 									let prevArti = dataArray[idx - 1];
 									let prevYear = prevArti?.date.getFullYear(); // newer
 									let prevSeason = prevArti ? getSeason(prevArti.date) : undefined;
+
+									const theY = attr().date.getFullYear();
 									return (
 										<>
-											<Show when={prevYear !== attr().date.getFullYear()}>
+											<Show when={prevYear !== theY}>
 												<div class="text-lg 2xl:text-2xl font-sans font-normal text-slate-700 dark:text-chill-100">
 													{attr().date.getFullYear().toString()}
 												</div>
 											</Show>
-											<Show when={prevSeason !== getSeason(attr().date)}>
+											<Show when={harvest.includes(theY) && prevSeason !== getSeason(attr().date)}>
 												<div class="ml-1 md:ml-4 2xl:text-xl font-sans font-normal text-slate-700 dark:text-chill-100">
 													{["春", "夏", "秋", "冬"][getSeason(attr().date)]}
 												</div>
