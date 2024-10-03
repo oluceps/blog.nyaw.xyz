@@ -65,7 +65,7 @@ export default function Me() {
 						</div>
 						<div class="mx-auto text-[15px] sm:text-[13px] md:ml-px flex flex-col gap-2 sm:gap-1">
 							<div class="text-zinc-500">ZHO / ENG / CDO / JPN</div>
-							<div class="text-zinc-500">BEng 3rd year</div>
+							<div class="text-zinc-500">BEng 4rd year</div>
 							<div class="text-zinc-500">UTC + 8?</div>
 							<div class="text-zinc-500">she / her</div>
 							<div class="text-zinc-400 not-prose mt-2 md:mt-4">
