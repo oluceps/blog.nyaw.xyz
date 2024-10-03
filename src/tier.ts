@@ -8,7 +8,7 @@ const tier = async () => {
 
 		return response;
 	} catch (error) {
-		console.error("Failed to fetch user status:", error);
+		console.error("Failed to fetch tier:", error);
 		return false;
 	}
 };
