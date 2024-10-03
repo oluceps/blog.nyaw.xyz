@@ -90,7 +90,7 @@ export const Arti: Component = () => {
 												}
 											>
 												<div class="ml-1 md:ml-4 2xl:text-xl font-sans font-normal text-slate-500 dark:text-chill-100">
-													{["春", "夏", "秋", "冬"][getSeason(attr().date)]}
+													{["冬", "春", "夏", "秋"][getSeason(attr().date)]}
 												</div>
 											</Show>
 											<Suspense fallback="h-8 my-3 w-full skeleton">
