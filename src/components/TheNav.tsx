@@ -1,5 +1,5 @@
-import { useNavigate } from "@solidjs/router";
-import { createEffect, createResource, createSignal } from "solid-js";
+import { cache, createAsync, useNavigate } from "@solidjs/router";
+import { createEffect, createSignal } from "solid-js";
 import { Motion, Presence } from "solid-motionone";
 import cfg from "../constant";
 import { useLocation } from "@solidjs/router";
@@ -9,7 +9,7 @@ import tier from "~/tier";
 export default function Home() {
 	const menu = cfg.menu;
 
-	const [limit] = createResource(tier);
+	const limit = createAsync(() => cache(tier, "tier")());
 
 	if (limit()) {
 		menu.splice(0, 1);
