@@ -34,15 +34,6 @@ export const Arti: Component = () => {
 		{ deferStream: true },
 	);
 
-	const limit = createAsync(
-		() =>
-			cache(async () => {
-				"use client";
-				return await tier();
-			}, "limit")(),
-		{ deferStream: false },
-	);
-
 	const { setTaxoInfo } = useTaxoState();
 	return (
 		<>
@@ -54,11 +45,11 @@ export const Arti: Component = () => {
 				}
 			>
 				<Show when={ctx()
-					?.filter((n) => {
-						if (!limit()) return true
-						if (n.hideLevel > 9) return true
-						return false
-					})
+					// ?.filter((n) => {
+					// 	if (!limit()) return true
+					// 	if (n.hideLevel > 9) return true
+					// 	return false
+					// })
 				}>
 					{(data) => {
 						const dataArray = Array.from(data());
