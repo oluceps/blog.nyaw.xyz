@@ -96,6 +96,9 @@ const components = {
 	hr: (props: ParentProps) => {
 		return <hr {...props} class="border-sprout-600" />;
 	},
+	pre: (props: ParentProps) => {
+		return <pre {...props} class="shadow-md">{props.children}</pre>;
+	},
 	response: (props: ParentProps) => {
 		return <span>{props.children}</span>;
 	},
