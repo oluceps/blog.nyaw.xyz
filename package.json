@@ -12,7 +12,7 @@
 		"@myriaddreamin/typst-ts-renderer": "0.5.0-rc7",
 		"@myriaddreamin/typst-ts-web-compiler": "0.5.0-rc7",
 		"@myriaddreamin/typst.ts": "0.5.0-rc7",
-		"@solid-primitives/map": "^0.4.12",
+		"@solid-primitives/map": "^0.4.13",
 		"@solid-primitives/script-loader": "^2.2.0",
 		"@solidjs/router": "^0.13.6",
 		"@solidjs/start": "^1.0.8",
@@ -43,7 +43,7 @@
 		"@vercel/functions": "^1.4.1",
 		"autoprefixer": "^10.4.20",
 		"cssnano": "^7.0.6",
-		"daisyui": "^4.12.10",
+		"daisyui": "^4.12.12",
 		"gray-matter": "^4.0.3",
 		"lenis": "^1.1.13",
 		"purgecss": "^6.0.0",
@@ -56,8 +56,8 @@
 		"remark-gfm": "^3.0.1",
 		"remark-math": "^6.0.0",
 		"solid-heroicons": "^3.2.4",
-		"tailwind-merge": "^2.5.2",
+		"tailwind-merge": "^2.5.3",
 		"unocss": "^0.62.4",
-		"vercel": "^37.6.0"
+		"vercel": "^37.6.1"
 	}
 }
