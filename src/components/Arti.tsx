@@ -4,6 +4,7 @@ import cfg from "../constant";
 import { docsData } from "solid:collection";
 import { useTaxoState } from "./PageState";
 import { twMerge } from "tailwind-merge";
+import tier from "~/tier";
 
 export const preprocessed =
 	Promise.all(docsData.map(async (i) => {
@@ -21,8 +22,6 @@ export const preprocessed =
 		.sort((a, b) => (b.date > a.date ? 1 : -1))
 	)
 
-
-
 export const Arti: Component = () => {
 
 	const ctx = createAsync(
@@ -34,6 +33,16 @@ export const Arti: Component = () => {
 			}, "docData")(),
 		{ deferStream: true },
 	);
+
+	const limit = createAsync(
+		() =>
+			cache(async () => {
+				"use server";
+				return await tier();
+			}, "limit")(),
+		{ deferStream: false },
+	);
+
 	const { setTaxoInfo } = useTaxoState();
 	return (
 		<>
@@ -45,11 +54,11 @@ export const Arti: Component = () => {
 				}
 			>
 				<Show when={ctx()
-					// ?.filter((n) => {
-					// if (!limit) return true
-					// if (n.hideLevel > 9) return true
-					// return false
-					// })
+					?.filter((n) => {
+						if (!limit()) return true
+						if (n.hideLevel > 9) return true
+						return false
+					})
 				}>
 					{(data) => {
 						const dataArray = Array.from(data());
