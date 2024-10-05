@@ -14,9 +14,5 @@ const tier = async () => {
 	}
 };
 
-// Perform async filtering
-const limit = createAsync(
-	() => cache(async () => await tier(), "limit")(), { deferStream: false });
 
 export default tier;
-export { limit };

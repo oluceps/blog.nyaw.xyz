@@ -4,14 +4,13 @@ import { Motion, Presence } from "solid-motionone";
 import cfg from "../constant";
 import { useLocation } from "@solidjs/router";
 import { twMerge } from "tailwind-merge";
-import { limit } from "~/tier";
 
 export default function Home() {
 	const menu = cfg.menu;
 
-	if (limit()) {
-		menu.splice(0, 1);
-	}
+	// if (limit) {
+	// 	menu.splice(0, 1);
+	// }
 
 	const navigate = useNavigate();
 

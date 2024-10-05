@@ -9,10 +9,9 @@ import {
 import { A, cache, createAsync } from "@solidjs/router";
 import cfg from "../constant";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
-import { docsData } from "solid:collection";
 import { useTaxoState } from "./PageState";
 import { isIn } from "~/lib/fn";
-import tier, { limit } from "~/tier";
+import { preprocessed as raw } from "./Arti";
 
 enum Bi {
 	tag = 0,
@@ -42,32 +41,15 @@ export default function Taxo() {
 		() =>
 			cache(async () => {
 				"use server";
-				const data = (
-					await Promise.all(
-						docsData.map(async (i) => {
-							// Convert date
-							const updatedItem = { ...i, date: new Date(i.date) };
-
-							const toComp = limit() ? 9 : cfg.hideLevel;
-							const shouldInclude =
-								toComp < updatedItem.hideLevel && !updatedItem.draft;
-							// If should include, return the item, otherwise return null
-							// @ts-ignore
-							return shouldInclude ? updatedItem : null;
-						}),
-					)
-				)
-					.filter((i) => i !== null)
-					.sort((a, b) => (b.date > a.date ? 1 : -1));
-
+				let preprocessed = await raw;
 				const allTags = new Set(
-					data.reduce<string[]>((acc, item) => {
+					preprocessed.reduce<string[]>((acc, item) => {
 						return item.tags ? acc.concat(item.tags) : acc;
 					}, []),
 				);
 
 				const allCate = new Set(
-					data.reduce<string[]>((acc, item) => {
+					preprocessed.reduce<string[]>((acc, item) => {
 						return item.categories ? acc.concat(item.categories) : acc;
 					}, []),
 				);
@@ -78,7 +60,7 @@ export default function Taxo() {
 				for (const t of allTags) {
 					let count = 0;
 					let last;
-					for (const it of data) {
+					for (const it of preprocessed) {
 						if (isIn(it.tags, t)) {
 							count++;
 							last = it.title;
@@ -114,10 +96,10 @@ export default function Taxo() {
 				});
 
 				// console.log(outputMap)
-				const dag: Map<string, typeof data> = new Map();
+				const dag: Map<string, typeof preprocessed> = new Map();
 
 				// console.log(data)
-				data.forEach((i) => {
+				preprocessed.forEach((i) => {
 					i.tags.forEach((t) => {
 						if (Array.from(onlyTag.keys()).includes(t)) {
 							const a = Array.from(outputMap).find((i) => i[0].includes(t))!;
@@ -141,7 +123,7 @@ export default function Taxo() {
 				allCate.forEach((i) => {
 					dag.set(
 						i,
-						data.filter((a) => {
+						preprocessed.filter((a) => {
 							if (a.categories.length != 0) {
 								const t = a.categories[0];
 								return Array.from(a.categories).includes(i as typeof t);
@@ -155,7 +137,7 @@ export default function Taxo() {
 					tag: allTags,
 					dag,
 				};
-			}, "global-taxoData")(),
+			}, "taxoData")(),
 		{ deferStream: true },
 	);
 

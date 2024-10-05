@@ -3,8 +3,25 @@ import { type Component, Index, Show, Suspense } from "solid-js";
 import cfg from "../constant";
 import { docsData } from "solid:collection";
 import { useTaxoState } from "./PageState";
-import tier, { limit } from "~/tier";
 import { twMerge } from "tailwind-merge";
+
+export const preprocessed =
+	Promise.all(docsData.map(async (i) => {
+		// Convert date
+		const updatedItem = { ...i, date: new Date(i.date) };
+		// const toComp = limit ? 9 : cfg.hideLevel;
+		const toComp = cfg.hideLevel;
+		const shouldInclude =
+			toComp < updatedItem.hideLevel && !updatedItem.draft;
+		// If should include, return the item, otherwise return null
+		// @ts-ignore
+		return shouldInclude ? updatedItem : null;
+	})).then(res => res
+		.filter((i) => i !== null)
+		.sort((a, b) => (b.date > a.date ? 1 : -1))
+	)
+
+
 
 export const Arti: Component = () => {
 
@@ -12,28 +29,11 @@ export const Arti: Component = () => {
 		() =>
 			cache(async () => {
 				"use server";
-
-				const filteredDocs = await Promise.all(
-					docsData.map(async (i) => {
-						// Convert date
-						const updatedItem = { ...i, date: new Date(i.date) };
-						const toComp = limit() ? 9 : cfg.hideLevel;
-						const shouldInclude =
-							toComp < updatedItem.hideLevel && !updatedItem.draft;
-						// If should include, return the item, otherwise return null
-						// @ts-ignore
-						return shouldInclude ? updatedItem : null;
-					}),
-				);
-
 				// Filter out null values and sort
-				return filteredDocs
-					.filter((i) => i !== null)
-					.sort((a, b) => (b.date > a.date ? 1 : -1));
-			}, "global-docData")(),
+				return await preprocessed;
+			}, "docData")(),
 		{ deferStream: true },
 	);
-
 	const { setTaxoInfo } = useTaxoState();
 	return (
 		<>
@@ -44,7 +44,13 @@ export const Arti: Component = () => {
 					</div>
 				}
 			>
-				<Show when={ctx()}>
+				<Show when={ctx()
+					// ?.filter((n) => {
+					// if (!limit) return true
+					// if (n.hideLevel > 9) return true
+					// return false
+					// })
+				}>
 					{(data) => {
 						const dataArray = Array.from(data());
 						const getSeason = (d: Date) =>
@@ -106,7 +112,7 @@ export const Arti: Component = () => {
 															href={`/${attr().path}`}
 															class={twMerge(
 																"no-underline font-sans text-[#333333] dark:text-chill-200 truncate group transition-all duration-300 ease-in-out leading-loose",
-																attr().draft ? "text-slate-400" : null,
+																// attr().draft ? "text-slate-400" : "",
 															)}
 														>
 															{attr().title}
