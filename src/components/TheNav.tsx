@@ -9,11 +9,11 @@ import tier from "~/tier";
 export default function Home() {
 	const menu = cfg.menu;
 
-	const limit = createAsync(() => cache(tier, "tier")());
+	// const limit = createAsync(() => cache(tier, "tier")());
 
-	if (limit()) {
-		menu.splice(0, 1);
-	}
+	// if (limit()) {
+	// 	menu.splice(0, 1);
+	// }
 
 	const navigate = useNavigate();
 
