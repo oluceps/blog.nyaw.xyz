@@ -5,11 +5,13 @@ import {
 	presetTypography,
 	presetUno,
 	transformerDirectives,
+	presetIcons,
 } from "unocss";
 import presetWind from "@unocss/preset-wind";
 import presetWebFonts from "@unocss/preset-web-fonts";
 import presetRemToPx from "@unocss/preset-rem-to-px";
 import transformerCompileClass from "@unocss/transformer-compile-class";
+
 
 export default defineConfig({
 	transformers: [transformerCompileClass(), transformerDirectives()],
@@ -110,10 +112,21 @@ export default defineConfig({
 			cssExtend: {
 				"blockquote p:first-of-type::before": { content: "none" },
 				"blockquote p:first-of-type::after": { content: "none" },
+				"code::before": {
+					content: "none",
+				},
+				"code::after": {
+					content: "none",
+				},
+				'p code': {
+					"background-color": "#e4ecdb",
+					padding: "4px 4px",
+					color: "#182013",
+					"border-radius": "4px",
+				},
 				a: {
 					"text-decoration-color": "#6f9052",
 				},
-
 				h1: {
 					margin: "1rem 0", // h1 is always at the top of the page, so only margin 1 * root font size
 					"font-size": "1.65em",
@@ -134,6 +147,7 @@ export default defineConfig({
 		}),
 		presetWind(),
 		presetRemToPx(),
+		presetIcons()
 		// presetWebFonts({
 		//   provider: 'google',
 		//   fonts: {

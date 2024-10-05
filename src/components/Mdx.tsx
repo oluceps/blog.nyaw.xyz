@@ -1,4 +1,5 @@
 import {
+	JSXElement,
 	Match,
 	Switch,
 	children,
@@ -10,8 +11,8 @@ import { QuickLinks, type QuickLinksProps } from "../ingredients/quick-link";
 import { Emph, type EmphProps } from "../ingredients/emph";
 import Col from "~/ingredients/collapse";
 import cfg from "../constant";
-import { Icon } from "solid-heroicons";
 import Reveal from "~/ingredients/rand-reveal";
+import { JSX } from "solid-js/jsx-runtime";
 
 const cstomLink = (props: ParentProps & { href: string }) => {
 	const [, rest] = splitProps(props, ["children"]);
@@ -92,10 +93,6 @@ const components = {
 			components does work
 		</p>
 	),
-	th: (props: ParentProps) => <th>{props.children}</th>,
-	thead: (props: ParentProps) => <thead>{props.children}</thead>,
-	td: (props: ParentProps) => <td>{props.children}</td>,
-	tr: (props: ParentProps) => <tr>{props.children}</tr>,
 	hr: (props: ParentProps) => {
 		return <hr {...props} class="border-sprout-600" />;
 	},
@@ -111,10 +108,7 @@ const components = {
 
 	QuickLinks: (props: QuickLinksProps) => (
 		<QuickLinks
-			title={props.title}
-			href={props.href}
-			description={props.description}
-			onlyIcon={props.onlyIcon}
+			{...props}
 		>
 			{props.children}
 		</QuickLinks>
@@ -180,8 +174,9 @@ const components = {
 	),
 	blockquote: (props: ParentProps) => (
 		<blockquote class="flex items-center not-prose text-base not-italic font-normal text-zinc-500 my-3">
-			<div class="text-3xl text-sprout-400 mr-2">"</div>
+			<div class="text-xl md:text-3xl text-sprout-400 mr-2">"</div>
 			{props.children}
+			<div class="text-xl md:text-3xl text-sprout-400 mr-2">"</div>
 		</blockquote>
 	),
 
@@ -189,18 +184,16 @@ const components = {
 	strong: (props: ParentProps) => <strong class="font-bold" {...props} />,
 
 	img: imgContent,
-	// Topic,
-	// Testimonials,
-	code: (props: ParentProps) => {
-		return (
-			<code
-				class="inline-block not-prose mx-px dark:opacity-70 break-all !font-mono font-semibold bg-sprout-100 text-spout-800 dark:bg-sprout-200 dark:text-zinc-800 px-0.5 py-px rounded-sm text-[0.8em] leading-snug"
-				{...props}
-			>
-				{props.children}
-			</code>
-		);
-	},
+	// code: (props: ParentProps) => {
+	// 	return (
+	// 		<code
+	// 			class="bg-sprout-300"
+	// 			{...props}
+	// 		>
+	// 			{props.children}
+	// 		</code>
+	// 	);
+	// },
 	table: (props: ParentProps) => <table>{props.children}</table>,
 	li: (props: ParentProps) => (
 		<li {...props} class="mb-2 marker:text-sprout-400">

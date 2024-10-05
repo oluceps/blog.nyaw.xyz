@@ -4,8 +4,9 @@ import remarkFrontmatter from "remark-frontmatter";
 import rehypeRaw from "rehype-raw";
 import { nodeTypes } from "@mdx-js/mdx";
 import remarkGfm from "remark-gfm";
-import remarkExpressiveCode from "remark-expressive-code";
-import type { ExpressiveCodeTheme } from "remark-expressive-code";
+import rehypeShiki from '@shikijs/rehype'
+
+// import rehypeExpressiveCode from "rehype-expressive-code";
 import rehypeSlug from "rehype-slug";
 import rehypeAutoLinkHeadings from "rehype-autolink-headings";
 import rehypeKatex from "rehype-katex";
@@ -38,18 +39,19 @@ function docsData() {
 		},
 	};
 }
-const remarkExpressiveCodeOptions = {
-	themes: ["vitesse-light", "rose-pine"],
-	themeCSSSelector: (theme: ExpressiveCodeTheme) =>
-		`[data-theme="${theme.name}"]`,
-	// I dont like dark mode
-	useDarkModeMediaQuery: false,
-	styleOverrides: {
-		frames: {
-			shadowColor: "rgb(0 0 0 / 1%)",
-		},
-	},
-};
+
+// const rehypeExpressiveCodeOptions: import('rehype-expressive-code').RehypeExpressiveCodeOptions = {
+// 	themes: ["vitesse-light", "rose-pine"],
+// 	themeCssSelector: (theme) =>
+// 		`[data-theme="${theme.name}"]`,
+// 	// I dont like dark mode
+// 	useDarkModeMediaQuery: false,
+// 	styleOverrides: {
+// 		frames: {
+// 			shadowColor: "rgb(0 0 0 / 1%)",
+// 		},
+// 	},
+// };
 
 export default defineConfig({
 	middleware: "src/middleware/index.ts",
@@ -85,11 +87,15 @@ export default defineConfig({
 							},
 						},
 					],
+
+					[rehypeShiki, {
+						inline: 'tailing-curly-colon',
+						theme: 'vitesse-light',
+					}],
 				],
 				remarkPlugins: [
 					remarkGfm,
 					remarkFrontmatter,
-					[remarkExpressiveCode, remarkExpressiveCodeOptions],
 					remarkMath,
 				],
 			}),
