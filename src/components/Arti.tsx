@@ -37,7 +37,7 @@ export const Arti: Component = () => {
 	const limit = createAsync(
 		() =>
 			cache(async () => {
-				"use server";
+				"use client";
 				return await tier();
 			}, "limit")(),
 		{ deferStream: false },
