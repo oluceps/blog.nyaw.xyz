@@ -1,16 +1,25 @@
-import { useNavigate } from "@solidjs/router";
+import { cache, createAsync, useNavigate } from "@solidjs/router";
 import { createEffect, createSignal } from "solid-js";
 import { Motion, Presence } from "solid-motionone";
 import cfg from "../constant";
 import { useLocation } from "@solidjs/router";
 import { twMerge } from "tailwind-merge";
+import tier from "~/tier";
 
 export default function Home() {
 	const menu = cfg.menu;
 
-	// if (limit) {
-	// 	menu.splice(0, 1);
-	// }
+	const limit = createAsync(
+		() =>
+			cache(async () => {
+				"use client";
+				return await tier();
+			}, "limit")(),
+		{ deferStream: false },
+	);
+	if (limit()) {
+		menu.splice(0, 1);
+	}
 
 	const navigate = useNavigate();
 
