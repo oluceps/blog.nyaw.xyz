@@ -4,7 +4,6 @@ import cfg from "../constant";
 import { docsData } from "solid:collection";
 import { useTaxoState } from "./PageState";
 import { twMerge } from "tailwind-merge";
-import tier from "~/tier";
 
 export const preprocessed =
 	Promise.all(docsData.map(async (i) => {

@@ -4,7 +4,6 @@ import { Motion, Presence } from "solid-motionone";
 import cfg from "../constant";
 import { useLocation } from "@solidjs/router";
 import { twMerge } from "tailwind-merge";
-import tier from "~/tier";
 
 export default function Home() {
 	const menu = cfg.menu;
