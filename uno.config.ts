@@ -123,6 +123,7 @@ export default defineConfig({
 					padding: "4px 4px",
 					color: "#182013",
 					"border-radius": "4px",
+					margin: "0px 1px 0px 1px",
 				},
 				a: {
 					"text-decoration-color": "#6f9052",
