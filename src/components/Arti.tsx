@@ -3,10 +3,11 @@ import { type Component, Index, Show, Suspense } from "solid-js";
 import cfg from "../constant";
 import { docsData } from "solid:collection";
 import { useTaxoState } from "./PageState";
-import tier from "~/tier";
+import tier, { limit } from "~/tier";
 import { twMerge } from "tailwind-merge";
 
 export const Arti: Component = () => {
+
 	const ctx = createAsync(
 		() =>
 			cache(async () => {
@@ -16,10 +17,7 @@ export const Arti: Component = () => {
 					docsData.map(async (i) => {
 						// Convert date
 						const updatedItem = { ...i, date: new Date(i.date) };
-
-						// Perform async filtering
-						const limit = await tier();
-						const toComp = limit ? 9 : cfg.hideLevel;
+						const toComp = limit() ? 9 : cfg.hideLevel;
 						const shouldInclude =
 							toComp < updatedItem.hideLevel && !updatedItem.draft;
 						// If should include, return the item, otherwise return null

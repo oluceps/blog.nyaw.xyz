@@ -1,6 +1,7 @@
 import ky from "ky";
 
 import cfg from "./constant";
+import { cache, createAsync } from "@solidjs/router";
 
 const tier = async () => {
 	try {
@@ -12,4 +13,10 @@ const tier = async () => {
 		return false;
 	}
 };
+
+// Perform async filtering
+const limit = createAsync(
+	() => cache(async () => await tier(), "limit")(), { deferStream: false });
+
 export default tier;
+export { limit };

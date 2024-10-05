@@ -12,7 +12,7 @@ import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { docsData } from "solid:collection";
 import { useTaxoState } from "./PageState";
 import { isIn } from "~/lib/fn";
-import tier from "~/tier";
+import tier, { limit } from "~/tier";
 
 enum Bi {
 	tag = 0,
@@ -48,9 +48,7 @@ export default function Taxo() {
 							// Convert date
 							const updatedItem = { ...i, date: new Date(i.date) };
 
-							// Perform async filtering
-							const limit = await tier();
-							const toComp = limit ? 9 : cfg.hideLevel;
+							const toComp = limit() ? 9 : cfg.hideLevel;
 							const shouldInclude =
 								toComp < updatedItem.hideLevel && !updatedItem.draft;
 							// If should include, return the item, otherwise return null
