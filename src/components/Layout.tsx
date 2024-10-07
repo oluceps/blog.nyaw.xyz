@@ -23,6 +23,7 @@ const Header = lazy(() => import("./Header"));
 export function Layout(props: ParentProps) {
 	const location = useLocation();
 	const [currentPath, setCurrentPath] = createSignal(location.pathname);
+
 	createEffect(() => {
 		setCurrentPath(location.pathname);
 	});
@@ -49,7 +50,7 @@ export function Layout(props: ParentProps) {
 					<Meta property="og:site_name" content={cfg.title} />
 					<Meta property="og:title" content={cfg.title} />
 					<Meta property="og:description" content={cfg.description} />
-					<SolidLenis autoRaf={true}>
+					<SolidLenis autoRaf={true} root>
 						<div class="flex flex-col bg-zinc-50 dark:bg-[#171717] min-h-screen items-center">
 							<Suspense>
 								<Header sticky={isRoot()} />
