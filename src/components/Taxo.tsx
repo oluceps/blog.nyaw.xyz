@@ -263,6 +263,7 @@ export default function Taxo() {
 								}}
 							</For>
 						</div>
+						<div class="h-[50vh]" />
 					</div>
 				)}
 			</Show>
