@@ -10,35 +10,36 @@ import type { LenisContextValue, LenisProps } from "./types";
 import { onMount } from "solid-js";
 import Tempus from "@darkroom.engineering/tempus";
 import Lenis, { type ScrollCallback } from "lenis";
+import { createStore } from "solid-js/store";
 
 export const LenisContext = createContext<LenisContextValue | null>(null);
 
-const rootLenisContextStore = new Store<LenisContextValue | null>(null);
+const [rootLenisContextStore, setRootLenisContextStore] = createStore<{ value: LenisContextValue | null }>({ value: null });
 
 const fallbackContext: Partial<LenisContextValue> = {};
 
 // Lenis hook in SolidJS
-export function useLenis(callback?: ScrollCallback, priority = 0) {
-	const localContext = useContext(LenisContext);
-	const rootContext = useStore(rootLenisContextStore);
+// export function useLenis(callback?: ScrollCallback, priority = 0) {
+// 	const localContext = useContext(LenisContext);
+// 	const rootContext = useStore(rootLenisContextStore);
 
-	// Check if it's an accessor or the direct value
-	const currentContext = localContext ?? rootContext() ?? fallbackContext;
+// 	// Check if it's an accessor or the direct value
+// 	const currentContext = localContext ?? rootContext() ?? fallbackContext;
 
-	const { lenis, addCallback, removeCallback } =
-		currentContext as LenisContextValue;
+// 	const { lenis, addCallback, removeCallback } =
+// 		currentContext as LenisContextValue;
 
-	createEffect(() => {
-		if (!callback || !addCallback || !removeCallback || !lenis) return;
+// 	createEffect(() => {
+// 		if (!callback || !addCallback || !removeCallback || !lenis) return;
 
-		addCallback(callback, priority);
-		callback(lenis);
+// 		addCallback(callback, priority);
+// 		callback(lenis);
 
-		onCleanup(() => removeCallback(callback));
-	});
+// 		onCleanup(() => removeCallback(callback));
+// 	});
 
-	return lenis;
-}
+// 	return lenis;
+// }
 
 // Lenis component in SolidJS
 export function SolidLenis(props: LenisProps) {
@@ -66,12 +67,14 @@ export function SolidLenis(props: LenisProps) {
 		}
 
 		if (props.root) {
-			rootLenisContextStore.set({
-				lenis: lenisInstance,
-				addCallback,
-				removeCallback,
+			setRootLenisContextStore({
+				value: {
+					lenis: lenisInstance,
+					addCallback,
+					removeCallback,
+				}
 			});
-			onCleanup(() => rootLenisContextStore.set(null));
+			onCleanup(() => setRootLenisContextStore({ value: null }));
 		}
 
 		onCleanup(() => {
