@@ -88,8 +88,8 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
       lenis-solid:
-        specifier: ^1.0.3
-        version: 1.0.3
+        specifier: ^1.0.4
+        version: 1.0.4
       rehype-autolink-headings:
         specifier: ^7.1.0
         version: 7.1.0
@@ -2849,8 +2849,8 @@ packages:
     resolution: {integrity: sha512-b94GiNHQNy6JNTrt5w6zNyffMrNkXZb3KTkCZJb2V1xaEGCk093vkZ2jk3tpaeP33/OiXC+WvK9AxUebnf5nbw==}
     engines: {node: '>= 0.6.3'}
 
-  lenis-solid@1.0.3:
-    resolution: {integrity: sha512-yDuTHig72Qzgb3rDIYMcZRYIHaohoT14zn3XIi+jRgpj0N2HBUQrmXnSxK7l7RN7QjtGfkYABV2F1xWKb41/pw==}
+  lenis-solid@1.0.4:
+    resolution: {integrity: sha512-/y9T4ak/T1X05tvJiAsYqzUuj4NktaGvvd3LNrTaxqU08cnli+dWUk97LZK043X/sbHICE3PLuqowM1VLywFHQ==}
 
   lenis@1.1.13:
     resolution: {integrity: sha512-iny+vWwUHcZGbJz+p2I75H1muLBRZqSG7t04jnhA+CWOQDFL1vt9bsZDwPPtYEmYVVvqAdo5MbXVFzNOlbgUkQ==}
@@ -7188,7 +7188,7 @@ snapshots:
     dependencies:
       readable-stream: 2.3.8
 
-  lenis-solid@1.0.3:
+  lenis-solid@1.0.4:
     dependencies:
       '@darkroom.engineering/tempus': 0.0.46
       lenis: 1.1.13
