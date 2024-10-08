@@ -21,7 +21,7 @@
 		"ky": "^1.7.2",
 		"rehype-katex": "^7.0.1",
 		"solid-collapse": "^1.1.0",
-		"solid-js": "^1.9.1",
+		"solid-js": "^1.9.2",
 		"solid-mdx": "^0.0.7",
 		"solid-motionone": "^1.0.2",
 		"vinxi": "^0.4.3"
@@ -32,7 +32,7 @@
 	"devDependencies": {
 		"@darkroom.engineering/tempus": "^0.0.46",
 		"@fullhuman/postcss-purgecss": "^6.0.0",
-		"@shikijs/rehype": "^1.21.0",
+		"@shikijs/rehype": "^1.22.0",
 		"@solid-primitives/scroll": "^2.0.23",
 		"@solidjs/meta": "^0.29.4",
 		"@tabler/icons-solidjs": "^3.19.0",
@@ -41,12 +41,13 @@
 		"@unocss/preset-web-fonts": "^0.62.4",
 		"@unocss/preset-wind": "^0.62.4",
 		"@unocss/transformer-compile-class": "^0.62.4",
-		"@vercel/functions": "^1.4.1",
+		"@vercel/functions": "^1.4.2",
 		"autoprefixer": "^10.4.20",
 		"cssnano": "^7.0.6",
 		"daisyui": "^4.12.12",
 		"gray-matter": "^4.0.3",
 		"lenis": "^1.1.13",
+		"lenis-solid": "^1.0.2",
 		"purgecss": "^6.0.0",
 		"rehype-autolink-headings": "^7.1.0",
 		"rehype-raw": "^7.0.0",
@@ -58,6 +59,6 @@
 		"solid-heroicons": "^3.2.4",
 		"tailwind-merge": "^2.5.3",
 		"unocss": "^0.62.4",
-		"vercel": "^37.6.1"
+		"vercel": "^37.6.2"
 	}
 }

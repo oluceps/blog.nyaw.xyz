@@ -2,7 +2,7 @@ import { Show, type Component } from "solid-js";
 import { useWindowScrollPosition } from "@solid-primitives/scroll";
 import { Icon } from "solid-heroicons";
 import { chevronUp } from "solid-heroicons/solid";
-import { useLenis } from "~/lib/lenis";
+import { useLenis } from "lenis-solid";
 const ScrollTopBtn: Component = () => {
 	const scroll = useWindowScrollPosition();
 	return (
