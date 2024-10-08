@@ -9,8 +9,6 @@ import rehypeShiki from '@shikijs/rehype'
 // import rehypeExpressiveCode from "rehype-expressive-code";
 import rehypeSlug from "rehype-slug";
 import rehypeAutoLinkHeadings from "rehype-autolink-headings";
-import rehypeKatex from "rehype-katex";
-import remarkMath from "remark-math";
 
 import docs from "./src/routes/data";
 
@@ -69,8 +67,6 @@ export default defineConfig({
 				jsxImportSource: "solid-js",
 				providerImportSource: "solid-mdx",
 				rehypePlugins: [
-					// rehypeMathJaxSVG,
-					() => rehypeKatex({ output: "html" }),
 					[
 						rehypeRaw,
 						{
@@ -96,7 +92,6 @@ export default defineConfig({
 				remarkPlugins: [
 					remarkGfm,
 					remarkFrontmatter,
-					remarkMath,
 				],
 			}),
 			{ enforce: "pre" },

@@ -35,7 +35,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 		<Suspense
 			fallback={
 				<div class="flex flex-col h-full items-center justify-center grow w-full">
-					<div class="loading loading-infinity loading-lg text-sprout-300 " />
+					<div class="i-svg-spinners-blocks-shuffle-3 text-sprout-300 " />
 				</div>
 			}
 		>

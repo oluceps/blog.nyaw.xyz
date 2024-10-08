@@ -9,10 +9,8 @@ import {
 import { A } from "@solidjs/router";
 import { QuickLinks, type QuickLinksProps } from "../ingredients/quick-link";
 import { Emph, type EmphProps } from "../ingredients/emph";
-import Col from "~/ingredients/collapse";
 import cfg from "../constant";
 import Reveal from "~/ingredients/rand-reveal";
-import { JSX } from "solid-js/jsx-runtime";
 
 const cstomLink = (props: ParentProps & { href: string }) => {
 	const [, rest] = splitProps(props, ["children"]);
@@ -118,12 +116,6 @@ const components = {
 	),
 
 	Emph: (props: EmphProps) => <Emph type={props.type}>{props.children}</Emph>,
-
-	Collapse: (props: ParentProps & { title: string; comment: string }) => (
-		<Col title={props.title} comment={props.comment}>
-			{props.children}
-		</Col>
-	),
 
 	Reveal: (props: ParentProps) => <Reveal>{props.children}</Reveal>,
 

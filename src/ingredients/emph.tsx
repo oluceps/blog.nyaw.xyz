@@ -1,21 +1,9 @@
-import { Icon } from "solid-heroicons";
-import { A } from "@solidjs/router";
 import {
-	Component,
 	type JSXElement,
-	Match,
 	type ParentComponent,
 	type ParentProps,
-	Show,
-	Switch,
 } from "solid-js";
 
-import {
-	exclamationTriangle, // warn
-	informationCircle, // info
-	heart, // tip
-	bellAlert, // notice
-} from "solid-heroicons/solid";
 import { Dynamic } from "solid-js/web";
 
 export const isExternalURL = (url: string) => /^https?:\/\//.test(url);
@@ -26,10 +14,10 @@ export type EmphProps = {
 };
 
 const icons = {
-	warn: exclamationTriangle,
-	info: informationCircle,
-	tips: heart,
-	note: bellAlert,
+	warn: "i-ci-triangle-warning",
+	info: "i-ci-info",
+	tips: "i-ci-heart-outline",
+	note: "i-ci-bell",
 };
 
 export const Emph: ParentComponent<EmphProps> = (props) => {
@@ -37,7 +25,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 		warn: {
 			text: "WARNING",
 			icon: () => (
-				<Icon path={icons[props.type]} class={`h-7 w-7 fill-red-400`} />
+				<div class={`h-7 w-7 fill-red-400` + icons[props.type]} />
 			),
 			border: (props: ParentProps) => (
 				<div class="w-full outline-1 outline-red-300 outline-dashed rounded-md bg-[#fee2e5] py-4 px-6">
@@ -48,7 +36,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 		info: {
 			text: "Information",
 			icon: () => (
-				<Icon path={icons[props.type]} class={`h-7 w-7 fill-sprout-400`} />
+				<div class={`h-7 w-7 fill-sprout-400` + icons[props.type]} />
 			),
 			border: (props: ParentProps) => (
 				<div class="w-full outline-1 outline-sprout-300 outline-dashed rounded-md bg-sprout-100 py-4 px-6 my-2">
@@ -59,7 +47,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 		tips: {
 			text: "Tips",
 			icon: () => (
-				<Icon path={icons[props.type]} class={`h-7 w-7 fill-chill-400`} />
+				<div class={`h-7 w-7 fill-chill-400` + icons[props.type]} />
 			),
 			border: (props: ParentProps) => (
 				<div class="w-full outline-1 outline-chill-300 outline-dashed rounded-md bg-chill-100 py-4 px-6 my-2">
@@ -70,7 +58,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 		note: {
 			text: "Notice",
 			icon: () => (
-				<Icon path={icons[props.type]} class={`h-7 w-7 fill-ouchi-400`} />
+				<div class={`h-7 w-7 fill-ouchi-400` + icons[props.type]} />
 			),
 			border: (props: ParentProps) => (
 				<div class="w-full outline-1 outline-ouchi-300 outline-dashed rounded-md bg-ouchi-100 py-4 px-6 my-2">

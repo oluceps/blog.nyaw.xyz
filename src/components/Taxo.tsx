@@ -144,7 +144,7 @@ export default function Taxo() {
 	return (
 		<Suspense
 			fallback={
-				<div class="loading loading-infinity loading-lg text-sprout-300 grow" />
+				<div class="i-svg-spinners-blocks-shuffle-3 text-sprout-300 grow" />
 			}
 		>
 			<Show when={rawData()}>
