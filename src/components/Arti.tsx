@@ -39,7 +39,7 @@ export const Arti: Component = () => {
 			<Suspense
 				fallback={
 					<div class="flex flex-col h-full items-center justify-center grow w-full">
-						<div class="i-svg-spinners-blocks-shuffle-3 text-sprout-300 " />
+						<div class="i-svg-spinners-blocks-shuffle-3 text-sprout-300 w-6 h-6" />
 					</div>
 				}
 			>
