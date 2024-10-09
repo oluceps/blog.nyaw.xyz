@@ -5,6 +5,7 @@ import {
 } from "solid-js";
 
 import { Dynamic } from "solid-js/web";
+import { twMerge } from "tailwind-merge";
 
 export const isExternalURL = (url: string) => /^https?:\/\//.test(url);
 
@@ -25,7 +26,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 		warn: {
 			text: "WARNING",
 			icon: () => (
-				<div class={`h-7 w-7 fill-red-400` + icons[props.type]} />
+				<div class={twMerge(`h-7 w-7 text-red-400`, icons[props.type])} />
 			),
 			border: (props: ParentProps) => (
 				<div class="w-full outline-1 outline-red-300 outline-dashed rounded-md bg-[#fee2e5] py-4 px-6">
@@ -36,7 +37,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 		info: {
 			text: "Information",
 			icon: () => (
-				<div class={`h-7 w-7 fill-sprout-400` + icons[props.type]} />
+				<div class={twMerge(`h-7 w-7 text-sprout-400`, icons[props.type])} />
 			),
 			border: (props: ParentProps) => (
 				<div class="w-full outline-1 outline-sprout-300 outline-dashed rounded-md bg-sprout-100 py-4 px-6 my-2">
@@ -47,7 +48,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 		tips: {
 			text: "Tips",
 			icon: () => (
-				<div class={`h-7 w-7 fill-chill-400` + icons[props.type]} />
+				<div class={twMerge(`h-7 w-7 fill-ouchi-500`, icons[props.type])} />
 			),
 			border: (props: ParentProps) => (
 				<div class="w-full outline-1 outline-chill-300 outline-dashed rounded-md bg-chill-100 py-4 px-6 my-2">
@@ -58,7 +59,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 		note: {
 			text: "Notice",
 			icon: () => (
-				<div class={`h-7 w-7 fill-ouchi-400` + icons[props.type]} />
+				<div class={twMerge(`h-7 w-7 fill-ouchi-400`, icons[props.type])} />
 			),
 			border: (props: ParentProps) => (
 				<div class="w-full outline-1 outline-ouchi-300 outline-dashed rounded-md bg-ouchi-100 py-4 px-6 my-2">
