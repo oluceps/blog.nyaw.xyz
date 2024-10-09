@@ -48,7 +48,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 		tips: {
 			text: "Tips",
 			icon: () => (
-				<div class={twMerge(`h-7 w-7 fill-ouchi-500`, icons[props.type])} />
+				<div class={twMerge(`h-7 w-7 text-ouchi-500`, icons[props.type])} />
 			),
 			border: (props: ParentProps) => (
 				<div class="w-full outline-1 outline-chill-300 outline-dashed rounded-md bg-chill-100 py-4 px-6 my-2">
@@ -59,7 +59,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 		note: {
 			text: "Notice",
 			icon: () => (
-				<div class={twMerge(`h-7 w-7 fill-ouchi-400`, icons[props.type])} />
+				<div class={twMerge(`h-7 w-7 text-ouchi-400`, icons[props.type])} />
 			),
 			border: (props: ParentProps) => (
 				<div class="w-full outline-1 outline-ouchi-300 outline-dashed rounded-md bg-ouchi-100 py-4 px-6 my-2">
