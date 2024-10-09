@@ -25,7 +25,7 @@ export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
 				</a>
 				<div class="m-4">
 					<div class="flex w-full grow justify-center items-center overflow-visible">
-						<div class="flex justify-between">
+						<div class="flex justify-between items-center">
 							<Dynamic component={() => props.icon} />
 							<Show when={!props.onlyIcon}>
 								<p class="flex shrink grow pl-2 pr-5 sm:pr-0 justify-end items-center no-underline font-semibold bg-gradient-to-br from-sprout-400 to-sprout-700 inline-block text-transparent bg-clip-text text-lg md:text-normal w-full">
