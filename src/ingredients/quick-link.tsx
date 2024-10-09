@@ -8,6 +8,7 @@ export const isExternalURL = (url: string) =>
 export type QuickLinksProps = {
 	title: string;
 	href: string;
+	type?: string;
 	icon: JSXElement;
 	description?: string;
 	children?: JSXElement;
@@ -20,7 +21,7 @@ export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
 			<div class="absolute -inset-px rounded-xl border-transparent opacity-0 transition-all [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sprout.100)),var(--quick-links-hover-bg,theme(colors.sprout.100)))_padding-box,linear-gradient(to_top,theme(colors.sprout.500),theme(colors.sprout.300))_border-box] group-hover:opacity-80" />
 
 			<div class="relative overflow-hidden h-full w-full grow">
-				<a href={props.href} target="_blank">
+				<a href={props.href} target="_blank" type={props.type}>
 					<span class="absolute -inset-px rounded-xl" />
 				</a>
 				<div class="m-4">

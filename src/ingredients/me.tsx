@@ -90,7 +90,8 @@ export default function Me() {
 					/>
 					<QuickLinks
 						title="Verify"
-						href="https://blog.nyaw.xyz/minisign.pub.asc"
+						href="https://blog.nyaw.xyz/minisign.pub"
+						type="text/plain"
 						onlyIcon={onlyIcon()}
 						icon={<div class="i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />}
 					/>
