@@ -80,21 +80,25 @@ export default function Me() {
 						title="Matrix"
 						href="https://matrix.to/#/@sec:nyaw.xyz"
 						onlyIcon={onlyIcon()}
+						icon={<div class="i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />}
 					></QuickLinks>
 					<QuickLinks
 						title="Mailbox"
 						href="mailto:i@nyaw.xyz"
 						onlyIcon={onlyIcon()}
+						icon={<div class="i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />}
 					/>
 					<QuickLinks
-						title="Telegram"
-						href="https://t.me/Secpm_bot"
+						title="Verify"
+						href="https://blog.nyaw.xyz/minisign_pubkey"
 						onlyIcon={onlyIcon()}
+						icon={<div class="i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />}
 					/>
 					<QuickLinks
 						title="Pubkey"
 						href="https://github.com/oluceps.keys"
 						onlyIcon={onlyIcon()}
+						icon={<div class="i-material-symbols:key-outline w-8 h-8 text-sprout-500" />}
 					/>
 				</div>
 			</div>

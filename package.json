@@ -8,6 +8,7 @@
     "gen": "node ./scripts/writeData.mjs && node ./scripts/writeSitemap.mjs && node ./scripts/time.mjs"
   },
   "dependencies": {
+    "@iconify-json/material-symbols": "^1.2.3",
     "@mdx-js/mdx": "^2.3.0",
     "@myriaddreamin/typst-ts-renderer": "0.5.0-rc7",
     "@myriaddreamin/typst-ts-web-compiler": "0.5.0-rc7",
