@@ -7,7 +7,7 @@ import type { FetchEvent } from "@solidjs/start/server";
 const PLAIN_TEXT = ["/id_ed25519.pub", "/minisign.pub"] as const;
 
 function isPlaintext(path: string): path is typeof PLAIN_TEXT[number] {
-	return path in PLAIN_TEXT;
+	return PLAIN_TEXT.includes(path as typeof PLAIN_TEXT[number]);
 }
 
 export const handleHeaderResetPlaintextContent = (event: FetchEvent) => {
