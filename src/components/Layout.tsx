@@ -51,7 +51,7 @@ export function Layout(props: ParentProps) {
 					<Meta property="og:title" content={cfg.title} />
 					<Meta property="og:description" content={cfg.description} />
 					<SolidLenis autoRaf={true} root>
-						<main class="flex flex-col bg-zinc-50 dark:bg-[#171717] min-h-screen items-center">
+						<div class="flex flex-col bg-zinc-50 dark:bg-[#171717] min-h-screen items-center">
 							<Suspense>
 								<Header sticky={isRoot()} />
 							</Suspense>
@@ -74,7 +74,7 @@ export function Layout(props: ParentProps) {
 							</Switch>
 
 							<Footer />
-						</main>
+						</div>
 					</SolidLenis>
 
 					<Suspense>
