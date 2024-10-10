@@ -6,6 +6,14 @@ import { nodeTypes } from "@mdx-js/mdx";
 import remarkGfm from "remark-gfm";
 import rehypeShiki from '@shikijs/rehype'
 
+import {
+	transformerNotationDiff,
+	transformerNotationHighlight,
+	transformerNotationFocus,
+	transformerNotationErrorLevel,
+	transformerNotationWordHighlight
+} from '@shikijs/transformers'
+
 // import rehypeExpressiveCode from "rehype-expressive-code";
 import rehypeSlug from "rehype-slug";
 import rehypeAutoLinkHeadings from "rehype-autolink-headings";
@@ -37,19 +45,6 @@ function docsData() {
 		},
 	};
 }
-
-// const rehypeExpressiveCodeOptions: import('rehype-expressive-code').RehypeExpressiveCodeOptions = {
-// 	themes: ["vitesse-light", "rose-pine"],
-// 	themeCssSelector: (theme) =>
-// 		`[data-theme="${theme.name}"]`,
-// 	// I dont like dark mode
-// 	useDarkModeMediaQuery: false,
-// 	styleOverrides: {
-// 		frames: {
-// 			shadowColor: "rgb(0 0 0 / 1%)",
-// 		},
-// 	},
-// };
 
 export default defineConfig({
 	middleware: "src/middleware/index.ts",
@@ -87,6 +82,13 @@ export default defineConfig({
 					[rehypeShiki, {
 						inline: 'tailing-curly-colon',
 						theme: 'vitesse-light',
+						transformers: [
+							transformerNotationFocus(),
+							transformerNotationDiff(),
+							transformerNotationHighlight(),
+							transformerNotationErrorLevel(),
+							transformerNotationWordHighlight()
+						]
 					}],
 				],
 				remarkPlugins: [

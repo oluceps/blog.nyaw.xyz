@@ -95,7 +95,7 @@ const components = {
 		return <hr {...props} class="border-sprout-600" />;
 	},
 	pre: (props: ParentProps) => {
-		return <pre {...props} class="shadow-md">{props.children}</pre>;
+		return <pre {...props} class="border bg-[#f9f9f9]">{props.children}</pre>;
 	},
 	response: (props: ParentProps) => {
 		return <span>{props.children}</span>;
@@ -179,16 +179,6 @@ const components = {
 	strong: (props: ParentProps) => <strong class="font-bold" {...props} />,
 
 	img: imgContent,
-	// code: (props: ParentProps) => {
-	// 	return (
-	// 		<code
-	// 			class="bg-sprout-300"
-	// 			{...props}
-	// 		>
-	// 			{props.children}
-	// 		</code>
-	// 	);
-	// },
 	table: (props: ParentProps) => <table>{props.children}</table>,
 	li: (props: ParentProps) => (
 		<li {...props} class="mb-2 marker:text-sprout-400">

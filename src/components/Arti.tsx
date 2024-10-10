@@ -9,12 +9,13 @@ export const preprocessed =
 	Promise.all(docsData.map(async (i) => {
 		// Convert date
 		const updatedItem = { ...i, date: new Date(i.date) };
-		// const toComp = limit ? 9 : cfg.hideLevel;
 		const toComp = cfg.hideLevel;
 		const shouldInclude =
 			toComp < updatedItem.hideLevel && !updatedItem.draft;
-		// If should include, return the item, otherwise return null
-		// @ts-ignore
+		// @ts-expect-error missing types
+		if (!import.meta.env.production) {
+			return updatedItem
+		}
 		return shouldInclude ? updatedItem : null;
 	})).then(res => res
 		.filter((i) => i !== null)

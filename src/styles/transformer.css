@@ -1,0 +1,21 @@
+.highlighted-word {
+  @apply border-2 border-ouchi-500 rounded-md px-1 py-px
+}
+
+.highlighted {
+  @apply bg-chill-200 rounded-sm px-1 py-1
+}
+
+.highlighted.error {
+  @apply bg-red-200
+}
+
+.highlighted.warning {
+  @apply bg-yellow-200
+}
+
+.line.focused { @apply blur-sm hover:blur-none transition-all }
+
+.line.diff { @apply px-1 py-1 before:pr-1  }
+.line.diff.add { @apply bg-sprout-200 before:content-["+"] before:text-red-400 }
+.line.diff.remove { @apply bg-red-100 before:content-["-"] before:text-sprout-500 }

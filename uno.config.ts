@@ -1,18 +1,19 @@
 // uno.config.ts
 import {
 	defineConfig,
-	presetAttributify,
 	presetTypography,
 	presetUno,
 	transformerDirectives,
+	transformerCompileClass,
 	presetIcons,
 } from "unocss";
 import presetWind from "@unocss/preset-wind";
 import presetRemToPx from "@unocss/preset-rem-to-px";
 
 
+
 export default defineConfig({
-	transformers: [transformerDirectives()],
+	transformers: [transformerCompileClass(), transformerDirectives()],
 	shortcuts: {
 		btn: "py-2 px-4 font-semibold rounded-lg shadow-md",
 	},
