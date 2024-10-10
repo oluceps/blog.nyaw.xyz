@@ -13,7 +13,7 @@ export const preprocessed =
 		const shouldInclude =
 			toComp < updatedItem.hideLevel && !updatedItem.draft;
 		// @ts-expect-error missing types
-		if (!import.meta.env.production) {
+		if (import.meta.env.DEV) {
 			return updatedItem
 		}
 		return shouldInclude ? updatedItem : null;
