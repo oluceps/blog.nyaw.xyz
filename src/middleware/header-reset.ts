@@ -16,12 +16,8 @@ export const handleHeaderResetPlaintextContent = async (event: FetchEvent) => {
 		console.log("Get", pathname)
 		event.response.headers.append("Content-Type", "text/plain")
 
-		try {
-			let res = ky.get(cfg.base_url + pathname + ".pub").then((r) => new Response(r.body));
-			return await res;
-		} catch (e) {
-			console.log(e)
-		}
+		let res = ky.get(cfg.base_url + pathname + ".pub").then((r) => new Response(r.body));
+		return await res;
 	}
 };
 
