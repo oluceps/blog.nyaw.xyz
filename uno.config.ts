@@ -8,13 +8,11 @@ import {
 	presetIcons,
 } from "unocss";
 import presetWind from "@unocss/preset-wind";
-import presetWebFonts from "@unocss/preset-web-fonts";
 import presetRemToPx from "@unocss/preset-rem-to-px";
-import transformerCompileClass from "@unocss/transformer-compile-class";
 
 
 export default defineConfig({
-	transformers: [transformerCompileClass(), transformerDirectives()],
+	transformers: [transformerDirectives()],
 	shortcuts: {
 		btn: "py-2 px-4 font-semibold rounded-lg shadow-md",
 	},
@@ -95,18 +93,8 @@ export default defineConfig({
 			},
 		},
 	},
-	//   preflights: [
-	//   {
-	//     getCSS() {
-	//       return '
-
-	//      '
-	//     },
-	//   },
-	// ],
-
 	presets: [
-		presetAttributify(), // required when using attributify mode
+		// presetAttributify(), // required when using attributify mode
 		presetUno(), // required
 		presetTypography({
 			cssExtend: {
@@ -150,12 +138,5 @@ export default defineConfig({
 		presetWind(),
 		presetRemToPx(),
 		presetIcons()
-		// presetWebFonts({
-		//   provider: 'google',
-		//   fonts: {
-		//     sans: 'Roboto',
-		//     mono: ['Fira Code', 'Fira Mono:400,700'],
-		//   },
-		// }),
 	],
 });
