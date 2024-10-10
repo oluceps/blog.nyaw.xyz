@@ -1,11 +1,7 @@
-
 import cfg from "../constant";
 import type { FetchEvent } from "@solidjs/start/server";
 import ky from "ky";
-/**
- * Redirect Dictionary
- * {origin: destination}
- */
+
 const PLAIN_TEXT = ["/id_ed25519", "/minisign"] as const;
 
 function isPlaintext(path: string): path is typeof PLAIN_TEXT[number] {
