@@ -5,6 +5,10 @@ import rehypeRaw from "rehype-raw";
 import { nodeTypes } from "@mdx-js/mdx";
 import remarkGfm from "remark-gfm";
 import rehypeShiki from '@shikijs/rehype'
+import remarkMath from 'remark-math'
+
+// @ts-expect-error missing types
+import rehypeTypst from '@myriaddreamin/rehype-typst'
 
 import {
 	transformerNotationDiff,
@@ -78,7 +82,7 @@ export default defineConfig({
 							},
 						},
 					],
-
+					rehypeTypst,
 					[rehypeShiki, {
 						inline: 'tailing-curly-colon',
 						theme: 'vitesse-light',
@@ -93,6 +97,7 @@ export default defineConfig({
 				],
 				remarkPlugins: [
 					remarkGfm,
+					remarkMath,
 					remarkFrontmatter,
 				],
 			}),
