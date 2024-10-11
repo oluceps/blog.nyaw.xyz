@@ -39,10 +39,15 @@ services:
       TZ: Asia/Shanghai
 ```
 
-    docker-compose up -d
+
+```
+docker-compose up -d
+```
 
 container will be start
 
 #### 导入备份数据(bson) with auth：
 
-    mongorestore -u "$(USERNAME)" -p $(PASSWD) ./$(BACKUP FILE PATH)
+```
+mongorestore -u "$(USERNAME)" -p $(PASSWD) ./$(BACKUP FILE PATH)
+```
