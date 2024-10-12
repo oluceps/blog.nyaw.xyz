@@ -1,9 +1,24 @@
+code {
+  counter-reset: step;
+  counter-increment: step 0;
+}
+
+code .line::before {
+  content: counter(step);
+  counter-increment: step;
+  margin-left: 3px;
+  margin-right: 1rem;
+  display: inline-block;
+  text-align: right;
+  color: rgba(115,138,148,.4)
+}
+
 .highlighted-word {
   @apply border-2 border-ouchi-500 rounded-md px-1 py-px
 }
 
 .highlighted {
-  @apply bg-chill-200 rounded-sm px-1 py-1
+  @apply bg-chill-200 rounded-sm py-1 pr-2
 }
 
 .highlighted.error {
@@ -16,6 +31,6 @@
 
 .line.focused { @apply blur-sm hover:blur-none transition-all }
 
-.line.diff { @apply px-1 py-1 before:pr-1  }
+.line.diff { @apply px-1 py-1.5 before:pr-1  }
 .line.diff.add { @apply bg-sprout-200 before:content-["+"] before:text-red-400 }
 .line.diff.remove { @apply bg-red-100 before:content-["-"] before:text-sprout-500 }

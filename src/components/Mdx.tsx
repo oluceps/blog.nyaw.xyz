@@ -95,7 +95,7 @@ const components = {
 		return <hr {...props} class="border-sprout-600" />;
 	},
 	pre: (props: ParentProps) => {
-		return <pre {...props} class="border bg-[#f9f9f9]">{props.children}</pre>;
+		return <pre {...props} class="border bg-[#f9f9f9] px-2 py-1.5">{props.children}</pre>;
 	},
 	response: (props: ParentProps) => {
 		return <span>{props.children}</span>;
