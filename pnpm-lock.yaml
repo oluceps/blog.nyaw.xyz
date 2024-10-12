@@ -112,8 +112,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0
       remark-abcjs:
-        specifier: link:../remark-abcjs
-        version: link:../remark-abcjs
+        specifier: git://github.com/oluceps/remark-abcjs#ef7306be66f0e7b5a178ad0ecd6b46e7fa9bb422
+        version: https://codeload.github.com/oluceps/remark-abcjs/tar.gz/ef7306be66f0e7b5a178ad0ecd6b46e7fa9bb422
       remark-frontmatter:
         specifier: ^5.0.0
         version: 5.0.0
@@ -3745,6 +3745,10 @@ packages:
   rehype-slug@6.0.0:
     resolution: {integrity: sha512-lWyvf/jwu+oS5+hL5eClVd3hNdmwM1kAC0BUvEGD19pajQMIzcNUd/k9GsfQ+FfECvX+JE+e9/btsKH0EjJT6A==}
 
+  remark-abcjs@https://codeload.github.com/oluceps/remark-abcjs/tar.gz/ef7306be66f0e7b5a178ad0ecd6b46e7fa9bb422:
+    resolution: {tarball: https://codeload.github.com/oluceps/remark-abcjs/tar.gz/ef7306be66f0e7b5a178ad0ecd6b46e7fa9bb422}
+    version: 0.1.6
+
   remark-frontmatter@5.0.0:
     resolution: {integrity: sha512-XTFYvNASMe5iPN0719nPrdItC9aU0ssC4v14mH1BCi1u0n1gAocqcujWUrByftZTbLhRtiKRyjYTSIOcr69UVQ==}
 
@@ -4233,6 +4237,9 @@ packages:
 
   unist-util-is@6.0.0:
     resolution: {integrity: sha512-2qCTHimwdxLfz+YzdGfkqNlH0tLi9xjTnHddPmJwtIG9MGsdbutfTc4P+haPD7l7Cjxf/WZj+we5qfVPvvxfYw==}
+
+  unist-util-map@2.0.1:
+    resolution: {integrity: sha512-VdNvk4BQUUU9Rgr8iUOvclHa/iN9O+6Dt66FKij8l9OVezGG37gGWCPU5KSax1R2degqXFvl3kWTkvzL79e9tQ==}
 
   unist-util-position-from-estree@1.1.2:
     resolution: {integrity: sha512-poZa0eXpS+/XpoQwGwl79UUdea4ol2ZuCYguVaJS4qzIOMDzbqz8a3erUCOmubSZkaOuGamb3tX790iwOIROww==}
@@ -8685,6 +8692,11 @@ snapshots:
       hast-util-to-string: 3.0.1
       unist-util-visit: 5.0.0
 
+  remark-abcjs@https://codeload.github.com/oluceps/remark-abcjs/tar.gz/ef7306be66f0e7b5a178ad0ecd6b46e7fa9bb422:
+    dependencies:
+      unified: 11.0.5
+      unist-util-map: 2.0.1
+
   remark-frontmatter@5.0.0:
     dependencies:
       '@types/mdast': 4.0.4
@@ -9262,6 +9274,11 @@ snapshots:
   unist-util-is@6.0.0:
     dependencies:
       '@types/unist': 3.0.3
+
+  unist-util-map@2.0.1:
+    dependencies:
+      '@types/mdast': 3.0.15
+      object-assign: 4.1.1
 
   unist-util-position-from-estree@1.1.2:
     dependencies:
