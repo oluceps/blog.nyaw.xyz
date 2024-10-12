@@ -125,10 +125,10 @@ const components = {
 					onClick={copyToClipboard}
 				>
 					<div
-						class={twMerge(
-							"group-hover:i-ci:copy transition-all duration-400 group-hover:text-sprout-500",
-							copied() ? "group-hover:i-ci:check" : null
-						)}
+						class={
+							twMerge("transition-all duration-400 group-hover:text-sprout-500",
+								copied() ? "group-hover:i-ci:check" : "group-hover:i-ci:copy")
+						}
 					/>
 				</button>
 			</div>
