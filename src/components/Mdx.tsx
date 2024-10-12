@@ -3,6 +3,7 @@ import {
 	Match,
 	Switch,
 	children,
+	createSignal,
 	splitProps,
 	type ParentProps,
 } from "solid-js";
@@ -11,6 +12,7 @@ import { QuickLinks, type QuickLinksProps } from "../ingredients/quick-link";
 import { Emph, type EmphProps } from "../ingredients/emph";
 import cfg from "../constant";
 import Reveal from "~/ingredients/rand-reveal";
+import { twMerge } from "tailwind-merge";
 
 const cstomLink = (props: ParentProps & { href: string }) => {
 	const [, rest] = splitProps(props, ["children"]);
@@ -95,10 +97,46 @@ const components = {
 		return <hr {...props} class="border-sprout-600" />;
 	},
 	pre: (props: ParentProps) => {
-		return <pre {...props} class="border bg-[#f9f9f9] px-2 py-1.5">{props.children}</pre>;
+		let [codeBlockRef, setCodeBlockRef] = createSignal<HTMLDivElement | undefined>();
+		const [copied, setCopied] = createSignal(false);
+		const copyToClipboard = () => {
+			if (codeBlockRef()) {
+				const codeContent = codeBlockRef()!.innerText; // loaded
+
+				if (codeContent) {
+					navigator.clipboard.writeText(codeContent).then(() => {
+						setCopied(true);
+						setTimeout(() => setCopied(false), 2000);
+					});
+				}
+			}
+		};
+		return (
+			<div class="relative group w-full">
+				<pre
+					{...props}
+					class="w-full border bg-[#f9f9f9] px-2 py-1.5 overflow-auto"
+					ref={setCodeBlockRef}
+				>
+					{props.children}
+				</pre>
+				<div
+					class="absolute right-2 top-2 h-8 w-8 justify-center items-center flex rounded-md hover:bg-sprout-100 transition-all"
+					onClick={copyToClipboard}
+				>
+					<div
+						class={twMerge(
+							"group-hover:i-ci:copy transition-all duration-400 group-hover:text-sprout-500",
+							copied() ? "group-hover:i-ci:check" : null
+						)}
+					/>
+				</div>
+			</div>
+		);
 	},
 	response: (props: ParentProps) => {
-		return <span>{props.children}</span>;
+		return <span>{props.children
+		}</span>;
 	},
 	void: (props: ParentProps) => {
 		return <span>{props.children}</span>;
