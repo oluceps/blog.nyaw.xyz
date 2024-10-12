@@ -120,8 +120,8 @@ const components = {
 				>
 					{props.children}
 				</pre>
-				<div
-					class="absolute right-2 top-2 h-8 w-8 justify-center items-center flex rounded-md hover:bg-sprout-100 transition-all"
+				<button
+					class="absolute bg-transparent right-2 top-2 h-8 w-8 justify-center items-center flex rounded-md hover:bg-sprout-100 transition-all"
 					onClick={copyToClipboard}
 				>
 					<div
@@ -130,7 +130,7 @@ const components = {
 							copied() ? "group-hover:i-ci:check" : null
 						)}
 					/>
-				</div>
+				</button>
 			</div>
 		);
 	},
