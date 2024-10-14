@@ -1,23 +1,61 @@
 import Online from "./online-indicator";
 import Reveal from "./rand-reveal";
 import cfg from "../constant";
-import { QuickLinks } from "./quick-link";
+import { QuickLinks, QuickLinksProps } from "./quick-link";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
-import { createSignal, onCleanup, onMount } from "solid-js";
+import { createSignal, For, onCleanup, onMount } from "solid-js";
 
 export default function Me() {
-	const [onlyIcon, setOnlyIcon] = createSignal<boolean>(false);
-
-	const set = () => {
-		setOnlyIcon(window.innerWidth > 1180);
-	};
-	onMount(() => {
-		window.addEventListener("resize", set);
-
-		onCleanup(() => {
-			window.removeEventListener("resize", set);
-		});
-	});
+	const [qlProps, _setqlProps] = createSignal<QuickLinksProps[]>([
+		{
+			title: "Matrix",
+			href: "https://matrix.to/#/@sec:nyaw.xyz",
+			onlyIcon: false,
+			icon: <div class="i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />
+		},
+		{
+			title: "Mailbox",
+			href: "mailto:i@nyaw.xyz",
+			onlyIcon: false,
+			icon: <div class="i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />,
+		},
+		{
+			title: "Telegram",
+			href: "https://t.me/Secpm_bot",
+			onlyIcon: false,
+			icon: < div class="i-ci:paper-plane w-8 h-8 text-sprout-500" />,
+		},
+		{
+			title: "Signature",
+			href: "https://blog.nyaw.xyz/minisign",
+			onlyIcon: false,
+			icon: <div class="i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />,
+		},
+		{
+			title: "Pubkey",
+			href: "https://github.com/oluceps.keys",
+			onlyIcon: false,
+			icon: <div class="i-material-symbols:key-outline w-8 h-8 text-sprout-500" />,
+		},
+		// {
+		// 	title: "DN42",
+		// 	href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
+		// 	onlyIcon: false,
+		// 	icon: <div class="i-ci:planet w-8 h-8 text-sprout-500" />,
+		// },
+		// {
+		// 	title: "Monero",
+		// 	href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
+		// 	onlyIcon: false,
+		// 	icon: <div class="i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />,
+		// },
+		{
+			title: "Status",
+			href: "https://status.nyaw.xyz",
+			onlyIcon: false,
+			icon: <div class="i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />,
+		},
+	])
 
 	return (
 		<>
@@ -75,33 +113,18 @@ export default function Me() {
 					</div>
 				</div>
 
-				<div class="grid grid-cols-2 grid-rows-2 md:grid-cols-4 md:grid-rows-1 gap-3">
-					<QuickLinks
-						title="Matrix"
-						href="https://matrix.to/#/@sec:nyaw.xyz"
-						onlyIcon={onlyIcon()}
-						icon={<div class="i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />}
-					></QuickLinks>
-					<QuickLinks
-						title="Mailbox"
-						href="mailto:i@nyaw.xyz"
-						onlyIcon={onlyIcon()}
-						icon={<div class="i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />}
-					/>
-					<QuickLinks
-						title="Verify"
-						href="https://blog.nyaw.xyz/minisign"
-						onlyIcon={onlyIcon()}
-						icon={<div class="i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />}
-					/>
-					<QuickLinks
-						title="Pubkey"
-						href="https://github.com/oluceps.keys"
-						onlyIcon={onlyIcon()}
-						icon={<div class="i-material-symbols:key-outline w-8 h-8 text-sprout-500" />}
-					/>
-				</div>
-			</div>
+				<div class="flex gap-3 transition-all justify-between duration-500 overflow-x-scroll sm:overflow-visible pb-3 sm:py-0">
+					<For each={qlProps()}>
+						{(i) =>
+							<div class="flex-none hover:flex-1 transition-all duration-500">
+								<QuickLinks
+									{...i}
+								/>
+							</div>
+						}
+					</For>
+				</div >
+			</div >
 		</>
 	);
 }
