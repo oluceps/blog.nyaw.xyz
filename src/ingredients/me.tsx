@@ -11,31 +11,31 @@ export default function Me() {
 			title: "Matrix",
 			href: "https://matrix.to/#/@sec:nyaw.xyz",
 			onlyIcon: false,
-			icon: <div class="i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />
+			icon: <div class="pointer-events-none i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />
 		},
 		{
 			title: "Mailbox",
 			href: "mailto:i@nyaw.xyz",
 			onlyIcon: false,
-			icon: <div class="i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />,
+			icon: <div class="pointer-events-none i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />,
 		},
 		{
 			title: "Telegram",
 			href: "https://t.me/Secpm_bot",
 			onlyIcon: false,
-			icon: < div class="i-ci:paper-plane w-8 h-8 text-sprout-500" />,
+			icon: < div class="pointer-events-none i-ci:paper-plane w-8 h-8 text-sprout-500" />,
 		},
 		{
 			title: "Signature",
 			href: "https://blog.nyaw.xyz/minisign",
 			onlyIcon: false,
-			icon: <div class="i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />,
+			icon: <div class="pointer-events-none i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />,
 		},
 		{
 			title: "Pubkey",
 			href: "https://github.com/oluceps.keys",
 			onlyIcon: false,
-			icon: <div class="i-material-symbols:key-outline w-8 h-8 text-sprout-500" />,
+			icon: <div class="pointer-events-none i-material-symbols:key-outline w-8 h-8 text-sprout-500" />,
 		},
 		// {
 		// 	title: "DN42",
@@ -116,7 +116,7 @@ export default function Me() {
 				<div class="flex gap-3 transition-all justify-between duration-500 overflow-x-scroll sm:overflow-visible pb-3 sm:py-0">
 					<For each={qlProps()}>
 						{(i) =>
-							<div class="flex-none hover:flex-1 transition-all duration-500">
+							<div class="flex-none hover:flex-1 transition-all duration-500 delay-100">
 								<QuickLinks
 									{...i}
 								/>
