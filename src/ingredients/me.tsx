@@ -116,7 +116,7 @@ export default function Me() {
 				<div class="flex gap-3 transition-all justify-between duration-500 overflow-x-scroll sm:overflow-visible pb-3 sm:py-0">
 					<For each={qlProps()}>
 						{(i) =>
-							<div class="flex-none hover:flex-1 transition-all duration-500 delay-100">
+							<div class="flex-none hover:flex-1 transition-all duration-500 delay-200">
 								<QuickLinks
 									{...i}
 								/>
