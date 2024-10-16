@@ -52,7 +52,7 @@
     "remark-gfm": "^3.0.1",
     "remark-math": "^6.0.0",
     "tailwind-merge": "^2.5.4",
-    "unocss": "^0.62.4",
+    "unocss": "^0.63.4",
     "vercel": "^37.8.0"
   }
 }
