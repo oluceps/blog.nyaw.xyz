@@ -17,14 +17,9 @@ export type QuickLinksProps = {
 
 
 export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
-	const [isHvr, setIsHvr] = createSignal(false);
 	const [innerW, setInnerW] = createSignal(0);
-	let timeoutId: any;
 	let intervalId: any;
 	const handleMouseEnter = () => {
-		timeoutId = setTimeout(() => {
-			setIsHvr(true);
-		}, 450);
 		intervalId = setInterval(() => {
 			setInnerW(prev => prev < 100 ? prev + 1 : 100)
 			console.log(innerW())
@@ -32,16 +27,11 @@ export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
 	};
 
 	const handleMouseLeave = () => {
-		clearTimeout(timeoutId);
-		setIsHvr(false);
 		clearTimeout(intervalId);
 		setInnerW(0);
 	};
 
-	let wTxt = createMemo(() => innerW() + "%");
-
 	onCleanup(() => {
-		clearTimeout(timeoutId)
 		clearInterval(intervalId)
 	});
 
