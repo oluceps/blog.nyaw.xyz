@@ -54,7 +54,19 @@ export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
 					<div class="">
 						<Dynamic component={() => props.icon} />
 					</div>
-
+					<Show when={!props.onlyIcon}>
+						<p
+							class={twMerge(
+								"overflow-hidden whitespace-nowrap ",
+								"bg-gradient-to-br from-sprout-400 to-sprout-700 bg-clip-text",
+								"pointer-events-none select-none",
+								"items-center no-underline font-semibold text-lg md:text-normal text-transparent pl-2"
+							)}
+							style={{ width: `${innerW()}%` }}
+						>
+							{props.title}
+						</p>
+					</Show>
 
 				</div>
 			</div>
