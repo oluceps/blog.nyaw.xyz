@@ -79,8 +79,8 @@ export default function Me() {
 					icon: <div class="i-ci:planet w-8 h-8 text-sprout-500" />,
 				},
 				{
-					title: "Support",
-					href: cfg.base_url + "/crypto",
+					title: "Donate",
+					href: cfg.base_url + "/donate",
 					onlyIcon: false,
 					icon: (
 						<div class="i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
