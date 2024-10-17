@@ -6,15 +6,10 @@ import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { createSignal, For } from "solid-js";
 
 export default function Me() {
-	const shuffle = (a: Array<any>): Array<any> =>
-		a.reduce(
-			(shuffled, _, i) => {
-				const j = Math.floor(Math.random() * (i + 1));
-				[shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!]; // must have
-				return shuffled;
-			},
-			[...a],
-		);
+	const shuffle = (a: any[]) =>
+		a.map((value) => ({ value, sort: Math.random() }))
+			.sort((a, b) => a.sort - b.sort)
+			.map(({ value }) => value)
 
 	const [descIdx, setDescIdx] = createSignal(0);
 	const randDesc = shuffle([
@@ -74,27 +69,27 @@ export default function Me() {
 				{
 					title: "DN42",
 					href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
-					icon: <div class="i-ci:planet w-8 h-8 text-sprout-500" />,
+					icon: <div class="pointer-events-none i-ci:planet w-8 h-8 text-sprout-500" />,
 				},
 				{
 					title: "Donate",
 					href: cfg.base_url + "/donate",
 					icon: (
-						<div class="i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
+						<div class="pointer-events-none i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
 					),
 				},
 				{
 					title: "Discord",
 					href: "https://discord.gg/RbFvkEPg",
 					icon: (
-						<div class="i-ci:discord w-8 h-8 text-sprout-500" />
+						<div class="pointer-events-none i-ci:discord w-8 h-8 text-sprout-500" />
 					),
 				},
 				{
 					title: "Status",
 					href: "https://status.nyaw.xyz",
 					icon: (
-						<div class="i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />
+						<div class="pointer-events-none i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />
 					),
 				},
 			];
