@@ -57,7 +57,7 @@ Git 是当前最流行的版本控制系统。它同时支持 HTTPS 和 SSH 来�
 
 resident 选项决定是否生成 Discoverable 的凭据（详见[这个](https://developers.yubico.com/SSH/Securing_SSH_with_FIDO2.html)）, 概括来说就是 resident 凭据可以通过 `ssh-keygen -K` 来从硬件密钥中导出密钥（？），没有resident的话如果在其它设备上使用硬件Key签名需要先把生成的私钥（实际上是指向硬件密钥的引用）手动挪过去。这里出于方便的原因使用 resident 凭据。`application=ssh:$(date +%s)`凭个人喜好设置，是用来标记用途的。我这里弄成时间戳。
 
-```
+```bash
 cd ~/.ssh
 ssh-keygen -t ed25519-sk -O resident -O application=ssh:$(date +%s) -O verify-required
 ```
@@ -66,7 +66,7 @@ ssh-keygen -t ed25519-sk -O resident -O application=ssh:$(date +%s) -O verify-re
 
 之后可以通过
 
-```
+```bash
 ykman fido credentials list
 ```
 
@@ -76,11 +76,11 @@ ykman fido credentials list
 
 设置gpg 签名格式为ssh。在需要生效的仓库中执行。或者也可以加 `--global` 改全局设置。
 
-```
+```bash
 git config gpg.format ssh
 ```
 
-```
+```bash
 git config user.signingKey ~/.ssh/id_ed25519_sk
 ```
 
@@ -88,14 +88,14 @@ git config user.signingKey ~/.ssh/id_ed25519_sk
 
 # 使用
 
-```
+```bash
 $ git commit -S -m'initial import'
 [main (root-commit) 519ccdd] initial import
  1 file changed, 0 insertions(+), 0 deletions(-)
  create mode 100644 README
 ```
 
-```
+```bash
 $ git log --oneline --show-signature
 519ccdd (HEAD -> main) Good "git" signature for user@example.com with ED25519-SK key SHA256:FpybChVXHU/MnwIvOszDxV2yFSbDp9ZkYXxjQ2E+8x0
 initial import
@@ -115,7 +115,7 @@ update: 用回ssh key了, 一下感觉 rebase 好快
 ## Sign
 
 ```console
-  ssh-keygen -Y sign -f ./OPENSSH_KEY  -n FILE_NAME ./FILE
+ssh-keygen -Y sign -f ./OPENSSH_KEY  -n FILE_NAME ./FILE
 ```
 
 在当前目录会生成后缀.sig的文件。
@@ -126,15 +126,15 @@ update: 用回ssh key了, 一下感觉 rebase 好快
 
 比如
 
-```
+```bash
 i@some.com sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NAIBFIalie2guY29tAAAAIH+HwSzDbhaisdjABAdibbdsvwqfla4GY6EuD1yGuNkX6QAAAaifAIfalAALjg5NTQzMzc1 ssh:1689543375
 ```
 
 使用这个验证签名
 
-```console
-  cat FILE | ssh-keygen -Y verify -f allowed_signers -I i@some.com -n FILE -s FILE.sig
-  Good "FILE" signature for i@some.com with ED25519-SK key SHA256:iabd+DxjcImivTYhsuQTlPhTIlYr2aHojF3YaisdbM
+```bash
+cat FILE | ssh-keygen -Y verify -f allowed_signers -I i@some.com -n FILE -s FILE.sig
+Good "FILE" signature for i@some.com with ED25519-SK key SHA256:iabd+DxjcImivTYhsuQTlPhTIlYr2aHojF3YaisdbM
 ```
 
 > 作为 [这篇博文](https://www.agwa.name/blog/post/ssh_signatures) 的简短助记。
