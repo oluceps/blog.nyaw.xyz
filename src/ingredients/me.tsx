@@ -58,7 +58,7 @@ export default function Me() {
 				},
 				{
 					title: "Signature",
-					href: `https://${cfg.base_url}/minisign`,
+					href: cfg.base_url + "/minisign",
 					onlyIcon: false,
 					icon: (
 						<div class="pointer-events-none i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />
@@ -80,7 +80,7 @@ export default function Me() {
 				},
 				{
 					title: "Support",
-					href: `https://${cfg.base_url}/crypto`,
+					href: cfg.base_url + "/crypto",
 					onlyIcon: false,
 					icon: (
 						<div class="i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
