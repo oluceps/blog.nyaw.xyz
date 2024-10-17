@@ -6,28 +6,32 @@ import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { createSignal, For } from "solid-js";
 
 export default function Me() {
-	const [randDesc, setRanDesc] = createSignal([
+	const shuffle = (a: Array<any>): Array<any> =>
+		a.reduce(
+			(shuffled, _, i) => {
+				const j = Math.floor(Math.random() * (i + 1));
+				[shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!]; // must have
+				return shuffled;
+			},
+			[...a],
+		);
+
+	const [descIdx, setDescIdx] = createSignal(0);
+	const randDesc = shuffle([
 		"Epicureanism",
 		"Keeping Alive",
 		"不用睡觉",
 		"业余画师",
-		"时区跳跃者",
+		"跨时区乱蹦",
+		"赛博考古学家",
 		"猫猫爱好者",
+		"被猫猫爱好者",
 	]);
 
-	const doShuffle = () =>
+	const delayIncreaseIdx = () =>
 		setTimeout(() => {
-			setRanDesc(
-				randDesc().reduce(
-					(shuffled, _, i) => {
-						const j = Math.floor(Math.random() * (i + 1));
-						[shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!];
-						return shuffled;
-					},
-					[...randDesc()],
-				),
-			);
-		}, 300);
+			setDescIdx(prev => (prev + 1) % randDesc.length)
+		}, 50);
 
 	const [qlProps, _setqlProps] = createSignal<QuickLinksProps[]>(
 		(() => {
@@ -35,7 +39,6 @@ export default function Me() {
 				{
 					title: "Matrix",
 					href: "https://matrix.to/#/@sec:nyaw.xyz",
-					onlyIcon: false,
 					icon: (
 						<div class="pointer-events-none i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />
 					),
@@ -43,7 +46,6 @@ export default function Me() {
 				{
 					title: "Mailbox",
 					href: "mailto:i@nyaw.xyz",
-					onlyIcon: false,
 					icon: (
 						<div class="pointer-events-none i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />
 					),
@@ -51,7 +53,6 @@ export default function Me() {
 				{
 					title: "Telegram",
 					href: "https://t.me/Secpm_bot",
-					onlyIcon: false,
 					icon: (
 						<div class="pointer-events-none i-ci:paper-plane w-8 h-8 text-sprout-500" />
 					),
@@ -59,7 +60,6 @@ export default function Me() {
 				{
 					title: "Signature",
 					href: cfg.base_url + "/minisign",
-					onlyIcon: false,
 					icon: (
 						<div class="pointer-events-none i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />
 					),
@@ -67,7 +67,6 @@ export default function Me() {
 				{
 					title: "Pubkey",
 					href: "https://github.com/oluceps.keys",
-					onlyIcon: false,
 					icon: (
 						<div class="pointer-events-none i-material-symbols:key-outline w-8 h-8 text-sprout-500" />
 					),
@@ -75,34 +74,31 @@ export default function Me() {
 				{
 					title: "DN42",
 					href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
-					onlyIcon: false,
 					icon: <div class="i-ci:planet w-8 h-8 text-sprout-500" />,
 				},
 				{
 					title: "Donate",
 					href: cfg.base_url + "/donate",
-					onlyIcon: false,
 					icon: (
 						<div class="i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
 					),
 				},
 				{
+					title: "Discord",
+					href: "https://discord.gg/RbFvkEPg",
+					icon: (
+						<div class="i-ci:discord w-8 h-8 text-sprout-500" />
+					),
+				},
+				{
 					title: "Status",
 					href: "https://status.nyaw.xyz",
-					onlyIcon: false,
 					icon: (
 						<div class="i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />
 					),
 				},
 			];
-			return a.reduce(
-				(shuffled, _, i) => {
-					const j = Math.floor(Math.random() * (i + 1));
-					[shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!]; // must have
-					return shuffled;
-				},
-				[...a],
-			);
+			return shuffle(a);
 		})().slice(0, 6),
 	);
 
@@ -156,12 +152,13 @@ export default function Me() {
 							<div class="text-zinc-500">UTC + 8?</div>
 							<div class="text-zinc-500">she / her</div>
 							<div
-								class="text-zinc-500 select-none blur-md font-mono hover:blur-none transition-all"
-								onMouseLeave={doShuffle}
+								id="shuffle-tag"
+								class="text-zinc-500 pb-1 select-none blur-md font-mono hover:blur-none transition-all"
+								onMouseLeave={delayIncreaseIdx}
 							>
-								{randDesc()[0]}
+								{randDesc[descIdx()]}
 							</div>
-							<div class="text-zinc-400 not-prose mt-2 md:mt-4">
+							<div class="text-zinc-400 not-prose">
 								廿一世紀 末日未接近時出生
 							</div>
 						</div>
