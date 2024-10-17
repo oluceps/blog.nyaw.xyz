@@ -12,7 +12,6 @@ export type QuickLinksProps = {
 	icon: JSXElement;
 	description?: string;
 	children?: JSXElement;
-	onlyIcon?: boolean;
 };
 
 

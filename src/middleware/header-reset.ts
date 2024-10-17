@@ -2,7 +2,7 @@ import cfg from "../constant";
 import type { FetchEvent } from "@solidjs/start/server";
 import ky from "ky";
 
-const PLAIN_TEXT = ["/id_ed25519", "/minisign"] as const;
+const PLAIN_TEXT = ["/id_ed25519", "/minisign", "/crypto"] as const;
 
 function isPlaintext(path: string): path is typeof PLAIN_TEXT[number] {
 	return PLAIN_TEXT.includes(path as typeof PLAIN_TEXT[number]);

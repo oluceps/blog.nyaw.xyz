@@ -1,5 +1,4 @@
 import {
-	JSXElement,
 	Match,
 	Switch,
 	children,

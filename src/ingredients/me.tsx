@@ -11,7 +11,7 @@ export default function Me() {
 		"Keeping Alive",
 		"不用睡觉",
 		"业余画师",
-		"时区穿越者",
+		"时区跳跃者",
 		"猫猫爱好者",
 	]);
 
@@ -46,7 +46,7 @@ export default function Me() {
 				},
 				{
 					title: "Signature",
-					href: "https://blog.nyaw.xyz/minisign",
+					href: `https://${cfg.base_url}/minisign`,
 					onlyIcon: false,
 					icon: <div class="pointer-events-none i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />,
 				},
@@ -63,8 +63,8 @@ export default function Me() {
 					icon: <div class="i-ci:planet w-8 h-8 text-sprout-500" />,
 				},
 				{
-					title: "Monero",
-					href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
+					title: "Support",
+					href: `https://${cfg.base_url}/crypto`,
 					onlyIcon: false,
 					icon: <div class="i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />,
 				},
