@@ -121,14 +121,6 @@ export default defineConfig({
 					margin: "1.75em 0 .5em",
 					"font-size": "1.55em",
 				},
-				h3: {
-					margin: "1.5em 0 .5em",
-					"font-size": "1.375em",
-				},
-				h4: {
-					margin: "1em 0",
-					"font-size": "1.125em",
-				},
 			},
 		}),
 		presetWind(),
