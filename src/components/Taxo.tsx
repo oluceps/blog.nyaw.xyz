@@ -41,7 +41,7 @@ export default function Taxo() {
 		() =>
 			cache(async () => {
 				"use server";
-				let preprocessed = await raw;
+				const preprocessed = await raw;
 				const allTags = new Set(
 					preprocessed.reduce<string[]>((acc, item) => {
 						return item.tags ? acc.concat(item.tags) : acc;

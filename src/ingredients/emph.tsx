@@ -1,8 +1,4 @@
-import {
-	type JSXElement,
-	type ParentComponent,
-	type ParentProps,
-} from "solid-js";
+import type { JSXElement, ParentComponent, ParentProps } from "solid-js";
 
 import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";

@@ -5,25 +5,23 @@ import { docsData } from "solid:collection";
 import { useTaxoState } from "./PageState";
 import { twMerge } from "tailwind-merge";
 
-export const preprocessed =
-	Promise.all(docsData.map(async (i) => {
+export const preprocessed = Promise.all(
+	docsData.map(async (i) => {
 		// Convert date
 		const updatedItem = { ...i, date: new Date(i.date) };
 		const toComp = cfg.hideLevel;
-		const shouldInclude =
-			toComp < updatedItem.hideLevel && !updatedItem.draft;
+		const shouldInclude = toComp < updatedItem.hideLevel && !updatedItem.draft;
 		// @ts-expect-error missing types
 		if (import.meta.env.DEV) {
-			return updatedItem
+			return updatedItem;
 		}
 		return shouldInclude ? updatedItem : null;
-	})).then(res => res
-		.filter((i) => i !== null)
-		.sort((a, b) => (b.date > a.date ? 1 : -1))
-	)
+	}),
+).then((res) =>
+	res.filter((i) => i !== null).sort((a, b) => (b.date > a.date ? 1 : -1)),
+);
 
 export const Arti: Component = () => {
-
 	const ctx = createAsync(
 		() =>
 			cache(async () => {
@@ -44,13 +42,16 @@ export const Arti: Component = () => {
 					</div>
 				}
 			>
-				<Show when={ctx()
-					// ?.filter((n) => {
-					// 	if (!limit()) return true
-					// 	if (n.hideLevel > 9) return true
-					// 	return false
-					// })
-				}>
+				<Show
+					when={
+						ctx()
+						// ?.filter((n) => {
+						// 	if (!limit()) return true
+						// 	if (n.hideLevel > 9) return true
+						// 	return false
+						// })
+					}
+				>
 					{(data) => {
 						const dataArray = Array.from(data());
 						const getSeason = (d: Date) =>

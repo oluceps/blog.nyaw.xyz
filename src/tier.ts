@@ -14,5 +14,4 @@ const tier = async () => {
 	}
 };
 
-
 export default tier;

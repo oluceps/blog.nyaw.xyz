@@ -1,7 +1,7 @@
 import Online from "./online-indicator";
 import Reveal from "./rand-reveal";
 import cfg from "../constant";
-import { QuickLinks, QuickLinksProps } from "./quick-link";
+import { QuickLinks, type QuickLinksProps } from "./quick-link";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { createSignal, For } from "solid-js";
 
@@ -15,46 +15,62 @@ export default function Me() {
 		"猫猫爱好者",
 	]);
 
-	const doShuffle = () => setTimeout(() => {
-		setRanDesc(randDesc().reduce((shuffled, _, i) => {
-			const j = Math.floor(Math.random() * (i + 1));
-			[shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!];
-			return shuffled;
-		}, [...randDesc()]));
-	}, 300);
+	const doShuffle = () =>
+		setTimeout(() => {
+			setRanDesc(
+				randDesc().reduce(
+					(shuffled, _, i) => {
+						const j = Math.floor(Math.random() * (i + 1));
+						[shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!];
+						return shuffled;
+					},
+					[...randDesc()],
+				),
+			);
+		}, 300);
 
-	const [qlProps, _setqlProps] = createSignal<QuickLinksProps[]>((() => {
-		let a =
-			[
+	const [qlProps, _setqlProps] = createSignal<QuickLinksProps[]>(
+		(() => {
+			const a = [
 				{
 					title: "Matrix",
 					href: "https://matrix.to/#/@sec:nyaw.xyz",
 					onlyIcon: false,
-					icon: <div class="pointer-events-none i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />
+					icon: (
+						<div class="pointer-events-none i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />
+					),
 				},
 				{
 					title: "Mailbox",
 					href: "mailto:i@nyaw.xyz",
 					onlyIcon: false,
-					icon: <div class="pointer-events-none i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />,
+					icon: (
+						<div class="pointer-events-none i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />
+					),
 				},
 				{
 					title: "Telegram",
 					href: "https://t.me/Secpm_bot",
 					onlyIcon: false,
-					icon: < div class="pointer-events-none i-ci:paper-plane w-8 h-8 text-sprout-500" />,
+					icon: (
+						<div class="pointer-events-none i-ci:paper-plane w-8 h-8 text-sprout-500" />
+					),
 				},
 				{
 					title: "Signature",
 					href: `https://${cfg.base_url}/minisign`,
 					onlyIcon: false,
-					icon: <div class="pointer-events-none i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />,
+					icon: (
+						<div class="pointer-events-none i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />
+					),
 				},
 				{
 					title: "Pubkey",
 					href: "https://github.com/oluceps.keys",
 					onlyIcon: false,
-					icon: <div class="pointer-events-none i-material-symbols:key-outline w-8 h-8 text-sprout-500" />,
+					icon: (
+						<div class="pointer-events-none i-material-symbols:key-outline w-8 h-8 text-sprout-500" />
+					),
 				},
 				{
 					title: "DN42",
@@ -66,21 +82,29 @@ export default function Me() {
 					title: "Support",
 					href: `https://${cfg.base_url}/crypto`,
 					onlyIcon: false,
-					icon: <div class="i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />,
+					icon: (
+						<div class="i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
+					),
 				},
 				{
 					title: "Status",
 					href: "https://status.nyaw.xyz",
 					onlyIcon: false,
-					icon: <div class="i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />,
+					icon: (
+						<div class="i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />
+					),
 				},
 			];
-		return a.reduce((shuffled, _, i) => {
-			const j = Math.floor(Math.random() * (i + 1));
-			[shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!]; // must have
-			return shuffled;
-		}, [...a])
-	})().slice(0, 6))
+			return a.reduce(
+				(shuffled, _, i) => {
+					const j = Math.floor(Math.random() * (i + 1));
+					[shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!]; // must have
+					return shuffled;
+				},
+				[...a],
+			);
+		})().slice(0, 6),
+	);
 
 	return (
 		<>
@@ -131,7 +155,10 @@ export default function Me() {
 							<div class="text-zinc-500">BEng 4rd year</div>
 							<div class="text-zinc-500">UTC + 8?</div>
 							<div class="text-zinc-500">she / her</div>
-							<div class="text-zinc-500 select-none blur-md font-mono hover:blur-none transition-all" onMouseLeave={doShuffle}>
+							<div
+								class="text-zinc-500 select-none blur-md font-mono hover:blur-none transition-all"
+								onMouseLeave={doShuffle}
+							>
 								{randDesc()[0]}
 							</div>
 							<div class="text-zinc-400 not-prose mt-2 md:mt-4">
@@ -143,16 +170,14 @@ export default function Me() {
 
 				<div class="flex gap-3 transition-all justify-between duration-500 overflow-x-scroll sm:overflow-visible pb-3 sm:py-0">
 					<For each={qlProps()}>
-						{(i) =>
+						{(i) => (
 							<div class="flex-none hover:flex-1 transition-all duration-500 delay-200">
-								<QuickLinks
-									{...i}
-								/>
+								<QuickLinks {...i} />
 							</div>
-						}
+						)}
 					</For>
-				</div >
-			</div >
+				</div>
+			</div>
 		</>
 	);
 }

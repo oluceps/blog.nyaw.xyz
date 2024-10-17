@@ -96,7 +96,9 @@ const components = {
 		return <hr {...props} class="border-sprout-600" />;
 	},
 	pre: (props: ParentProps) => {
-		let [codeBlockRef, setCodeBlockRef] = createSignal<HTMLDivElement | undefined>();
+		const [codeBlockRef, setCodeBlockRef] = createSignal<
+			HTMLDivElement | undefined
+		>();
 		const [copied, setCopied] = createSignal(false);
 		const copyToClipboard = () => {
 			if (codeBlockRef()) {
@@ -124,18 +126,17 @@ const components = {
 					onClick={copyToClipboard}
 				>
 					<div
-						class={
-							twMerge("transition-all duration-400 group-hover:text-sprout-500",
-								copied() ? "group-hover:i-ci:check" : "group-hover:i-ci:copy")
-						}
+						class={twMerge(
+							"transition-all duration-400 group-hover:text-sprout-500",
+							copied() ? "group-hover:i-ci:check" : "group-hover:i-ci:copy",
+						)}
 					/>
 				</button>
 			</div>
 		);
 	},
 	response: (props: ParentProps) => {
-		return <span>{props.children
-		}</span>;
+		return <span>{props.children}</span>;
 	},
 	void: (props: ParentProps) => {
 		return <span>{props.children}</span>;
@@ -145,11 +146,7 @@ const components = {
 	},
 
 	QuickLinks: (props: QuickLinksProps) => (
-		<QuickLinks
-			{...props}
-		>
-			{props.children}
-		</QuickLinks>
+		<QuickLinks {...props}>{props.children}</QuickLinks>
 	),
 
 	Emph: (props: EmphProps) => <Emph type={props.type}>{props.children}</Emph>,

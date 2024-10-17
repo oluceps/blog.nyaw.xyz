@@ -102,7 +102,7 @@ export default defineConfig({
 				"code::after": {
 					content: "none",
 				},
-				'p code': {
+				"p code": {
 					"background-color": "#e4ecdb",
 					padding: "3px 2px 3px 2px",
 					color: "#182013",
@@ -124,6 +124,6 @@ export default defineConfig({
 			},
 		}),
 		presetWind(),
-		presetIcons()
+		presetIcons(),
 	],
 });
