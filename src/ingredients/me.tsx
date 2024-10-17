@@ -14,7 +14,7 @@ export default function Me() {
 	const [descIdx, setDescIdx] = createSignal(0);
 	const randDesc = shuffle([
 		"Epicureanism",
-		"Keeping Alive",
+		"Still Alive",
 		"不用睡觉",
 		"业余画师",
 		"跨时区乱蹦",
