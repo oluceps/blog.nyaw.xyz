@@ -4,16 +4,12 @@ import {
 	presetTypography,
 	presetUno,
 	transformerDirectives,
-	transformerCompileClass,
 	presetIcons,
+	presetWind,
 } from "unocss";
-import presetWind from "@unocss/preset-wind";
-import presetRemToPx from "@unocss/preset-rem-to-px";
-
-
 
 export default defineConfig({
-	transformers: [transformerCompileClass(), transformerDirectives()],
+	transformers: [transformerDirectives()],
 	shortcuts: {
 		btn: "py-2 px-4 font-semibold rounded-lg shadow-md",
 	},
@@ -95,7 +91,6 @@ export default defineConfig({
 		},
 	},
 	presets: [
-		// presetAttributify(), // required when using attributify mode
 		presetUno(), // required
 		presetTypography({
 			cssExtend: {
@@ -137,7 +132,6 @@ export default defineConfig({
 			},
 		}),
 		presetWind(),
-		presetRemToPx(),
 		presetIcons()
 	],
 });
