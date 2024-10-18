@@ -1,68 +1,69 @@
-import ky from "ky";
+import ky, { KyInstance } from "ky";
 import { createEffect, createSignal, For, Show } from "solid-js";
 import { ReactiveMap } from "@solid-primitives/map";
 import { twMerge } from "tailwind-merge";
+import cfg from "../constant"
+
+export type PrInfo = {
+	title: string
+	state: string
+	status: number
+	user: { login: string }
+	merge_commit_sha: string
+}
+export const getTitle = async (pr: number, api: KyInstance): Promise<Partial<PrInfo>> => {
+	try {
+		const response = await api.get(`pulls/${pr}`).json<any>();
+
+		const filteredResponse: Partial<PrInfo> = {
+			title: response.title,
+			state: response.state,
+			status: response.status,
+			user: { login: response.user.login },
+			merge_commit_sha: response.merge_commit_sha,
+		};
+
+		return filteredResponse;
+	} catch (e) {
+		console.log(e);
+		return {};
+	}
+};
+
+export const isContain = async (
+	branch: string,
+	commit: string,
+	api: KyInstance
+): Promise<boolean> => {
+	try {
+		const { status } = await api
+			.get(`compare/${branch}...${commit}`)
+			.json<any>();
+		return status === "identical" || status === "behind";
+	} catch (error) {
+		// @ts-ignore
+		if (error.response?.status === 404) {
+			return false;
+		}
+		throw error;
+	}
+};
 
 const Tracker = () => {
-	const [tokenText, setTokenText] = createSignal("");
-
-	const getHeaders = () => {
-		return tokenText() ? { Authorization: `token ${tokenText()}` } : {};
-	};
-
 	const api = ky.create({
 		prefixUrl: "https://api.github.com/repos/nixos/nixpkgs/",
-		headers: getHeaders(),
 	});
-
-	type PRTitle = {
-		title: string;
-		statusCode: number;
-	};
-
-	const getPRTitle = async (pr: number): Promise<PRTitle> => {
-		try {
-			const { title } = await api.get(`pulls/${pr}`).json<any>();
-			return { title, statusCode: 200 }; // Assuming status 200 for simplicity
-		} catch (e) {
-			console.log(e);
-			return { title: "NotFound", statusCode: 404 };
-		}
-	};
-
-	const getMergeCommit = async (pr: number): Promise<string> => {
-		const { merge_commit_sha } = await api.get(`pulls/${pr}`).json<any>();
-		return merge_commit_sha;
-	};
-
-	const isContain = async (
-		branch: string,
-		commit: string,
-	): Promise<boolean> => {
-		try {
-			const { status } = await api
-				.get(`compare/${branch}...${commit}`)
-				.json<any>();
-			return status === "identical" || status === "behind";
-		} catch (error) {
-			// @ts-ignore
-			if (error.response?.status === 404) {
-				return false;
-			}
-			throw error;
-		}
-	};
 
 	// ==========================
 
+
+	const [tokenText, setTokenText] = createSignal("");
 	const [btnStatus, setBtnStatus] = createSignal(false);
 	const [loading, setLoading] = createSignal(false);
 	const [qnum, setQnum] = createSignal<number>();
-	const [queryStatus, setQueryStatus] = createSignal(["", true]);
-
-	createEffect(() => {
-		console.log(qnum());
-	});
+	const [queryStatus, setQueryStatus] = createSignal<Partial<{
+		title: string, state: string, user: string, how: "notfound" | "good" | "bad"
+	}>>();
 
 	const branchStatus = new ReactiveMap<string, boolean>([
 		["staging-next", false],
@@ -72,63 +73,54 @@ const Tracker = () => {
 		["nixos-unstable", false],
 	]);
 
-	const resetBranchStatus = () =>
+	const resetBranchStatus = () => {
 		branchStatus.forEach((_, v) => {
 			branchStatus.set(v, false);
 		});
-
-	const handlePR = async (pr: number) => {
-		setBtnStatus(false);
-		setLoading(true);
-		resetBranchStatus();
-
-		const tokenElement = document.querySelector<HTMLInputElement>("#token")!;
-
-		const titleStatMap = await getPRTitle(pr);
-
-		const ready = () => {
-			setBtnStatus(true);
-			setLoading(false);
-		};
-
-		switch (titleStatMap.statusCode) {
-			case 404:
-				setQueryStatus(["PR not found", false]);
-				ready();
-				return;
-			case 403:
-				setQueryStatus(["Rate limit exceeded -- Please set token", false]);
-				ready();
-				return;
-			case 401:
-				setQueryStatus(["Unauthorized -- Please set correct token", false]);
-				tokenElement.focus();
-				ready();
-				return;
-			case 200:
-				setQueryStatus([titleStatMap.title, true]);
-		}
-
-		const checkBranch = async (branch: string) => {
-			const merged = await getMergeCommit(pr).then((commit) =>
-				isContain(branch, commit),
-			);
-			if (merged) branchStatus.set(branch, true);
-		};
-		try {
-			await Promise.all(Array.from(branchStatus.keys()).map(checkBranch));
-			console.log("inhandle", branchStatus);
-		} catch (e) {
-			console.log(e);
-		}
-
-		ready();
 	};
-
 	createEffect(() => {
 		setBtnStatus(qnum() ? true : false);
 	});
 
+	const chkLocal = async (bs: string[], pr: Partial<PrInfo>) => {
+		setQueryStatus({
+			title: pr.title!,
+			state: pr.state!,
+			user: pr.user?.login!,
+			how: "good"
+		},)
+		setLoading(true)
+		await Promise.all(bs.map(async b => {
+			await isContain(b, pr.merge_commit_sha!, api) ?
+				(() => {
+					branchStatus.set(b, true)
+				})() : null;
+		}))
+		setLoading(false)
+	};
+
+	const chkAllBranch = async (n: number) => {
+		setBtnStatus(false);
+		try {
+			const r = await getTitle(n, api);
+
+			if (!r.title) {
+				setQueryStatus({ title: "Not Found", how: "notfound" })
+				throw new Error("get pr title error, NotFound");
+			}
+			if (!r.merge_commit_sha) {
+				setQueryStatus({ title: "Bad body", how: "bad" })
+				throw new Error("get merge commit sha error")
+			};
+
+			const prInfo = r as Partial<PrInfo>;
+
+			return await chkLocal(Array.from(branchStatus.keys()), prInfo); // checked
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
 	return (
 		<>
 			<div class="grid md:grid-cols-2 w-full gap-3">
@@ -175,28 +167,36 @@ const Tracker = () => {
 							onInput={(e) => setTokenText(e.data!)}
 						/>
 					</label>
-					<button
-						class="btn glass"
-						disabled={!btnStatus()}
-						onClick={async () => await handlePR(qnum()!)}
-					>
-						<Show when={loading()}>
-							<span class="loading loading-spinner"></span>
-						</Show>
-						Query
-					</button>
-					<Show when={queryStatus()[0] != ""}>
+					<div class="grid grid-cols-2 place-items-ceneter w-3/5">
+
+						<div class="flex justify-center items-center">
+							<span class={twMerge("i-svg-spinners:wind-toy w-full h-8 text-sprout-400",
+								loading() ? "opacity-100" : "opacity-0")}></span>
+						</div>
+						<button
+							class="btn glass"
+							disabled={!btnStatus()}
+							onClick={async () => {
+								resetBranchStatus()
+								await chkAllBranch(qnum()!);
+								setBtnStatus(true);
+							}}
+						>
+							Query
+						</button>
+					</div>
+					<Show when={queryStatus()?.how}>
 						<div
-							class={`p-2 text-zink-800 rounded-md shadow-md opacity-85 ${queryStatus()[1] ? "bg-sprout-200" : "bg-red-200"}`}
+							class={`p-2 text-zink-800 rounded-md shadow-md opacity-85 ${queryStatus()?.how == "good" ? "bg-sprout-200" : "bg-red-200"}`}
 							onClick={() =>
-								queryStatus()[0] != ""
+								queryStatus()?.how == "good"
 									? window.open(
-											"https://github.com/nixos/nixpkgs/pull/" + qnum(),
-										)
+										"https://github.com/nixos/nixpkgs/pull/" + qnum(),
+									)
 									: ""
 							}
 						>
-							{queryStatus()}
+							{queryStatus()?.how ? queryStatus()?.title : null}
 						</div>
 					</Show>
 				</div>

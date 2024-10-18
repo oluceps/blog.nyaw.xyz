@@ -1,5 +1,7 @@
+// @ts-ignore
+const base_url = import.meta.env.DEV ? "http://localhost:3000" : "https://blog.nyaw.xyz";
 export default {
-	base_url: "https://blog.nyaw.xyz",
+	base_url,
 	title: "紙",
 	obj_store: "https://pub-54793cba1fde4e8aaa0e7872d8eeb3d2.r2.dev",
 	author: "Secirian",
