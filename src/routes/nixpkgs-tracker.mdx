@@ -12,10 +12,31 @@ title: Nixpkgs Pull Request Tracker
 
 import Cpn from "../ingredients/nixpkgs-tracker"
 
-This page may style corrupting bcz I switched from twcss to unocss and waitting for Onu UI component lib. Gomenne
+<div class="h-[45vh]">
+  <Cpn />
+</div>
 
-<Cpn />
+You could also use RESTful API:
 
-<div class="p-10"/>
+```bash
+curl https://blog.nyaw.xyz/api/pr-stat{?pr,branch*}  # ?pr&branch=master&branch=nixos-unstable
+```
+
+Will return:
+
+```json
+{
+  "title": "insync: 3.9.1.60010 -> 3.9.3.60019",
+  "state": "closed",
+  "user": "hellwolf",
+  "merge": {
+    "staging-next": true,
+    "master": true,
+    "nixos-unstable-small": true,
+    "nixpkgs-unstable": true,
+    "nixos-unstable": true
+  }
+}
+```
 
 Based on ocfox' [project](https://github.com/ocfox/nixpkgs-tracker) Thanks~

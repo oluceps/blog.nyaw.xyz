@@ -50,9 +50,6 @@ export const isContain = async (
 };
 
 const Tracker = () => {
-	const api = ky.create({
-		prefixUrl: "https://api.github.com/repos/nixos/nixpkgs/",
-	});
 
 	// ==========================
 
@@ -64,6 +61,11 @@ const Tracker = () => {
 	const [queryStatus, setQueryStatus] = createSignal<Partial<{
 		title: string, state: string, user: string, how: "notfound" | "good" | "bad"
 	}>>();
+
+	const api = ky.create({
+		prefixUrl: "https://api.github.com/repos/nixos/nixpkgs/",
+		headers: tokenText() ? { Authorization: `token ${tokenText()}` } : {},
+	});
 
 	const branchStatus = new ReactiveMap<string, boolean>([
 		["staging-next", false],
@@ -123,71 +125,40 @@ const Tracker = () => {
 	};
 	return (
 		<>
-			<div class="grid md:grid-cols-2 w-full gap-3">
-				<div class="flex flex-col w-full justify-center items-center space-y-4 md:space-y-2">
-					<label class="input input-bordered flex items-center gap-2">
+			<div class="grid md:grid-cols-2 gap-3 place-items-start">
+				<div class="flex flex-col w-full justify-center items-start space-y-4 md:space-y-2">
 						<input
 							type="text"
-							class="grow"
+							class="mx-auto p-2 border"
 							placeholder="PR Number"
 							onBeforeInput={(e) => setQnum(Number.parseInt(e.target.value))}
 							onInput={(e) => setQnum(Number.parseInt(e.target.value))}
 						/>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 16 16"
-							fill="currentColor"
-							class="h-4 w-4 opacity-70"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-								clip-rule="evenodd"
-							/>
-						</svg>
-					</label>
-
-					<label class="input input-bordered flex items-center gap-2">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 16 16"
-							fill="currentColor"
-							class="h-4 w-4 opacity-70"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-								clip-rule="evenodd"
-							/>
-						</svg>
 						<input
 							type="password"
-							class="grow token"
+							class="mx-auto p-2 border"
 							placeholder="API Token (Optional)"
 							onInput={(e) => setTokenText(e.data!)}
 						/>
-					</label>
-					<div class="grid grid-cols-2 place-items-ceneter w-3/5">
+					<button
+						class="btn glass mx-auto"
+						disabled={!btnStatus()}
+						onClick={async () => {
+							resetBranchStatus()
+							await chkAllBranch(qnum()!);
+							setBtnStatus(true);
+						}}
+					>
+						Query
+					</button>
 
-						<div class="flex justify-center items-center">
-							<span class={twMerge("i-svg-spinners:wind-toy w-full h-8 text-sprout-400",
-								loading() ? "opacity-100" : "opacity-0")}></span>
-						</div>
-						<button
-							class="btn glass"
-							disabled={!btnStatus()}
-							onClick={async () => {
-								resetBranchStatus()
-								await chkAllBranch(qnum()!);
-								setBtnStatus(true);
-							}}
-						>
-							Query
-						</button>
-					</div>
-					<Show when={queryStatus()?.how}>
+					<Show when={!loading()} fallback={<div class="i-svg-spinners:wind-toy w-full h-8 text-sprout-400" />}>
 						<div
-							class={`p-2 text-zink-800 rounded-md shadow-md opacity-85 ${queryStatus()?.how == "good" ? "bg-sprout-200" : "bg-red-200"}`}
+							class={twMerge(
+								"h-full p-2 text-zink-800 rounded-md shadow-md opacity-85",
+								queryStatus()?.how == "good" ? "bg-sprout-200" : "bg-red-200",
+								queryStatus()?.how ? "opacity-100" : "opacity-0"
+							)}
 							onClick={() =>
 								queryStatus()?.how == "good"
 									? window.open(
@@ -196,16 +167,18 @@ const Tracker = () => {
 									: ""
 							}
 						>
-							{queryStatus()?.how ? queryStatus()?.title : null}
+							{queryStatus()?.how == "good" ? `${queryStatus()?.title}\nfrom ${queryStatus()?.user}\n${queryStatus()?.state}` :
+								queryStatus()?.how == "notfound" ? "Pull Req Not Found" : null}
 						</div>
 					</Show>
 				</div>
-				<div class="flex flex-col justify-center items-center">
+
+				<div class="flex flex-col justify-center items-start">
 					<For each={Array.from(branchStatus)}>
 						{(k, _) => {
 							return (
 								<>
-									<div class="flex items-center">
+									<div class="flex items-start h-8">
 										<div class={k[1] ? `text-sprout-400` : `text-slate-300`}>
 											{k}
 										</div>
@@ -215,7 +188,7 @@ const Tracker = () => {
 							);
 						}}
 					</For>
-				</div>
+				</div >
 			</div>
 		</>
 	);
