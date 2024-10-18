@@ -1,6 +1,6 @@
 ---
 date: '2022-09-05T16:58:43.000Z'
-draft: true
+draft: false
 title: 低成本硬件密钥解决方案
 tags:
 - 硬件密钥
@@ -9,10 +9,11 @@ categories:
 - 记录
 ---
 
-canokey
-https://github.com/canokeys/canokey-nrf52
+canokey出了一个nrf52的支持，不过作正经用途还是不能用这个，安全性自然也比不上商业产品。
 
-https://github.com/adafruit/Adafruit_nRF52_Bootloader
+[项目链接](https://github.com/canokeys/canokey-nrf52)
+
+[bootloader](https://github.com/adafruit/Adafruit_nRF52_Bootloader)
 
 ```nix
 with import <nixpkgs> { };
@@ -52,15 +53,16 @@ pkgs.stdenv.mkDerivation {
 }
 ```
 
-https://www.nordicsemi.com/Products/Development-software/nRF5-SDK/Download#infotabs
+[nrf5_sdk](https://www.nordicsemi.com/Products/Development-software/nRF5-SDK/Download#infotabs)
 
-nrf5_sdk
 
 ![Pasted image 20221130221923.png](20221130221923.png)  
 ![Pasted image 20221130221942.png](20221130221942.png)  
 ![Pasted image 20221130221950.png](20221130221950.png)  
-= Click on the ‘+’ next to each download you want, and we’ll .zip them into one archive for you.  
+
++ Click on the ‘+’ next to each download you want, and we’ll .zip them into one archive for you.  
 unzip to `canokey-nrf52/nrf_sdk`  
+
 ![Pasted image 20221130222344.png](20221130222344.png)
 
 ```
@@ -101,3 +103,8 @@ nrfutil dfu usb-serial --package=canokey_signed.zip -p /dev/ttyACM0
 ```
 ./deploy.py --board=nrf52840_dongle_dfu --programmer=nordicdfu --no-app --clear-storage
 ```
+
+deploy complete.
+
+
+<Emph type="warn">之前刷过OpenSK之类其它软件的可能需要使用调试器清除全部缓存，再重新刷bootloader进行全部步骤。不然canokey刷入后初始化会失败。</Emph>
