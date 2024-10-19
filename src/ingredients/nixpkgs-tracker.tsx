@@ -155,7 +155,7 @@ const Tracker = () => {
 					<Show when={!loading()} fallback={<div class="i-svg-spinners:wind-toy w-full h-8 text-sprout-400" />}>
 						<div
 							class={twMerge(
-								"h-full p-2 text-zink-800 rounded-md shadow-md opacity-85",
+								"h-full p-2 text-zink-800 rounded-md shadow-md opacity-85 w-full",
 								queryStatus()?.how == "good" ? "bg-sprout-200" : "bg-red-200",
 								queryStatus()?.how ? "opacity-100" : "opacity-0"
 							)}
@@ -173,7 +173,7 @@ const Tracker = () => {
 					</Show>
 				</div>
 
-				<div class="flex flex-col justify-center items-start">
+				<div class="flex flex-col justify-center items-center mx-auto">
 					<For each={Array.from(branchStatus)}>
 						{(k, _) => {
 							return (
