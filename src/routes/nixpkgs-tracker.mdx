@@ -19,7 +19,8 @@ import Cpn from "../ingredients/nixpkgs-tracker"
 You could also use RESTful API:
 
 ```bash
-curl https://blog.nyaw.xyz/api/pr-stat{?pr,branch*}  # ?pr&branch=master&branch=nixos-unstable
+# ...?pr=123&branch=master&branch=nixos-unstable
+curl https://blog.nyaw.xyz/api/pr-stat{?pr,branch*}
 ```
 
 Will return:

@@ -127,19 +127,19 @@ const Tracker = () => {
 		<>
 			<div class="grid md:grid-cols-2 gap-3 place-items-start">
 				<div class="flex flex-col w-full justify-center items-start space-y-4 md:space-y-2">
-						<input
-							type="text"
-							class="mx-auto p-2 border"
-							placeholder="PR Number"
-							onBeforeInput={(e) => setQnum(Number.parseInt(e.target.value))}
-							onInput={(e) => setQnum(Number.parseInt(e.target.value))}
-						/>
-						<input
-							type="password"
-							class="mx-auto p-2 border"
-							placeholder="API Token (Optional)"
-							onInput={(e) => setTokenText(e.data!)}
-						/>
+					<input
+						type="text"
+						class="mx-auto p-2 border"
+						placeholder="PR Number"
+						onBeforeInput={(e) => setQnum(Number.parseInt(e.target.value))}
+						onInput={(e) => setQnum(Number.parseInt(e.target.value))}
+					/>
+					<input
+						type="password"
+						class="mx-auto p-2 border"
+						placeholder="API Token (Optional)"
+						onInput={(e) => setTokenText(e.data!)}
+					/>
 					<button
 						class="btn glass mx-auto"
 						disabled={!btnStatus()}
@@ -167,7 +167,7 @@ const Tracker = () => {
 									: ""
 							}
 						>
-							{queryStatus()?.how == "good" ? `${queryStatus()?.title}\nfrom ${queryStatus()?.user}\n${queryStatus()?.state}` :
+							{queryStatus()?.how == "good" ? `${queryStatus()?.title}\nfrom ${queryStatus()?.user}\n | ${(queryStatus()?.state)?.toUpperCase}` :
 								queryStatus()?.how == "notfound" ? "Pull Req Not Found" : null}
 						</div>
 					</Show>
