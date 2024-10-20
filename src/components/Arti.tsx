@@ -4,6 +4,7 @@ import cfg from "../constant";
 import { docsData } from "solid:collection";
 import { useTaxoState } from "./PageState";
 import { twMerge } from "tailwind-merge";
+import Spinner from "./Spinner";
 
 export const preprocessed = Promise.all(
 	docsData.map(async (i) => {
@@ -37,9 +38,7 @@ export const Arti: Component = () => {
 		<>
 			<Suspense
 				fallback={
-					<div class="flex flex-col h-full items-center justify-center grow w-full">
-						<div class="i-svg-spinners-blocks-shuffle-3 text-sprout-300 w-6 h-6" />
-					</div>
+					<Spinner />
 				}
 			>
 				<Show

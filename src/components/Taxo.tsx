@@ -12,6 +12,7 @@ import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { useTaxoState } from "./PageState";
 import { isIn } from "~/lib/fn";
 import { preprocessed as raw } from "./Arti";
+import Spinner from "./Spinner";
 
 enum Bi {
 	tag = 0,
@@ -105,7 +106,7 @@ export default function Taxo() {
 							const a = Array.from(outputMap).find((i) => i[0].includes(t))!;
 							if (a[1] == i.title) {
 								dag.set(a[0].join(" / "), [i]);
-								console.log(a[0].join(" / "), i);
+								// console.log(a[0].join(" / "), i);
 							}
 						} else {
 							if (
@@ -144,7 +145,7 @@ export default function Taxo() {
 	return (
 		<Suspense
 			fallback={
-				<div class="i-svg-spinners-blocks-shuffle-3 text-sprout-300 grow w-6 h-6" />
+				<Spinner />
 			}
 		>
 			<Show when={rawData()}>

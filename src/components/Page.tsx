@@ -4,6 +4,7 @@ import cfg from "../constant";
 import { cache, createAsync, useLocation } from "@solidjs/router";
 import { TableOfContents } from "./Toc";
 import { docsData } from "solid:collection";
+import Spinner from "./Spinner";
 
 function formatDate(date: Date | undefined) {
 	if (date === undefined) {
@@ -34,9 +35,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 	return (
 		<Suspense
 			fallback={
-				<div class="flex flex-col h-full items-center justify-center grow w-full">
-					<div class="i-svg-spinners-blocks-shuffle-3 text-sprout-300 w-6 h-6" />
-				</div>
+				<Spinner />
 			}
 		>
 			<Show when={ctx()}>
