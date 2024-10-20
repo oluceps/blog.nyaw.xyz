@@ -141,11 +141,10 @@ export default function Me() {
 						<div class="text-stone-500 text-3xl md:text-2xl font-bold">
 							<Reveal>Secirian</Reveal>
 						</div>
-						<div class="pointer-events-none mx-auto text-[15px] sm:text-[13px] md:ml-px flex flex-col gap-2 sm:gap-1">
-							<div class="text-zinc-500">ZHO / ENG / CDO / JPN</div>
-							<div class="text-zinc-500">BEng 4rd year</div>
-							<div class="text-zinc-500">UTC + 8?</div>
-							<div class="text-zinc-500">she / her</div>
+						<div class="mx-auto text-[15px] sm:text-[13px] md:ml-px flex flex-col gap-2 sm:gap-1">
+							<For each={["ZHO / ENG / CDO / JPN", "BEng 4rd year", "UTC + 8?", "she / her"]}>
+								{i => <div class="pointer-events-none text-zinc-500">{i}</div>}
+							</For>
 							<div
 								id="shuffle-tag"
 								class="text-zinc-500 pb-1 select-none blur-md font-mono hover:blur-none transition-all"
@@ -153,7 +152,7 @@ export default function Me() {
 							>
 								{randDesc[descIdx()]}
 							</div>
-							<div class="text-zinc-400 not-prose">
+							<div class="pointer-events-none text-zinc-400 not-prose">
 								廿一世紀 末日未接近時出生
 							</div>
 						</div>
@@ -169,7 +168,7 @@ export default function Me() {
 						)}
 					</For>
 				</div>
-			</div>
+			</div >
 		</>
 	);
 }
