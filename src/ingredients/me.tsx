@@ -141,7 +141,7 @@ export default function Me() {
 						<div class="text-stone-500 text-3xl md:text-2xl font-bold">
 							<Reveal>Secirian</Reveal>
 						</div>
-						<div class="mx-auto text-[15px] sm:text-[13px] md:ml-px flex flex-col gap-2 sm:gap-1">
+						<div class="pointer-events-none mx-auto text-[15px] sm:text-[13px] md:ml-px flex flex-col gap-2 sm:gap-1">
 							<div class="text-zinc-500">ZHO / ENG / CDO / JPN</div>
 							<div class="text-zinc-500">BEng 4rd year</div>
 							<div class="text-zinc-500">UTC + 8?</div>
