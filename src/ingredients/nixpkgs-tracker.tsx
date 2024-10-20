@@ -167,7 +167,7 @@ const Tracker = () => {
 									: ""
 							}
 						>
-							{queryStatus()?.how == "good" ? `${queryStatus()?.title}\nfrom ${queryStatus()?.user}\n | ${(queryStatus()?.state)?.toUpperCase}` :
+							{queryStatus()?.how == "good" ? `${queryStatus()?.title}\nfrom ${queryStatus()?.user}\n | ${(queryStatus()?.state)?.toUpperCase()}` :
 								queryStatus()?.how == "notfound" ? "Pull Req Not Found" : null}
 						</div>
 					</Show>
