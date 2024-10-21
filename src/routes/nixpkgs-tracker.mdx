@@ -40,4 +40,71 @@ Will return:
 }
 ```
 
+## OpenAPI Spec
+
+```yaml
+openapi: 3.0.3
+info:
+  title: PR Status API
+  version: 1.0.0
+  description: API to fetch the status of a pull request for different branches
+
+paths:
+  /api/pr-stat:
+    get:
+      summary: Get PR Status
+      description: Retrieve the status of a pull request across multiple branches
+      parameters:
+        - name: pr
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: The pull request number
+        - name: branch
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+          description: One or more branches to check the PR status against
+      responses:
+        '200':
+          description: Successful response with the PR status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: The title of the pull request
+                    example: "insync: 3.9.1.60010 -> 3.9.3.60019"
+                  state:
+                    type: string
+                    description: The state of the pull request (e.g., open, closed, merged)
+                    example: "closed"
+                  user:
+                    type: string
+                    description: The username of the person who created the pull request
+                    example: "hellwolf"
+                  merge:
+                    type: object
+                    description: Merge status for various branches
+                    additionalProperties:
+                      type: boolean
+                    example:
+                      staging-next: true
+                      master: true
+                      nixos-unstable-small: true
+                      nixpkgs-unstable: true
+                      nixos-unstable: true
+        '400':
+          description: Invalid request parameters
+        '500':
+          description: NotFound or sth else. Describe in body
+
+```
+
 Based on ocfox' [project](https://github.com/ocfox/nixpkgs-tracker) Thanks~
