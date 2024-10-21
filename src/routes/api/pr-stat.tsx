@@ -88,27 +88,54 @@ export async function GET(e: APIEvent) {
       "nixos-unstable"
     ]
 
+  class NotFoundError extends Error {
+    statusCode: number;
+    constructor(message: string) {
+      super(message);
+      this.name = "NotFoundError";
+      this.statusCode = 404;
+    }
+  }
 
   const chkBranch = async () => {
     try {
       const r = await getTitle(realPrN, api);
 
-      if (!r.title) throw new Error("get pr title error");
-      if (!r.merge_commit_sha) throw new Error("get merge commit sha error");
+      if (!r.title) {
+        throw new NotFoundError("PR title not found");
+      }
+      if (!r.merge_commit_sha) {
+        throw new Error("Merge commit SHA not found");
+      }
 
       const pr = r as Partial<PrInfo>;
 
-      if (userParamsRaw.branch.length == 0) { // main branches 
-        return await chk(branches, pr); // checked
+      if (userParamsRaw.branch.length === 0) {
+        // Main branches
+        return await chk(branches, pr);
       } else {
         return await chk(userParamsRaw.branch, pr);
       }
     } catch (error) {
       console.error(error);
-      throw error;
+      throw error; // Re-throw the error to be handled in the caller
     }
   };
 
+  const res = async () => {
+    try {
+      const a = await chkBranch();
+      console.log(a)
+      return a;
+    } catch (e: any) {
+      if (e instanceof NotFoundError) {
+        return { status: e.statusCode, message: e.message };
+      } else {
+        return { status: 500, message: "Internal Server Error" };
+      }
+    }
+  };
 
-  return await chkBranch()
+  // Call the function and handle the response
+  return await res();
 }

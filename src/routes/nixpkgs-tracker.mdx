@@ -23,7 +23,7 @@ You could also use RESTful API:
 curl https://blog.nyaw.xyz/api/pr-stat{?pr,branch*}
 ```
 
-Will return:
+Will return like this:
 
 ```json
 {
@@ -102,9 +102,12 @@ paths:
                       nixos-unstable: true
         '400':
           description: Invalid request parameters
+        '404':
+          description: PR not found
         '500':
-          description: NotFound or sth else. Describe in body
-
+          description: Sth else. Describe in body, maybe
 ```
+
+---
 
 Based on ocfox' [project](https://github.com/ocfox/nixpkgs-tracker) Thanks~
