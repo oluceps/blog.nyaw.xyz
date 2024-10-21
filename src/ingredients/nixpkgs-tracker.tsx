@@ -11,6 +11,29 @@ export type PrInfo = {
 	user: { login: string }
 	merge_commit_sha: string
 }
+
+const validPrNum = (raw: string) => {
+	return !isNaN(Number(raw)) && Number(raw) > 0
+}
+export const buildPr = (pr: string) => {
+	try {
+		const url = new URL(pr);
+		if (url.protocol === 'https:') {
+			const assumePrN = url.pathname.split('/').slice(-1)[0];
+			if (validPrNum(assumePrN!)) return Number(assumePrN)
+		}
+	} catch (e) {
+	}
+	if (pr.startsWith('#')) {
+		const assume = pr.slice(1);
+		if (validPrNum(assume))
+			return Number(pr);
+	}
+	if (validPrNum(pr)) {
+		return Number(pr);
+	}
+};
+
 export const getTitle = async (pr: number, api: KyInstance): Promise<Partial<PrInfo>> => {
 	try {
 		const response = await api.get(`pulls/${pr}`).json<any>();
@@ -130,9 +153,9 @@ const Tracker = () => {
 					<input
 						type="text"
 						class="mx-auto p-2 border"
-						placeholder="PR Number"
-						onBeforeInput={(e) => setQnum(Number.parseInt(e.target.value))}
-						onInput={(e) => setQnum(Number.parseInt(e.target.value))}
+						placeholder="PR Link (or number)"
+						onBeforeInput={(e) => !buildPr(e.target.value)}
+						onInput={(e) => setQnum(buildPr(e.target.value))}
 					/>
 					<input
 						type="password"

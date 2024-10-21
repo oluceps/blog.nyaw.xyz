@@ -13,33 +13,13 @@
   }
 }
 */
-import ky, { KyInstance } from "ky";
+import ky from "ky";
 import type { APIEvent } from "@solidjs/start/server";
-import { getTitle, isContain, PrInfo } from "~/ingredients/nixpkgs-tracker";
+import { buildPr, getTitle, isContain, PrInfo } from "~/ingredients/nixpkgs-tracker";
 
 
 export async function GET(e: APIEvent) {
-  const validPrNum = (raw: string) => {
-    return !isNaN(Number(raw)) && Number(raw) > 0
-  }
-  const buildPr = (pr: string) => {
-    try {
-      const url = new URL(pr);
-      if (url.protocol === 'https:') {
-        const assumePrN = url.pathname.split('/').slice(-1)[0];
-        if (validPrNum(assumePrN!)) return Number(assumePrN)
-      }
-    } catch (e) {
-    }
-    if (pr.startsWith('#')) {
-      const assume = pr.slice(1);
-      if (validPrNum(assume))
-        return Number(pr);
-    }
-    if (validPrNum(pr)) {
-      return Number(pr);
-    }
-  };
+
 
   const url = new URL(e.request.url)
   const params = new URLSearchParams(url.search)
