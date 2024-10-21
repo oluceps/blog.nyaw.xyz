@@ -19,8 +19,8 @@ import Cpn from "../ingredients/nixpkgs-tracker"
 You could also use RESTful API:
 
 ```bash
-# ...?pr=123&branch=master&branch=nixos-unstable
-curl https://blog.nyaw.xyz/api/pr-stat{?pr,branch*}
+# ...?pr=123&branch=master&branch=nixos-unstable&token=xxxxyyyy
+curl https://blog.nyaw.xyz/api/pr-stat{?pr,branch*,token}
 ```
 
 Will return like this:
@@ -61,14 +61,20 @@ paths:
           schema:
             type: integer
           description: The pull request number
+        - name: token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: API token that used in server query (to github)
         - name: branch
           in: query
-          required: true
+          required: false
           schema:
             type: array
             items:
               type: string
-          description: One or more branches to check the PR status against
+          description: Branches to check the PR status against. Leave empty to query common branches
       responses:
         '200':
           description: Successful response with the PR status
