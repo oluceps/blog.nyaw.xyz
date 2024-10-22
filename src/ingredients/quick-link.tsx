@@ -34,7 +34,7 @@ export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => (
 						"bg-gradient-to-br from-sprout-400 to-sprout-700 bg-clip-text",
 						"pointer-events-none select-none",
 						"items-center no-underline font-semibold text-lg md:text-normal text-transparent",
-						"group-hover:w-24 flex justify-center transition-all delay-600",
+						"group-hover:w-24 flex justify-center transition-all delay-300",
 					)}
 				>
 					{props.title}
