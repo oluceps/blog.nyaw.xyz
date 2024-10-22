@@ -119,7 +119,7 @@ export default function Me() {
 				<Title>{`关于 - ${cfg.title}`}</Title>
 			</MetaProvider>
 			<div class="h-full grow flex flex-col justify-center w-11/12 md:w-3/5 xl:w-2/5">
-				<div class="md:flex py-16 md:py-0 bg-sprout-50 rounded-xl my-4 items-center justify-left xl:justify-center xl:gap-8 shadow-lg">
+				<div class="md:flex py-16 md:py-0 bg-gradient-to-bl from-sprout-50 to-sprout-100 rounded-xl my-4 items-center justify-left xl:justify-center xl:gap-8 shadow-lg">
 					<div class="flex md:flex-col items-center justify-center">
 						<div class="relative my-8 md:mx-20 md:my-16 xl:my-24 xl:mr-28">
 							<img
