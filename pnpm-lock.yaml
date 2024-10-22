@@ -102,6 +102,9 @@ importers:
       lenis-solid:
         specifier: ^1.0.4
         version: 1.0.4
+      rehype-abcjs:
+        specifier: link:../rehype-abcjs
+        version: link:../rehype-abcjs
       rehype-autolink-headings:
         specifier: ^7.1.0
         version: 7.1.0
