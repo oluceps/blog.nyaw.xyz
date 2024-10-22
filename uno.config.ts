@@ -111,7 +111,7 @@ export default defineConfig({
 					"vertical-align": "text-top",
 				},
 				a: {
-					"text-decoration-color": "#6f9052",
+					"text-decoration-color": "#b5caa0",
 				},
 				h1: {
 					margin: "1rem 0", // h1 is always at the top of the page, so only margin 1 * root font size

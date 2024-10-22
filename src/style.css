@@ -1,8 +1,5 @@
 @import "./styles/transformer.css";
 
-a {
-	@apply underline-offset-4;
-}
 
 @layer base {
 	img {
