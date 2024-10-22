@@ -9,8 +9,7 @@ import remarkMath from "remark-math";
 
 // @ts-expect-error missing types
 import rehypeTypst from "@myriaddreamin/rehype-typst";
-// @ts-expect-error missing types
-import remarkABCJS from "remark-abcjs";
+import rehypeABCJS from "rehype-abcjs";
 
 import {
 	transformerNotationDiff,
@@ -100,7 +99,7 @@ export default defineConfig({
 						},
 					],
 				],
-				remarkPlugins: [remarkGfm, remarkMath, remarkABCJS, remarkFrontmatter],
+				remarkPlugins: [remarkGfm, remarkMath, rehypeABCJS, remarkFrontmatter],
 			}),
 			{ enforce: "pre" },
 		],
