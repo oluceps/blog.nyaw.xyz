@@ -104,11 +104,10 @@ export default defineConfig({
 				},
 				"p code": {
 					"background-color": "#e4ecdb",
-					padding: "3px 2px 3px 2px",
+					padding: "0px 2px 0px 2px",
 					color: "#182013",
 					"border-radius": "4px",
-					margin: "0px 2px 0px 2px",
-					"vertical-align": "text-top",
+					display: "inline-block"
 				},
 				a: {
 					"text-decoration-color": "#b5caa0",
