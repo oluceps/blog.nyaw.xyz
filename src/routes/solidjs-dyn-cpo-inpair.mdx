@@ -63,7 +63,7 @@ return (<For each={shuffle(mul())}>
 
 看出问题来了吗？`mul`是按预期的对象数组形式保持不变的，每次 shuffle 都应该保留每个 title 和对应的 icon 之间的对应关系, 但是在云端的渲染表现完全不是这样，对象之内的对应关系也被打乱。虽然我有理由怀疑是缓存什么的问题，查看devtool的Element后无果。可能是solidjs的神奇编译期优化？
 
-最后的workaround是更改`Face` 的定义，并在调用组件内使用`<Dynamic component={()=>i.icon}/>{:jsx}`
+最后的workaround是更改`Face` 的定义，并在调用组件内使用 `<Dynamic component={i.icon}/>{:jsx}`
 
 
 ```jsx
