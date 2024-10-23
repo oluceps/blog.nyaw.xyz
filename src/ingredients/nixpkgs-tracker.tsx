@@ -2,7 +2,8 @@ import ky, { KyInstance } from "ky";
 import { createEffect, createSignal, For, Show } from "solid-js";
 import { ReactiveMap } from "@solid-primitives/map";
 import { twMerge } from "tailwind-merge";
-import cfg from "../constant"
+import { useKeyDownEvent } from "@solid-primitives/keyboard";
+
 
 export type PrInfo = {
 	title: string
@@ -77,6 +78,7 @@ const Tracker = () => {
 	// ==========================
 
 
+	const event = useKeyDownEvent();
 	const [tokenText, setTokenText] = createSignal("");
 	const [btnStatus, setBtnStatus] = createSignal(false);
 	const [loading, setLoading] = createSignal(false);
@@ -103,10 +105,21 @@ const Tracker = () => {
 			branchStatus.set(v, false);
 		});
 	};
+	const startQuery = async () => {
+		resetBranchStatus()
+		await chkAllBranch(qnum()!);
+		setBtnStatus(true);
+	}
 	createEffect(() => {
 		setBtnStatus(qnum() ? true : false);
 	});
-
+	createEffect(() => {
+		const e = event();
+		if (e && e.key == "Enter") {
+			startQuery();
+			e.preventDefault();
+		}
+	});
 	const chkLocal = async (bs: string[], pr: Partial<PrInfo>) => {
 		setQueryStatus({
 			title: pr.title!,
@@ -166,11 +179,7 @@ const Tracker = () => {
 					<button
 						class="btn glass mx-auto"
 						disabled={!btnStatus()}
-						onClick={async () => {
-							resetBranchStatus()
-							await chkAllBranch(qnum()!);
-							setBtnStatus(true);
-						}}
+						onClick={startQuery}
 					>
 						Query
 					</button>
