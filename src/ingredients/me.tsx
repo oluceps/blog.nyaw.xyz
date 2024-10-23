@@ -24,61 +24,61 @@ export default function Me() {
 			{
 				title: "Matrix",
 				href: "https://matrix.to/#/@sec:nyaw.xyz",
-				icon: (
+				icon: () => (
 					<div class="pointer-events-none i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />
 				),
 			},
 			{
 				title: "Mailbox",
 				href: "mailto:i@nyaw.xyz",
-				icon: (
+				icon: () => (
 					<div class="pointer-events-none i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />
 				),
 			},
 			{
 				title: "Telegram",
 				href: "https://t.me/Secpm_bot",
-				icon: (
+				icon: () => (
 					<div class="pointer-events-none i-ci:paper-plane w-8 h-8 text-sprout-500" />
 				),
 			},
 			{
 				title: "Signature",
 				href: cfg.base_url + "/api/minisign",
-				icon: (
+				icon: () => (
 					<div class="pointer-events-none i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />
 				),
 			},
 			{
 				title: "Pubkey",
 				href: "https://github.com/oluceps.keys",
-				icon: (
+				icon: () => (
 					<div class="pointer-events-none i-material-symbols:key-outline w-8 h-8 text-sprout-500" />
 				),
 			},
 			{
 				title: "DN42",
 				href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
-				icon: <div class="pointer-events-none i-ci:planet w-8 h-8 text-sprout-500" />,
+				icon: () => <div class="pointer-events-none i-ci:planet w-8 h-8 text-sprout-500" />,
 			},
 			{
 				title: "Donate",
 				href: cfg.base_url + "/api/donate",
-				icon: (
+				icon: () => (
 					<div class="pointer-events-none i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
 				),
 			},
 			{
 				title: "Discord",
 				href: "https://discord.gg/RbFvkEPg",
-				icon: (
+				icon: () => (
 					<div class="pointer-events-none i-ci:discord w-8 h-8 text-sprout-500" />
 				),
 			},
 			{
 				title: "Status",
 				href: "https://status.nyaw.xyz",
-				icon: (
+				icon: () => (
 					<div class="pointer-events-none i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />
 				),
 			},

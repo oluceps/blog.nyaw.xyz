@@ -9,7 +9,7 @@ export const isExternalURL = (url: string) =>
 export type QuickLinksProps = {
 	title: string;
 	href: string;
-	icon: JSXElement;
+	icon: () => JSXElement;
 	description?: string;
 	children?: JSXElement;
 };
@@ -24,8 +24,8 @@ export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => (
 			</a>
 
 			<div class="flex items-center justify-center m-4">
-				<div class="">
-					<Dynamic component={() => props.icon} />
+				<div>
+					<Dynamic component={props.icon} />
 				</div>
 
 				<p
