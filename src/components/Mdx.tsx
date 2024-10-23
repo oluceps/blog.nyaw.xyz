@@ -116,7 +116,7 @@ const components = {
 			<div class="relative group w-full">
 				<pre
 					{...props}
-					class="w-full border bg-[#f9f9f9] px-2 py-2.5 overflow-auto"
+					class="w-full border bg-[#f9f9f9] px-4 py-2.5 overflow-auto"
 					ref={setCodeBlockRef}
 				>
 					{props.children}
