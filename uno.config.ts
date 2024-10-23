@@ -107,7 +107,9 @@ export default defineConfig({
 					padding: "0px 2px 0px 2px",
 					color: "#182013",
 					"border-radius": "4px",
-					display: "inline-block"
+					display: "inline-block",
+					"line-height": 1.5,
+					"vertical-align": "text-top",
 				},
 				a: {
 					"text-decoration-color": "#b5caa0",
