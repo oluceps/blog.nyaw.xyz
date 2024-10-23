@@ -36,4 +36,16 @@ export default {
 			url: "/",
 		},
 	],
+	about: {
+		tags: [
+			"Epicureanism",
+			"Still Alive",
+			"不用睡觉",
+			"业余画师",
+			"跨时区乱蹦",
+			"赛博考古学家",
+			"猫猫爱好者",
+			"被猫猫爱好者",
+		]
+	}
 };

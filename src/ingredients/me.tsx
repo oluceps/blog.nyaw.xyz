@@ -12,16 +12,7 @@ export default function Me() {
 			.map(({ value }) => value)
 
 	const [descIdx, setDescIdx] = createSignal(0);
-	const randDesc = shuffle([
-		"Epicureanism",
-		"Still Alive",
-		"不用睡觉",
-		"业余画师",
-		"跨时区乱蹦",
-		"赛博考古学家",
-		"猫猫爱好者",
-		"被猫猫爱好者",
-	]);
+	const randDesc = shuffle(cfg.about.tags);
 
 	const delayIncreaseIdx = () =>
 		setTimeout(() => {
@@ -29,72 +20,70 @@ export default function Me() {
 		}, 50);
 
 	const [qlProps, _setqlProps] = createSignal<QuickLinksProps[]>(
-		(() => {
-			const a = [
-				{
-					title: "Matrix",
-					href: "https://matrix.to/#/@sec:nyaw.xyz",
-					icon: (
-						<div class="pointer-events-none i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />
-					),
-				},
-				{
-					title: "Mailbox",
-					href: "mailto:i@nyaw.xyz",
-					icon: (
-						<div class="pointer-events-none i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />
-					),
-				},
-				{
-					title: "Telegram",
-					href: "https://t.me/Secpm_bot",
-					icon: (
-						<div class="pointer-events-none i-ci:paper-plane w-8 h-8 text-sprout-500" />
-					),
-				},
-				{
-					title: "Signature",
-					href: cfg.base_url + "/api/minisign",
-					icon: (
-						<div class="pointer-events-none i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />
-					),
-				},
-				{
-					title: "Pubkey",
-					href: "https://github.com/oluceps.keys",
-					icon: (
-						<div class="pointer-events-none i-material-symbols:key-outline w-8 h-8 text-sprout-500" />
-					),
-				},
-				{
-					title: "DN42",
-					href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
-					icon: <div class="pointer-events-none i-ci:planet w-8 h-8 text-sprout-500" />,
-				},
-				{
-					title: "Donate",
-					href: cfg.base_url + "/api/donate",
-					icon: (
-						<div class="pointer-events-none i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
-					),
-				},
-				{
-					title: "Discord",
-					href: "https://discord.gg/RbFvkEPg",
-					icon: (
-						<div class="pointer-events-none i-ci:discord w-8 h-8 text-sprout-500" />
-					),
-				},
-				{
-					title: "Status",
-					href: "https://status.nyaw.xyz",
-					icon: (
-						<div class="pointer-events-none i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />
-					),
-				},
-			];
-			return shuffle(a);
-		})().slice(0, 6),
+		([
+			{
+				title: "Matrix",
+				href: "https://matrix.to/#/@sec:nyaw.xyz",
+				icon: (
+					<div class="pointer-events-none i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />
+				),
+			},
+			{
+				title: "Mailbox",
+				href: "mailto:i@nyaw.xyz",
+				icon: (
+					<div class="pointer-events-none i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />
+				),
+			},
+			{
+				title: "Telegram",
+				href: "https://t.me/Secpm_bot",
+				icon: (
+					<div class="pointer-events-none i-ci:paper-plane w-8 h-8 text-sprout-500" />
+				),
+			},
+			{
+				title: "Signature",
+				href: cfg.base_url + "/api/minisign",
+				icon: (
+					<div class="pointer-events-none i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />
+				),
+			},
+			{
+				title: "Pubkey",
+				href: "https://github.com/oluceps.keys",
+				icon: (
+					<div class="pointer-events-none i-material-symbols:key-outline w-8 h-8 text-sprout-500" />
+				),
+			},
+			{
+				title: "DN42",
+				href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
+				icon: <div class="pointer-events-none i-ci:planet w-8 h-8 text-sprout-500" />,
+			},
+			{
+				title: "Donate",
+				href: cfg.base_url + "/api/donate",
+				icon: (
+					<div class="pointer-events-none i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
+				),
+			},
+			{
+				title: "Discord",
+				href: "https://discord.gg/RbFvkEPg",
+				icon: (
+					<div class="pointer-events-none i-ci:discord w-8 h-8 text-sprout-500" />
+				),
+			},
+			{
+				title: "Status",
+				href: "https://status.nyaw.xyz",
+				icon: (
+					<div class="pointer-events-none i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />
+				),
+			},
+		]
+		),
 	);
 
 	return (
@@ -160,7 +149,7 @@ export default function Me() {
 				</div>
 
 				<div class="flex gap-3 transition-all justify-between duration-500 overflow-x-scroll sm:overflow-visible pb-3 sm:py-0">
-					<For each={qlProps()}>
+					<For each={shuffle(qlProps()).slice(0, 6)}>
 						{(i) => (
 							<div class="flex-none hover:flex-1 transition-all duration-500 delay-75">
 								<QuickLinks {...i} />
