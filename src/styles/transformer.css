@@ -32,5 +32,5 @@ code .line::before {
 .line.focused { @apply blur-sm hover:blur-none transition-all }
 
 .line.diff { @apply px-1 py-1.5  }
-.line.diff.add { @apply bg-sprout-200 before:content-["+"] before:w-0 before:overflow-visible before:text-red-400 before:inline-block before:m-0 before:p-0; }
-.line.diff.remove { @apply bg-red-100 before:content-["-"] before:w-0 before:overflow-visible before:text-sprout-500 before:inline-block before:m-0 before:p-0; }
+.line.diff.add { @apply bg-sprout-200 before:content-["+"] before:w-0 before:overflow-visible before:text-red-400 before:inline-block before:p-0; }
+.line.diff.remove { @apply bg-red-100 before:content-["-"] before:w-0 before:overflow-visible before:text-sprout-500 before:inline-block before:p-0; }

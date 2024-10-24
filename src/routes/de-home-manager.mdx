@@ -235,6 +235,43 @@ in
 
 While config changed just run `nix run` and all will be set.
 
+Further more, to impl deeper ingegration with nixos module, benefiet from the `{ dest = source; }` structure, we can easily:
+
+```nix
+{ lib, pkgs, ... }@args: # [!code --]
+{ lib, pkgs, user, ... }@args: # [!code ++]
+let
+  configPlace = "~/.config";  # [!code --]
+  configPlace = "/home/${user}/.config";  # [!code ++]
+
+  inherit (builtins) readDir foldl' attrNames;
+  inherit (lib.attrsets) filterAttrs setAttrByPath recursiveUpdate;
+  inherit (lib) removeSuffix;
+  inherit (pkgs) writeText;
+
+  listRecursive = pathStr: listRecursive' { } pathStr;
+```
+
+and adding a nixos module, everything just works:
+
+```nix
+{
+  lib,
+  pkgs,
+  user,
+  ...
+}:
+let
+  homeCfgAttr = (import ../pathToAboveFile { inherit pkgs lib user; });
+in
+{
+  systemd.tmpfiles.rules = lib.foldlAttrs (
+    acc: n: v:
+    acc ++ lib.singleton "L+ ${n} - - - - ${v}"
+  ) [ ] homeCfgAttr;
+}
+```
+
 # User-specific Packages
 
 More easily.

@@ -6,7 +6,9 @@ import {
 	transformerDirectives,
 	presetIcons,
 	presetWind,
+	presetWebFonts
 } from "unocss";
+
 
 export default defineConfig({
 	transformers: [transformerDirectives()],
@@ -110,6 +112,7 @@ export default defineConfig({
 					display: "inline-block",
 					"line-height": 1.5,
 					"vertical-align": "text-top",
+					"font-weight": "normal"
 				},
 				a: {
 					"text-decoration-color": "#b5caa0",
@@ -126,5 +129,11 @@ export default defineConfig({
 		}),
 		presetWind(),
 		presetIcons(),
+		presetWebFonts({
+			provider: 'bunny',
+			fonts: {
+				mono: ['Fira Code:300,500'],
+			},
+		})
 	],
 });
