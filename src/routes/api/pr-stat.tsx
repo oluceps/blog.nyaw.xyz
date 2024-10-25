@@ -15,7 +15,7 @@
 */
 import ky from "ky";
 import type { APIEvent } from "@solidjs/start/server";
-import { buildPr, getTitle, isContain, PrInfo } from "~/ingredients/nixpkgs-tracker";
+import { buildPr, getTitle, isContain, NotFoundError, PrInfo } from "~/ingredients/nixpkgs-tracker";
 
 
 export async function GET(e: APIEvent) {
@@ -76,14 +76,7 @@ export async function GET(e: APIEvent) {
       "nixos-unstable"
     ]
 
-  class NotFoundError extends Error {
-    statusCode: number;
-    constructor(message: string) {
-      super(message);
-      this.name = "NotFoundError";
-      this.statusCode = 404;
-    }
-  }
+
 
   const chkBranch = async () => {
     try {

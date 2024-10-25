@@ -12,7 +12,23 @@ export type PrInfo = {
 	user: { login: string }
 	merge_commit_sha: string
 }
+export class UnauthError extends Error {
+	statusCode: number;
+	constructor(message: string) {
+		super(message);
+		this.name = "UnauthorizedError";
+		this.statusCode = 401;
+	}
+}
 
+export class NotFoundError extends Error {
+	statusCode: number;
+	constructor(message: string) {
+		super(message);
+		this.name = "NotFoundError";
+		this.statusCode = 404;
+	}
+}
 const validPrNum = (raw: string) => {
 	return !isNaN(Number(raw)) && Number(raw) > 0
 }
@@ -35,14 +51,7 @@ export const buildPr = (pr: string) => {
 	}
 };
 
-class UnauthError extends Error {
-	statusCode: number;
-	constructor(message: string) {
-		super(message);
-		this.name = "UnauthorizedError";
-		this.statusCode = 401;
-	}
-}
+
 export const getTitle = async (pr: number, api: KyInstance): Promise<Partial<PrInfo>> => {
 	try {
 		const response = await api.get(`pulls/${pr}`).json<any>();
