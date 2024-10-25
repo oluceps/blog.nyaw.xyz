@@ -27,7 +27,14 @@ curl https://blog.nyaw.xyz/api/pr-stat?pr=11451
 
 ```bash
 # if pr in specific branches ?
+# [!code word:branch]
 ...?pr=11451&branch=nixos-24.11&branch=staging-next
+```
+
+```bash
+# if pr in, specific repo, and branch
+# [!code word:repo=daeuniverse/flake.nix]
+...?repo=daeuniverse/flake.nix&pr=116&branch=unstable'|jq
 ```
 
 ```bash
@@ -35,11 +42,6 @@ curl https://blog.nyaw.xyz/api/pr-stat?pr=11451
 curl https://blog.nyaw.xyz/api/pr-stat{?pr,branch*,token,repo}
 ```
 
-```bash
-# if pr in, specific repo, and branch
-// [!code word:repo=]
-...?repo=daeuniverse/flake.nix&pr=116&branch=unstable'|jq
-```
 
 Will return like this:
 
