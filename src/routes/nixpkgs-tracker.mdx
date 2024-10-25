@@ -18,11 +18,27 @@ import Cpn from "../ingredients/nixpkgs-tracker"
 
 ---
 
-You could also use RESTful API:
+You could also use RESTful API, uri encoding follows RFC6570:
 
 ```bash
-# ...?pr=123&branch=master&branch=nixos-24.11&token=xxxxyyyy
-curl https://blog.nyaw.xyz/api/pr-stat{?pr,branch*,token}
+# if pr in common branches ?
+curl https://blog.nyaw.xyz/api/pr-stat?pr=11451
+```
+
+```bash
+# if pr in specific branches ?
+...?pr=11451&branch=nixos-24.11&branch=staging-next
+```
+
+```bash
+# ...?pr=123&branch=master&branch=nixos-24.11&token=xxxxyyyy&repo=xx/yy
+curl https://blog.nyaw.xyz/api/pr-stat{?pr,branch*,token,repo}
+```
+
+```bash
+# if pr in, specific repo, and branch
+// [!code word:repo=]
+...?repo=daeuniverse/flake.nix&pr=116&branch=unstable'|jq
 ```
 
 Will return like this:
@@ -69,6 +85,12 @@ paths:
           schema:
             type: string
           description: API token that used in server query (to github)
+        - name: repo
+          in: query
+          required: false
+          schema:
+            type: string
+          description: repository, formated as nixos/nixpkgs, optional
         - name: branch
           in: query
           required: false
@@ -117,5 +139,23 @@ paths:
 ```
 
 ---
+
+## Query pr in other repo
+
+e.g.
+
+```bash
+// [!code word:repo=]
+> curl 'https://blog.nyaw.xyz/api/pr-stat?repo=daeuniverse/flake.nix&pr=116&branch=unstable'|jq
+
+{
+  "title": "[cherry-pick] chore(daed): pin ref to 0.8.0",
+  "state": "merged",
+  "user": "github-actions[bot]",
+  "merge": {
+    "unstable": true
+  }
+}
+```
 
 Based on ocfox' [project](https://github.com/ocfox/nixpkgs-tracker) Thanks~

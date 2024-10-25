@@ -26,7 +26,8 @@ export async function GET(e: APIEvent) {
   const userParamsRaw = {
     token: params.get("token"),  // github authorization token
     pr: params.get("pr"), // url or number or `#${number}`
-    branch: params.getAll("branch")
+    repo: params.get("repo"),
+    branch: params.getAll("branch"),
   }
   console.log("[pr-stat] query raw branch", userParamsRaw.branch)
   if (!userParamsRaw.pr) {
@@ -43,8 +44,15 @@ export async function GET(e: APIEvent) {
       status: 400
     });
   }
+  if (userParamsRaw.repo && userParamsRaw.branch.length == 0) {
+    return new Response("Bad! must specify branch when querying repo other than NixOS/nixpkgs", {
+      headers: { "content-type": "text/plain" },
+      status: 400
+    });
+  }
+  const repo = userParamsRaw.repo || "nixos/nixpkgs";
   const api = ky.create({
-    prefixUrl: "https://api.github.com/repos/nixos/nixpkgs/",
+    prefixUrl: `https://api.github.com/repos/${repo}/`,
     headers: userParamsRaw.token ? { Authorization: `token ${userParamsRaw.token}` } : {},
   });
 
