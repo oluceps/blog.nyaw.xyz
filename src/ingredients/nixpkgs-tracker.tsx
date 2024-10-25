@@ -41,7 +41,7 @@ export const getTitle = async (pr: number, api: KyInstance): Promise<Partial<PrI
 
 		const filteredResponse: Partial<PrInfo> = {
 			title: response.title,
-			state: response.state,
+			state: response.merged ? "merged" : response.state,
 			status: response.status,
 			user: { login: response.user.login },
 			merge_commit_sha: response.merge_commit_sha,
@@ -84,7 +84,7 @@ const Tracker = () => {
 	const [loading, setLoading] = createSignal(false);
 	const [qnum, setQnum] = createSignal<number>();
 	const [queryStatus, setQueryStatus] = createSignal<Partial<{
-		title: string, state: string, user: string, how: "notfound" | "good" | "bad"
+		title: string, state: string, user: string, how: "notfound" | "closed" | "merged" | "unknown" | "bad"
 	}>>();
 
 	const api = ky.create({
@@ -125,7 +125,7 @@ const Tracker = () => {
 			title: pr.title!,
 			state: pr.state!,
 			user: pr.user?.login!,
-			how: "good"
+			how: pr.state === "merged" ? "merged" : "closed"
 		},)
 		setLoading(true)
 		await Promise.all(bs.map(async b => {
@@ -188,18 +188,22 @@ const Tracker = () => {
 						<div
 							class={twMerge(
 								"h-full p-2 text-zink-800 rounded-md shadow-md opacity-85 w-full",
-								queryStatus()?.how == "good" ? "bg-sprout-200" : "bg-red-200",
+								queryStatus()?.how == "merged"
+									? "bg-violet-200"
+									: queryStatus()?.how == "closed"
+										? "bg-red-200"
+										: "bg-yellow-200",
 								queryStatus()?.how ? "opacity-100" : "opacity-0"
 							)}
 							onClick={() =>
-								queryStatus()?.how == "good"
+								queryStatus()?.how != "notfound" || queryStatus()?.how != "bad"
 									? window.open(
 										"https://github.com/nixos/nixpkgs/pull/" + qnum(),
 									)
 									: ""
 							}
 						>
-							{queryStatus()?.how == "good" ? `${queryStatus()?.title}\nfrom ${queryStatus()?.user}\n | ${(queryStatus()?.state)?.toUpperCase()}` :
+							{queryStatus()?.how != "notfound" || queryStatus()?.how != "bad" ? `${queryStatus()?.title}\nfrom ${queryStatus()?.user}\n | ${(queryStatus()?.state)?.toUpperCase()}` :
 								queryStatus()?.how == "notfound" ? "Pull Req Not Found" : null}
 						</div>
 					</Show>
