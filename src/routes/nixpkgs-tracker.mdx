@@ -16,10 +16,12 @@ import Cpn from "../ingredients/nixpkgs-tracker"
   <Cpn />
 </div>
 
+---
+
 You could also use RESTful API:
 
 ```bash
-# ...?pr=123&branch=master&branch=nixos-unstable&token=xxxxyyyy
+# ...?pr=123&branch=master&branch=nixos-24.11&token=xxxxyyyy
 curl https://blog.nyaw.xyz/api/pr-stat{?pr,branch*,token}
 ```
 
@@ -28,7 +30,7 @@ Will return like this:
 ```json
 {
   "title": "insync: 3.9.1.60010 -> 3.9.3.60019",
-  "state": "closed",
+  "state": "merged",
   "user": "hellwolf",
   "merge": {
     "staging-next": true,
@@ -90,7 +92,7 @@ paths:
                   state:
                     type: string
                     description: The state of the pull request (e.g., open, closed, merged)
-                    example: "closed"
+                    example: "merged"
                   user:
                     type: string
                     description: The username of the person who created the pull request
