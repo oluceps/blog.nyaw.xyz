@@ -113,7 +113,7 @@ export async function GET(e: APIEvent) {
   const res = async () => {
     try {
       const a = await chkBranch();
-      console.log(a)
+      // console.log(a)
       return a;
     } catch (e: any) {
       if (e instanceof NotFoundError) {
