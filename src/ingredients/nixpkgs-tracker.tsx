@@ -35,9 +35,18 @@ export const buildPr = (pr: string) => {
 	}
 };
 
+class UnauthError extends Error {
+	statusCode: number;
+	constructor(message: string) {
+		super(message);
+		this.name = "UnauthorizedError";
+		this.statusCode = 401;
+	}
+}
 export const getTitle = async (pr: number, api: KyInstance): Promise<Partial<PrInfo>> => {
 	try {
 		const response = await api.get(`pulls/${pr}`).json<any>();
+		if (response.status === 401) throw new UnauthError("rate limited, you could fill auth token")
 
 		const filteredResponse: Partial<PrInfo> = {
 			title: response.title,
@@ -146,6 +155,10 @@ const Tracker = () => {
 			if (r.status == 404) {
 				setQueryStatus({ title: "Not Found", how: "bad" })
 				throw new Error("get pr title error, NotFound");
+			}
+			if (r.status == 401) {
+				setQueryStatus({ title: "Unauthorized", how: "bad" })
+				throw new Error("get pr title error, unauthorized");
 			}
 			if (!r.merge_commit_sha) {
 				setQueryStatus({ title: "Bad body", how: "bad" })
