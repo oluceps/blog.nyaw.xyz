@@ -140,6 +140,12 @@ paths:
           description: Sth else. Describe in body, maybe
 ```
 
+All I have done:
+
+1. Get pr info, including `merge_commit_sha`
+
+2. `api/compare/${branch}...${merge_commit_sha}`, GitHub will return `diverged | identical | behind`. Later two represents pr in this branch.
+
 ---
 
 Based on ocfox' [project](https://github.com/ocfox/nixpkgs-tracker) Thanks~
