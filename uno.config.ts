@@ -22,9 +22,8 @@ export default defineConfig({
 		},
 
 		fontFamily: {
-			sans: ["PingFang SC", "Hiragino Sans GB", "Microsoft YaHei"],
+			sans: ["PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Wotfard"],
 			serif: ["PingFang SC", "Hiragino Sans GB", "Microsoft YaHei"],
-			mono: ["Geist Mono", "PingFang SC", "Hiragino Sans GB"],
 		},
 
 		breakpoints: {
@@ -134,6 +133,6 @@ export default defineConfig({
 			fonts: {
 				mono: ['Fira Code:300,500'],
 			},
-		})
+		}),
 	],
 });
