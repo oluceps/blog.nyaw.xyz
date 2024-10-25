@@ -39,7 +39,7 @@ export default {
 	about: {
 		tags: [
 			"Epicureanism",
-			"Still Alive",
+			"Still Alive!",
 			"不用睡觉",
 			"业余画师",
 			"跨时区乱蹦",
