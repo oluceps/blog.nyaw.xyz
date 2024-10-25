@@ -77,6 +77,7 @@ const Tracker = () => {
 
 	// ==========================
 
+	type PrState = Partial<"open" | "closed" | "merged">
 
 	const event = useKeyDownEvent();
 	const [tokenText, setTokenText] = createSignal("");
@@ -84,7 +85,7 @@ const Tracker = () => {
 	const [loading, setLoading] = createSignal(false);
 	const [qnum, setQnum] = createSignal<number>();
 	const [queryStatus, setQueryStatus] = createSignal<Partial<{
-		title: string, state: string, user: string, how: "notfound" | "closed" | "merged" | "unknown" | "bad"
+		title: string, state: PrState, user: string, how: "good" | "bad" | "unknown"
 	}>>();
 
 	const api = ky.create({
@@ -123,9 +124,9 @@ const Tracker = () => {
 	const chkLocal = async (bs: string[], pr: Partial<PrInfo>) => {
 		setQueryStatus({
 			title: pr.title!,
-			state: pr.state!,
+			state: pr.state as PrState,
 			user: pr.user?.login!,
-			how: pr.state === "merged" ? "merged" : "closed"
+			how: pr.state ? "good" : "bad"
 		},)
 		setLoading(true)
 		await Promise.all(bs.map(async b => {
@@ -142,8 +143,8 @@ const Tracker = () => {
 		try {
 			const r = await getTitle(n, api);
 
-			if (!r.title) {
-				setQueryStatus({ title: "Not Found", how: "notfound" })
+			if (r.status == 404) {
+				setQueryStatus({ title: "Not Found", how: "bad" })
 				throw new Error("get pr title error, NotFound");
 			}
 			if (!r.merge_commit_sha) {
@@ -187,24 +188,24 @@ const Tracker = () => {
 					<Show when={!loading()} fallback={<div class="i-svg-spinners:wind-toy w-full h-8 text-sprout-400" />}>
 						<div
 							class={twMerge(
-								"h-full p-2 text-zink-800 rounded-md shadow-md opacity-85 w-full",
-								queryStatus()?.how == "merged"
+								"h-full p-2 text-zink-800 rounded-md shadow-md opacity-85 w-full font-mono",
+								queryStatus()?.state == "merged"
 									? "bg-violet-200"
-									: queryStatus()?.how == "closed"
+									: queryStatus()?.state == "closed"
 										? "bg-red-200"
 										: "bg-yellow-200",
 								queryStatus()?.how ? "opacity-100" : "opacity-0"
 							)}
 							onClick={() =>
-								queryStatus()?.how != "notfound" || queryStatus()?.how != "bad"
+								queryStatus()?.state
 									? window.open(
 										"https://github.com/nixos/nixpkgs/pull/" + qnum(),
 									)
 									: ""
 							}
 						>
-							{queryStatus()?.how != "notfound" || queryStatus()?.how != "bad" ? `${queryStatus()?.title}\nfrom ${queryStatus()?.user}\n | ${(queryStatus()?.state)?.toUpperCase()}` :
-								queryStatus()?.how == "notfound" ? "Pull Req Not Found" : null}
+							{queryStatus()?.state || queryStatus()?.how != "bad" ? `${queryStatus()?.title}\nfrom ${queryStatus()?.user}\n | ${(queryStatus()?.state)?.toUpperCase()}` :
+								!queryStatus()?.state ? "Pull Req Not Found" : null}
 						</div>
 					</Show>
 				</div>
