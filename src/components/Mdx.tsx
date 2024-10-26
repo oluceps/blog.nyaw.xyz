@@ -3,6 +3,7 @@ import {
 	Switch,
 	children,
 	createSignal,
+	onMount,
 	splitProps,
 	type ParentProps,
 } from "solid-js";
@@ -135,6 +136,19 @@ const components = {
 			</div>
 		);
 	},
+	code: (props: ParentProps) => {
+		const [childRef, setChildRef] = createSignal<HTMLDivElement>();
+		const [inlineCodeClass, setInlineCodeClass] = createSignal("");
+
+		onMount(() => {
+			if (childRef && childRef()!.parentElement) {
+				console.log('Parent tag name:', childRef()!.parentElement?.tagName);
+				if (childRef()!.parentElement?.tagName != "PRE") setInlineCodeClass("bg-sprout-100 px-1 text-sprout-950 rounded-md inline-block text-top font-medium leading-tight");
+			}
+		});
+		return <code ref={setChildRef} class={inlineCodeClass()}>{props.children}</code>;
+	},
+
 	response: (props: ParentProps) => {
 		return <span>{props.children}</span>;
 	},
