@@ -10,7 +10,7 @@ tags:
 title: Nixpkgs Pull Request Tracker
 ---
 
-import Cpn from "../ingredients/nixpkgs-tracker"
+import Cpn from "../ingredients/pr-stat"
 
 <div class="h-[45vh]">
   <Cpn />
@@ -21,18 +21,18 @@ import Cpn from "../ingredients/nixpkgs-tracker"
 You could also use RESTful API, uri encoding follows RFC6570:
 
 ```bash
-# if pr in common branches ?
-curl https://blog.nyaw.xyz/api/pr-stat?pr=11451
+# if changes entered common branches ?
+curl https://blog.nyaw.xyz/api/pr-stat?pr=114514
 ```
 
 ```bash
-# if pr in specific branches ?
+# if changes entered specific branches ?
 # [!code word:branch]
 ...?pr=11451&branch=nixos-24.11&branch=staging-next
 ```
 
 ```bash
-# if pr in, specific repo, and branch
+# if changes entered, specific repo, and branch
 # [!code word:repo=daeuniverse/flake.nix]
 ...?repo=daeuniverse/flake.nix&pr=116&branch=unstable'
 ```
@@ -40,24 +40,6 @@ curl https://blog.nyaw.xyz/api/pr-stat?pr=11451
 ```bash
 # ...?pr=123&branch=master&branch=nixos-24.11&token=xxxxyyyy&repo=xx/yy
 curl https://blog.nyaw.xyz/api/pr-stat{?pr,branch*,token,repo}
-```
-
-
-Will return like this:
-
-```json
-{
-  "title": "insync: 3.9.1.60010 -> 3.9.3.60019",
-  "state": "merged",
-  "user": "hellwolf",
-  "merge": {
-    "staging-next": true,
-    "master": true,
-    "nixos-unstable-small": true,
-    "nixpkgs-unstable": true,
-    "nixos-unstable": true
-  }
-}
 ```
 
 ## OpenAPI Spec
@@ -121,6 +103,10 @@ paths:
                     type: string
                     description: The username of the person who created the pull request
                     example: "hellwolf"
+                  merge_commit_sha:
+                    type: string
+                    description: The commit sha
+                    example: "xyxxc3e6d7fb989b63c4db1f76c01c1138930704"
                   merge:
                     type: object
                     description: Merge status for various branches
@@ -139,12 +125,6 @@ paths:
         '500':
           description: Sth else. Describe in body, maybe
 ```
-
-All I have done:
-
-1. Get pr info, including `merge_commit_sha`
-
-2. `api/compare/${branch}...${merge_commit_sha}`, GitHub will return `diverged | identical | behind`. Later two represents pr in this branch.
 
 ---
 

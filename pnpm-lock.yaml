@@ -81,6 +81,9 @@ importers:
       '@solidjs/meta':
         specifier: ^0.29.4
         version: 0.29.4(solid-js@1.9.2)
+      '@typ3/throwable':
+        specifier: ^0.0.5
+        version: 0.0.5
       '@unocss/preset-rem-to-px':
         specifier: ^0.62.4
         version: 0.62.4
@@ -1395,6 +1398,9 @@ packages:
 
   '@tsconfig/node16@1.0.4':
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
+
+  '@typ3/throwable@0.0.5':
+    resolution: {integrity: sha512-9B4mbcgdlMOEpyxJ2QWoLjZWXhHqdXgqFzp4CA82U7awAG6yCxCZfT6JA4dRMpkfg5xmqxiHQP03aHkKzq9rng==}
 
   '@types/acorn@4.0.6':
     resolution: {integrity: sha512-veQTnWP+1D/xbxVrPC3zHnCZRjSrKfhbMUlEA43iMZLu7EsnTtkJklIuwrCPbOi8YkvDQAiW05VQQFvvz9oieQ==}
@@ -5611,6 +5617,8 @@ snapshots:
   '@tsconfig/node14@1.0.3': {}
 
   '@tsconfig/node16@1.0.4': {}
+
+  '@typ3/throwable@0.0.5': {}
 
   '@types/acorn@4.0.6':
     dependencies:

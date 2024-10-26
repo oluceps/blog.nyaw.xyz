@@ -1,17 +1,16 @@
-import ky, { KyInstance } from "ky";
+import ky, { type KyInstance } from "ky";
 import { createEffect, createSignal, For, Show } from "solid-js";
 import { ReactiveMap } from "@solid-primitives/map";
 import { twMerge } from "tailwind-merge";
 import { useKeyDownEvent } from "@solid-primitives/keyboard";
 
-
 export type PrInfo = {
-	title: string
-	state: string
-	status: number
-	user: { login: string }
-	merge_commit_sha: string
-}
+	title: string;
+	state: string;
+	status: number;
+	user: { login: string };
+	merge_commit_sha: string;
+};
 export class UnauthError extends Error {
 	statusCode: number;
 	constructor(message: string) {
@@ -30,32 +29,33 @@ export class NotFoundError extends Error {
 	}
 }
 const validPrNum = (raw: string) => {
-	return !isNaN(Number(raw)) && Number(raw) > 0
-}
+	return !isNaN(Number(raw)) && Number(raw) > 0;
+};
 export const buildPr = (pr: string) => {
 	try {
 		const url = new URL(pr);
-		if (url.protocol === 'https:') {
-			const assumePrN = url.pathname.split('/').slice(-1)[0];
-			if (validPrNum(assumePrN!)) return Number(assumePrN)
+		if (url.protocol === "https:") {
+			const assumePrN = url.pathname.split("/").slice(-1)[0];
+			if (validPrNum(assumePrN!)) return Number(assumePrN);
 		}
-	} catch (e) {
-	}
-	if (pr.startsWith('#')) {
+	} catch (e) {}
+	if (pr.startsWith("#")) {
 		const assume = pr.slice(1);
-		if (validPrNum(assume))
-			return Number(pr);
+		if (validPrNum(assume)) return Number(pr);
 	}
 	if (validPrNum(pr)) {
 		return Number(pr);
 	}
 };
 
-
-export const getTitle = async (pr: number, api: KyInstance): Promise<Partial<PrInfo>> => {
+export const getTitle = async (
+	pr: number,
+	api: KyInstance,
+): Promise<Partial<PrInfo>> => {
 	try {
 		const response = await api.get(`pulls/${pr}`).json<any>();
-		if (response.status === 401) throw new UnauthError("rate limited, you could fill auth token")
+		if (response.status === 401)
+			throw new UnauthError("rate limited, you could fill auth token");
 
 		const filteredResponse: Partial<PrInfo> = {
 			title: response.title,
@@ -75,7 +75,7 @@ export const getTitle = async (pr: number, api: KyInstance): Promise<Partial<PrI
 export const isContain = async (
 	branch: string,
 	commit: string,
-	api: KyInstance
+	api: KyInstance,
 ): Promise<boolean> => {
 	try {
 		const { status } = await api
@@ -92,19 +92,24 @@ export const isContain = async (
 };
 
 const Tracker = () => {
-
 	// ==========================
 
-	type PrState = Partial<"open" | "closed" | "merged">
+	type PrState = Partial<"open" | "closed" | "merged">;
 
 	const event = useKeyDownEvent();
 	const [tokenText, setTokenText] = createSignal("");
 	const [btnStatus, setBtnStatus] = createSignal(false);
 	const [loading, setLoading] = createSignal(false);
 	const [qnum, setQnum] = createSignal<number>();
-	const [queryStatus, setQueryStatus] = createSignal<Partial<{
-		title: string, state: PrState, user: string, how: "good" | "bad" | "unknown"
-	}>>();
+	const [queryStatus, setQueryStatus] =
+		createSignal<
+			Partial<{
+				title: string;
+				state: PrState;
+				user: string;
+				how: "good" | "bad" | "unknown";
+			}>
+		>();
 
 	const api = ky.create({
 		prefixUrl: "https://api.github.com/repos/nixos/nixpkgs/",
@@ -125,10 +130,10 @@ const Tracker = () => {
 		});
 	};
 	const startQuery = async () => {
-		resetBranchStatus()
+		resetBranchStatus();
 		await chkAllBranch(qnum()!);
 		setBtnStatus(true);
-	}
+	};
 	createEffect(() => {
 		setBtnStatus(qnum() ? true : false);
 	});
@@ -144,16 +149,19 @@ const Tracker = () => {
 			title: pr.title!,
 			state: pr.state as PrState,
 			user: pr.user?.login!,
-			how: pr.state ? "good" : "bad"
-		},)
-		setLoading(true)
-		await Promise.all(bs.map(async b => {
-			await isContain(b, pr.merge_commit_sha!, api) ?
-				(() => {
-					branchStatus.set(b, true)
-				})() : null;
-		}))
-		setLoading(false)
+			how: pr.state ? "good" : "bad",
+		});
+		setLoading(true);
+		await Promise.all(
+			bs.map(async (b) => {
+				(await isContain(b, pr.merge_commit_sha!, api))
+					? (() => {
+							branchStatus.set(b, true);
+						})()
+					: null;
+			}),
+		);
+		setLoading(false);
 	};
 
 	const chkAllBranch = async (n: number) => {
@@ -162,17 +170,17 @@ const Tracker = () => {
 			const r = await getTitle(n, api);
 
 			if (r.status == 404) {
-				setQueryStatus({ title: "Not Found", how: "bad" })
+				setQueryStatus({ title: "Not Found", how: "bad" });
 				throw new Error("get pr title error, NotFound");
 			}
 			if (r.status == 401) {
-				setQueryStatus({ title: "Unauthorized", how: "bad" })
+				setQueryStatus({ title: "Unauthorized", how: "bad" });
 				throw new Error("get pr title error, unauthorized");
 			}
 			if (!r.merge_commit_sha) {
-				setQueryStatus({ title: "Bad body", how: "bad" })
-				throw new Error("get merge commit sha error")
-			};
+				setQueryStatus({ title: "Bad body", how: "bad" });
+				throw new Error("get merge commit sha error");
+			}
 
 			const prInfo = r as Partial<PrInfo>;
 
@@ -207,7 +215,12 @@ const Tracker = () => {
 						Query
 					</button>
 
-					<Show when={!loading()} fallback={<div class="i-svg-spinners:wind-toy w-full h-8 text-sprout-400" />}>
+					<Show
+						when={!loading()}
+						fallback={
+							<div class="i-svg-spinners:wind-toy w-full h-8 text-sprout-400" />
+						}
+					>
 						<div
 							class={twMerge(
 								"h-full p-2 text-zink-800 rounded-md shadow-md opacity-85 w-full font-mono",
@@ -216,18 +229,21 @@ const Tracker = () => {
 									: queryStatus()?.state == "closed"
 										? "bg-red-200"
 										: "bg-yellow-200",
-								queryStatus()?.how ? "opacity-100" : "opacity-0"
+								queryStatus()?.how ? "opacity-100" : "opacity-0",
 							)}
 							onClick={() =>
 								queryStatus()?.state
 									? window.open(
-										"https://github.com/nixos/nixpkgs/pull/" + qnum(),
-									)
+											"https://github.com/nixos/nixpkgs/pull/" + qnum(),
+										)
 									: ""
 							}
 						>
-							{queryStatus()?.state || queryStatus()?.how != "bad" ? `${queryStatus()?.title}\nfrom ${queryStatus()?.user}\n | ${(queryStatus()?.state)?.toUpperCase()}` :
-								!queryStatus()?.state ? "Pull Req Not Found" : null}
+							{queryStatus()?.state || queryStatus()?.how != "bad"
+								? `${queryStatus()?.title}\nfrom ${queryStatus()?.user}\n | ${(queryStatus()?.state)?.toUpperCase()}`
+								: !queryStatus()?.state
+									? "Pull Req Not Found"
+									: null}
 						</div>
 					</Show>
 				</div>
@@ -247,7 +263,7 @@ const Tracker = () => {
 							);
 						}}
 					</For>
-				</div >
+				</div>
 			</div>
 		</>
 	);

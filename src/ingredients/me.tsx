@@ -7,84 +7,84 @@ import { createSignal, For } from "solid-js";
 
 export default function Me() {
 	const shuffle = (a: any[]) =>
-		a.map((value) => ({ value, sort: Math.random() }))
+		a
+			.map((value) => ({ value, sort: Math.random() }))
 			.sort((a, b) => a.sort - b.sort)
-			.map(({ value }) => value)
+			.map(({ value }) => value);
 
 	const [descIdx, setDescIdx] = createSignal(0);
 	const randDesc = shuffle(cfg.about.tags);
 
 	const delayIncreaseIdx = () =>
 		setTimeout(() => {
-			setDescIdx(prev => (prev + 1) % randDesc.length)
+			setDescIdx((prev) => (prev + 1) % randDesc.length);
 		}, 50);
 
-	const [qlProps, _setqlProps] = createSignal<QuickLinksProps[]>(
-		([
-			{
-				title: "Matrix",
-				href: "https://matrix.to/#/@sec:nyaw.xyz",
-				icon: () => (
-					<div class="pointer-events-none i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />
-				),
-			},
-			{
-				title: "Mailbox",
-				href: "mailto:i@nyaw.xyz",
-				icon: () => (
-					<div class="pointer-events-none i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />
-				),
-			},
-			{
-				title: "Telegram",
-				href: "https://t.me/Secpm_bot",
-				icon: () => (
-					<div class="pointer-events-none i-ci:paper-plane w-8 h-8 text-sprout-500" />
-				),
-			},
-			{
-				title: "Signature",
-				href: cfg.base_url + "/api/minisign",
-				icon: () => (
-					<div class="pointer-events-none i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />
-				),
-			},
-			{
-				title: "Pubkey",
-				href: "https://github.com/oluceps.keys",
-				icon: () => (
-					<div class="pointer-events-none i-material-symbols:key-outline w-8 h-8 text-sprout-500" />
-				),
-			},
-			{
-				title: "DN42",
-				href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
-				icon: () => <div class="pointer-events-none i-ci:planet w-8 h-8 text-sprout-500" />,
-			},
-			{
-				title: "Donate",
-				href: cfg.base_url + "/api/donate",
-				icon: () => (
-					<div class="pointer-events-none i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
-				),
-			},
-			{
-				title: "Discord",
-				href: "https://discord.gg/RbFvkEPg",
-				icon: () => (
-					<div class="pointer-events-none i-ci:discord w-8 h-8 text-sprout-500" />
-				),
-			},
-			{
-				title: "Status",
-				href: "https://status.nyaw.xyz",
-				icon: () => (
-					<div class="pointer-events-none i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />
-				),
-			},
-		]
-		),
-	);
+	const [qlProps, _setqlProps] = createSignal<QuickLinksProps[]>([
+		{
+			title: "Matrix",
+			href: "https://matrix.to/#/@sec:nyaw.xyz",
+			icon: () => (
+				<div class="pointer-events-none i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />
+			),
+		},
+		{
+			title: "Mailbox",
+			href: "mailto:i@nyaw.xyz",
+			icon: () => (
+				<div class="pointer-events-none i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />
+			),
+		},
+		{
+			title: "Telegram",
+			href: "https://t.me/Secpm_bot",
+			icon: () => (
+				<div class="pointer-events-none i-ci:paper-plane w-8 h-8 text-sprout-500" />
+			),
+		},
+		{
+			title: "Signature",
+			href: cfg.base_url + "/api/minisign",
+			icon: () => (
+				<div class="pointer-events-none i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />
+			),
+		},
+		{
+			title: "Pubkey",
+			href: "https://github.com/oluceps.keys",
+			icon: () => (
+				<div class="pointer-events-none i-material-symbols:key-outline w-8 h-8 text-sprout-500" />
+			),
+		},
+		{
+			title: "DN42",
+			href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
+			icon: () => (
+				<div class="pointer-events-none i-ci:planet w-8 h-8 text-sprout-500" />
+			),
+		},
+		{
+			title: "Donate",
+			href: cfg.base_url + "/api/donate",
+			icon: () => (
+				<div class="pointer-events-none i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
+			),
+		},
+		{
+			title: "Discord",
+			href: "https://discord.gg/RbFvkEPg",
+			icon: () => (
+				<div class="pointer-events-none i-ci:discord w-8 h-8 text-sprout-500" />
+			),
+		},
+		{
+			title: "Status",
+			href: "https://status.nyaw.xyz",
+			icon: () => (
+				<div class="pointer-events-none i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />
+			),
+		},
+	]);
 
 	return (
 		<>
@@ -131,8 +131,17 @@ export default function Me() {
 							<Reveal>Secirian</Reveal>
 						</div>
 						<div class="mx-auto text-[15px] sm:text-[13px] md:ml-px flex flex-col gap-2 sm:gap-1">
-							<For each={["ZHO / ENG / CDO / JPN", "BEng 4rd year", "UTC + 8?", "she / her"]}>
-								{i => <div class="pointer-events-none text-zinc-500">{i}</div>}
+							<For
+								each={[
+									"ZHO / ENG / CDO / JPN",
+									"BEng 4rd year",
+									"UTC + 8?",
+									"she / her",
+								]}
+							>
+								{(i) => (
+									<div class="pointer-events-none text-zinc-500">{i}</div>
+								)}
 							</For>
 							<div
 								id="shuffle-tag"
@@ -157,7 +166,7 @@ export default function Me() {
 						)}
 					</For>
 				</div>
-			</div >
+			</div>
 		</>
 	);
 }

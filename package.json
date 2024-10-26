@@ -37,6 +37,7 @@
     "@solid-primitives/keyboard": "^1.2.8",
     "@solid-primitives/scroll": "^2.0.23",
     "@solidjs/meta": "^0.29.4",
+    "@typ3/throwable": "^0.0.5",
     "@unocss/preset-rem-to-px": "^0.62.4",
     "@unocss/preset-web-fonts": "^0.62.4",
     "@unocss/preset-wind": "^0.62.4",
