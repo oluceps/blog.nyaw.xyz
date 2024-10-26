@@ -13,9 +13,9 @@ export async function GET(e: APIEvent) {
     branch: params.getAll("branch"),
   }
   console.log("[pr-stat] query branch", userParamsRaw.branch)
-  const plain400Rsp = (body: string) =>
-    new Response(body, {
-      headers: { "content-type": "text/plain" },
+  const plain400Rsp = (msg: string) =>
+    new Response(JSON.stringify({ type: 400, msg }), {
+      headers: { "content-type": "application/json" },
       status: 400
     })
   if (!userParamsRaw.pr)
