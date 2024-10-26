@@ -145,12 +145,12 @@ export default function Me() {
 							</For>
 							<div
 								id="shuffle-tag"
-								class="text-zinc-500 pb-1 select-none blur-md font-mono hover:blur-none transition-all"
+								class="text-zinc-500 pb-1 select-none blur-md font-sans hover:blur-none transition-all"
 								onMouseLeave={delayIncreaseIdx}
 							>
 								{randDesc[descIdx()]}
 							</div>
-							<div class="pointer-events-none text-zinc-400 not-prose">
+							<div class="pointer-events-none text-zinc-400 not-prose font-sans">
 								廿一世紀 末日未接近時出生
 							</div>
 						</div>
