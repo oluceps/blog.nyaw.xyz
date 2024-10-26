@@ -104,16 +104,6 @@ export default defineConfig({
 				"code::after": {
 					content: "none",
 				},
-				"p code": {
-					"background-color": "#e4ecdb",
-					padding: "0px 2px 0px 2px",
-					color: "#182013",
-					"border-radius": "4px",
-					display: "inline-block",
-					"line-height": 1.5,
-					"vertical-align": "text-top",
-					"font-weight": "normal"
-				},
 				a: {
 					"text-decoration-color": "#b5caa0",
 				},

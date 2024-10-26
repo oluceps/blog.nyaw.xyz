@@ -44,16 +44,16 @@ return (<For each={shuffle(mul())}>
 )
 ```
 
-好了，在本地dev模式，多刷新几次，预期的渲染是：
+好了，在本地 dev 模式，多刷新几次，预期的渲染是：
 
 <div class="flex gap-4">
   <QuickLinks title="foo" icon={() => <div class="i-material-symbols:captive-portal w-10 h-10 text-sprout-500" />} href="https://blog.nyaw.xyz/" />
   <QuickLinks title="bar" icon={() => <div class="i-material-symbols:grid-3x3-rounded w-10 h-10 text-sprout-500" />} href="https://blog.nyaw.xyz/" />
 </div>
 
-实际上在本地也确实一直是正常显示，他们的顺序也如预期随机变换(因为shuffle)
+实际上在本地也确实一直是正常显示，他们的顺序也如预期随机变换(因为 shuffle )
 
-但是部署到vercel之后，刷新它可能就变成这样：
+但是部署到 vercel 之后，刷新它可能就变成这样：
 
 
 <div class="flex gap-4">
@@ -61,9 +61,9 @@ return (<For each={shuffle(mul())}>
   <QuickLinks title="foo" icon={() => <div class="i-material-symbols:grid-3x3-rounded w-10 h-10 text-sprout-500" />} href="https://blog.nyaw.xyz/" />
 </div>
 
-`mul`是按预期的对象数组形式保持不变的，每次 shuffle 都应该保留每个 title 和对应的 icon 之间的对应关系, 但是在云端的渲染表现则不是这样，对象之内的对应关系也被打乱。虽然我有理由怀疑是缓存什么的问题，查看devtool的Element后无果。可能是solidjs的神奇编译期优化？
+`mul` 是按预期的对象数组形式保持不变的，每次 shuffle 都应该保留每个 title 和对应的 icon 之间的对应关系, 但是在云端的渲染表现则不是这样，对象之内的对应关系也被打乱。虽然我有理由怀疑是缓存什么的问题，查看 devtool 的 Element 后无果。可能是因为神奇编译期优化？
 
-最后的workaround是更改`Face` 的定义，并在调用组件内使用 `<Dynamic component={i.icon}/>{:jsx}`
+最后的workaround是更改 `Face` 的定义，并在调用组件内使用 `<Dynamic component={i.icon}/>{:jsx}`
 
 
 ```jsx
