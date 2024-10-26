@@ -13,6 +13,10 @@
 	img {
 		@apply rounded-xl;
 	}
+
+}
+*::selection {
+   @apply bg-chill-200;
 }
 
 @layer utilities {
