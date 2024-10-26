@@ -155,7 +155,7 @@ const components = {
 
 	h1: (props: ParentProps) => (
 		<div>
-			<h1 {...props} class="prose-h1 flex justify-start items-center">
+			<h1 {...props} class="prose-h1 flex justify-start items-center font-sans">
 				<div class="rounded-sm bg-sprout-300 w-5 h-5 mr-2 shadow-md" />
 				{props.children}
 			</h1>
@@ -164,7 +164,7 @@ const components = {
 	h2: (props: ParentProps) => {
 		return (
 			<>
-				<h2 {...props} class="prose-h2 flex justify-start items-center">
+				<h2 {...props} class="prose-h2 flex justify-start items-center font-sans">
 					<div class="rounded-sm bg-sprout-300 w-4.5 h-4.5 mr-2 mb-0.5 shadow-md" />
 					{props.children}
 				</h2>
@@ -173,7 +173,7 @@ const components = {
 	},
 	h3: (props: ParentProps) => {
 		return (
-			<h3 {...props} class="prose-h3 flex justify-start items-center">
+			<h3 {...props} class="prose-h3 flex justify-start items-center font-sans">
 				<div class="rounded-sm bg-sprout-300 w-4 h-4 mr-1.5 mb-px shadow-md" />
 				{props.children}
 			</h3>
@@ -181,7 +181,7 @@ const components = {
 	},
 	h4: (props: ParentProps) => {
 		return (
-			<h4 {...props} class="prose-h4 flex justify-start items-center">
+			<h4 {...props} class="prose-h4 flex justify-start items-center font-sans">
 				<div class="rounded-sm bg-sprout-300 w-3.5 h-3.5 mr-1.5 mb-px shadow-sm" />
 				{props.children}
 			</h4>
@@ -189,14 +189,14 @@ const components = {
 	},
 	h5: (props: ParentProps) => {
 		return (
-			<h5 {...props} class="prose-h5 flex justify-start items-center my-1">
+			<h5 {...props} class="prose-h5 flex justify-start items-center my-1 font-sans">
 				<div class="px-2 py-2 mr-1 rounded-sm border border-2 border-sprout-200 shadow-md" />
 				{props.children}
 			</h5>
 		);
 	},
 	h6: (props: ParentProps) => (
-		<h6 {...props} class="prose-h6 flex justify-start items-center my-1">
+		<h6 {...props} class="prose-h6 flex justify-start items-center my-1 font-sans">
 			<div class="px-1.5 py-1.5 mr-1 rounded-sm border border-2 border-sprout-200 shadow-md" />
 			{props.children}
 		</h6>
