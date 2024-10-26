@@ -63,12 +63,12 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 									content={formatDate(date)}
 								/>
 
-								<h1>{article?.title}</h1>
+								<h1 class="font-sans font-medium prose-h1">{article?.title}</h1>
 								<div class="text-zinc-500 font-serif mb-2 font-light text-sm 2xl:text-lg">
 									{formatDate(date)}
 								</div>
 
-								<div class="flex w-auto mb-10 justify-end items-end">
+								<div class="flex w-auto mb-10 justify-end items-end font-sans">
 									<Show when={1}>
 										<i class="text-pretty text-slate-500 text-start text-sm 2xl:text-lg font-mono leading-loose">
 											{article?.description}
