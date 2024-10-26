@@ -22,8 +22,9 @@ export default defineConfig({
 		},
 
 		fontFamily: {
-			sans: ["PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Wotfard"],
-			serif: ["PingFang SC", "Hiragino Sans GB", "Microsoft YaHei"],
+			sans: ["PingFang SC", "Hiragino Sans GB", "Wotfard", "TsangerYunHei W04"],
+			serif: ["PingFang SC", "Hiragino Sans GB", "Wotfard"],
+			mono: ["Microsoft YaHei"]
 		},
 
 		breakpoints: {

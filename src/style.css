@@ -1,12 +1,13 @@
 @import "./styles/transformer.css";
+@import '../public/assets/Tsanger/result.css';
 
 @font-face {
     font-family: 'Wotfard';
     font-style: normal;
     font-weight: 400;
     src: local('Wotfard'), url('/public/assets/wotfard-regular-webfont.woff2') format('woff2');
+    unicode-range:U+0000-007F;
 }
-
 
 @layer base {
 	img {
