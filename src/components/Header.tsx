@@ -20,7 +20,7 @@ const Header: Component<{ sticky: boolean }> = (props) => {
 		>
 			<A
 				href="/"
-				class="flex items-center justify-center text-lg 2xl:text-2xl font-bold rounded-sm text-sprout-650 overflow-visible group pointer-events-auto ml-3"
+				class="flex items-center justify-center text-lg 2xl:text-2xl font-semibold rounded-sm text-sprout-650 overflow-visible group pointer-events-auto ml-3"
 			>
 				<div class="relative h-4">
 					<div
@@ -29,7 +29,7 @@ const Header: Component<{ sticky: boolean }> = (props) => {
 							afterHover(),
 						)}
 					/>
-					<div class="absolute leading-none text-neutral-600 dark:text-slate-200 text-nowrap font-sans">
+					<div class="absolute leading-none text-sprout-50 text-shadow-xl dark:text-slate-200 text-nowrap font-sans">
 						{cfg.title}
 					</div>
 				</div>
