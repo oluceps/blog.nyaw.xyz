@@ -30,7 +30,6 @@ const Header: Component<{ sticky: boolean }> = (props) => {
 						)}
 					/>
 					<div class="absolute leading-none text-ouchi-200 text-shadow-xl dark:text-slate-200 text-nowrap font-sans">
-						{cfg.title}
 					</div>
 				</div>
 			</A>

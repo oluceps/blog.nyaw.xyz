@@ -114,6 +114,7 @@ export class API {
 
 export const verifiedPr = (pr: string): Throwable<number, "Invalid"> => {
 	const isValidPrNum = (raw: string) => !isNaN(Number(raw)) && Number(raw) > 0;
+	if (pr.length == 0) return Err('Invalid')
 
 	try {
 		const url = new URL(pr);
@@ -121,7 +122,7 @@ export const verifiedPr = (pr: string): Throwable<number, "Invalid"> => {
 			const assumePrN = url.pathname.split("/").slice(-1)[0];
 			if (isValidPrNum(assumePrN!)) return Ok(Number(assumePrN));
 		}
-	} catch (e) {}
+	} catch (e) { console.log(e) }
 	if (pr.startsWith("#")) {
 		const assume = pr.slice(1);
 		if (isValidPrNum(assume)) return Ok(Number(pr));
@@ -200,11 +201,9 @@ const Tracker = () => {
 						class="mx-auto p-2 border"
 						placeholder="PR Link (or number)"
 						onBeforeInput={(e) => verifiedPr(e.target.value).isOk}
-						// onInput={(e) => setQnum(verifiedPr(e.target.value).unwrap())}
-						onInput={(e) =>
-							verifiedPr(e.target.value).isOk
-								? setQnum(Number(e.target.value))
-								: setQnum(undefined)
+						onInput={(e) => {
+							if (verifiedPr(e.target.value).pipe(setQnum).isError) setQnum(undefined)
+						}
 						}
 					/>
 					<input
@@ -240,18 +239,18 @@ const Tracker = () => {
 							onClick={() =>
 								cache()?.state
 									? window.open(
-											"https://github.com/nixos/nixpkgs/commit/" +
-												cache()?.merge_commit_sha,
-										)
+										"https://github.com/nixos/nixpkgs/commit/" +
+										cache()?.merge_commit_sha,
+									)
 									: ""
 							}
 						>
 							{cache()?.state
 								? cache()?.title +
-									"\n" +
-									`from ${cache()?.user}` +
-									"\n" +
-									cache()?.state?.toUpperCase()
+								"\n" +
+								`from ${cache()?.user}` +
+								"\n" +
+								cache()?.state?.toUpperCase()
 								: !cache()?.state
 									? "Pull Req Not Found"
 									: null}

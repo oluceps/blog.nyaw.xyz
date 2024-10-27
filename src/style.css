@@ -1,11 +1,11 @@
 @import "./styles/transformer.css";
-@import '../public/assets/Tsanger/result.css';
+@import url('https://ik.imagekit.io/jbmmi2tjo/tsanger/result.css?updatedAt=1730028200536');
 
 @font-face {
     font-family: 'Wotfard';
     font-style: normal;
     font-weight: 400;
-    src: local('Wotfard'), url('/public/assets/wotfard-regular-webfont.woff2') format('woff2');
+    src: local('Wotfard'), url('/wotfard-regular-webfont.woff2') format('woff2');
     unicode-range:U+0000-007F;
 }
 

@@ -142,7 +142,7 @@ const components = {
 
 		onMount(() => {
 			if (childRef && childRef()!.parentElement) {
-				console.log('Parent tag name:', childRef()!.parentElement?.tagName);
+				// console.log('Parent tag name:', childRef()!.parentElement?.tagName);
 				if (childRef()!.parentElement?.tagName != "PRE")
 					setInlineCodeClass("bg-sprout-100 px-1 text-sprout-950 rounded-sm inline-block font-medium leading-tight");
 			}
