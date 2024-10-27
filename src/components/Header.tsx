@@ -11,7 +11,7 @@ const Header: Component<{ sticky: boolean }> = (props) => {
 	const [afterHover, setAfterHover] = createSignal("");
 
 	createEffect(() => {
-		setAfterHover(scroll.y > 350 ? "bg-sprout-200 top-1.5 left-1.5" : "");
+		setAfterHover(scroll.y > 350 ? "bg-sprout-200 top-0 left-0" : "");
 	});
 
 	return (
@@ -30,6 +30,7 @@ const Header: Component<{ sticky: boolean }> = (props) => {
 						)}
 					/>
 					<div class="absolute leading-none text-ouchi-200 text-shadow-xl dark:text-slate-200 text-nowrap font-sans">
+						<div class="i-ci:leaf w-6 h-6 text-sprout-600"/>
 					</div>
 				</div>
 			</A>
