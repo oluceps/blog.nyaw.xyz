@@ -143,6 +143,7 @@ const Tracker = () => {
 	const [cache, setCache] = createSignal<
 		PrMeta & {
 			merge: MergeStats;
+			num: number;
 		}
 	>();
 
@@ -164,6 +165,7 @@ const Tracker = () => {
 		branchStatus.set(branch, true);
 	};
 	const startQuery = async () => {
+		const querying = qnum()!;
 		resetBranchStatus();
 		setLoading(true);
 		setShowPanel(false);
@@ -176,7 +178,7 @@ const Tracker = () => {
 		const ret0 = (
 			await api.chk(commonBranch, meta.value.merge_commit_sha, setWhichTrue)
 		).unwrap();
-		setCache({ ...meta.unwrap(), merge: ret0 });
+		setCache({ ...meta.unwrap(), merge: ret0, num: querying });
 		console.log(cache());
 
 		setLoading(false);
@@ -229,18 +231,25 @@ const Tracker = () => {
 						<div
 							class={twMerge(
 								"h-full p-2 text-zink-800 rounded-md shadow-md opacity-85 w-full font-mono whitespace-break-spaces text-center",
-								cache()?.state == "merged"
-									? "bg-violet-200"
-									: cache()?.state == "closed"
-										? "bg-red-200"
-										: "bg-yellow-200",
+								(() => {
+									switch (cache()?.state) {
+										case "merged":
+											return "bg-violet-200"
+										case "closed":
+											return "bg-red-200"
+										case "open":
+											return "bg-sprout-100"
+										default:
+											return "bg-yellow-200"
+									}
+								})(),
 								showPanel() ? "opacity-100" : "opacity-0",
 							)}
 							onClick={() =>
 								cache()?.state
 									? window.open(
-										"https://github.com/nixos/nixpkgs/commit/" +
-										cache()?.merge_commit_sha,
+										"https://github.com/nixos/nixpkgs/pull/" +
+										cache()?.num,
 									)
 									: ""
 							}
