@@ -113,7 +113,7 @@ export default function Me() {
 						<div class="relative my-8 md:mx-20 md:my-16 xl:my-24 xl:mr-28">
 							<img
 								class="w-36 h-36 sm:w-28 sm:h-28 md:w-48 md:h-48 md:rounded-xl rounded-full not-prose"
-								src="https://s3.nyaw.xyz/misskey//d8d5edcb-ab40-49fb-807e-e0954575ae4d.webp"
+								src="/avatar.webp"
 								alt="avatar brown hair girl from https://www.pixiv.net/users/20817694"
 								loading="lazy"
 								onClick={() =>
