@@ -157,7 +157,7 @@ export default function Me() {
 					</div>
 				</div>
 
-				<div class="flex gap-3 transition-all justify-between duration-500 overflow-x-scroll sm:overflow-visible pb-3 sm:py-0">
+				<div class="flex gap-3 transition-all justify-between duration-500 overflow-x-scroll scrollbar-none sm:overflow-visible pb-3 sm:py-0">
 					<For each={shuffle(qlProps()).slice(0, 6)}>
 						{(i) => (
 							<div class="flex-none hover:flex-1 transition-all duration-500 delay-75">

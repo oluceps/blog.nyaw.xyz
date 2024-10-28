@@ -8,7 +8,7 @@ import {
 	presetWind,
 	presetWebFonts
 } from "unocss";
-
+import { presetScrollbar } from 'unocss-preset-scrollbar'
 
 export default defineConfig({
 	transformers: [transformerDirectives()],
@@ -119,6 +119,7 @@ export default defineConfig({
 		}),
 		presetWind(),
 		presetIcons(),
+		presetScrollbar({}),
 		presetWebFonts({
 			provider: 'bunny',
 			fonts: {
