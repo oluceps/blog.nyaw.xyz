@@ -23,7 +23,7 @@ export default defineConfig({
 
 		fontFamily: {
 			sans: ["PingFang SC", "Hiragino Sans GB", "Wotfard", "TsangerYunHei W04"],
-			serif: ["PingFang SC", "Hiragino Sans GB", "Wotfard"],
+			serif: ["PingFang SC", "Hiragino Sans GB", "Wotfard", "Microsoft YaHei"],
 			mono: ["Microsoft YaHei"]
 		},
 
