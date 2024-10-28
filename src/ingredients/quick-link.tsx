@@ -24,9 +24,7 @@ export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => (
 			</a>
 
 			<div class="flex items-center justify-center m-4">
-				<div>
-					<Dynamic component={props.icon} />
-				</div>
+				<Dynamic component={props.icon} />
 
 				<p
 					class={twMerge(
