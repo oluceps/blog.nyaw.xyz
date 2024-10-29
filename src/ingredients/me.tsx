@@ -77,13 +77,13 @@ export default function Me() {
 				<div class="pointer-events-none i-ci:discord w-8 h-8 text-sprout-500" />
 			),
 		},
-		{
-			title: "Status",
-			href: "https://status.nyaw.xyz",
-			icon: () => (
-				<div class="pointer-events-none i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />
-			),
-		},
+		// {
+		// 	title: "Status",
+		// 	href: "https://status.nyaw.xyz",
+		// 	icon: () => (
+		// 		<div class="pointer-events-none i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />
+		// 	),
+		// },
 	]);
 
 	return (
