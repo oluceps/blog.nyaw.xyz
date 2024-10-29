@@ -21,13 +21,13 @@ const Footer: Component = () => {
 	}
 	return (
 		<div class="relative bottom-0 w-full justify-between text-[10px] flex-nowrap flex">
-			<div class="flex items-center ml-1 px-0.5 my-1 hover:cursor-pointer group transition-all hover:bg-zinc-200 rounded-sm" onclick={() => window.open("https://status.nyaw.xyz", "_blank")}>
+			<div class="flex items-center ml-1 px-0.5 my-1 hover:cursor-pointer group transition-all hover:bg-gray-200 rounded-sm" onclick={() => window.open("https://status.nyaw.xyz", "_blank")}>
 				<Show when={systat()}>
 					{(how) => {
 						const stat = how().down === 0 ? "up" : how().up === 0 ? "down" : "downgrade" as keyof typeof enumStat;
 						return <div class="flex items-center gap-1 group">
 							<div class={twMerge("w-2.5 h-2.5 rounded-full", enumStat[stat].color)} />
-							<div class="group-hover:opacity-100 opacity-0 text-zinc-500">{enumStat[stat].text}</div>
+							<div class="group-hover:opacity-100 opacity-0 text-zinc-600">{enumStat[stat].text}</div>
 						</div>
 					}}
 				</Show>
