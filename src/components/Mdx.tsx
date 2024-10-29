@@ -217,7 +217,7 @@ const components = {
 		</h6>
 	),
 	blockquote: (props: ParentProps) => (
-		<blockquote class="flex items-center not-prose text-base not-italic font-normal text-zinc-500 my-3">
+		<blockquote class="flex items-center text-base not-italic font-normal text-zinc-500 my-3">
 			<div class="text-xl md:text-3xl text-sprout-400 mr-2">"</div>
 			{props.children}
 			<div class="text-xl md:text-3xl text-sprout-400 mr-2">"</div>
