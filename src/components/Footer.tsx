@@ -15,9 +15,9 @@ const Footer: Component = () => {
 	};
 	const [systat] = createResource(() => fetchOnlineStatus())
 	const enumStat = {
-		up: { color: "bg-sprout-300", text: "All System Operational" },
+		up: { color: "bg-sprout-300", text: "All Systems Operational" },
 		downgrade: { color: "bg-yellow-200", text: "System Downgraded" },
-		down: { color: "bg-red-200", text: "System Down" }
+		down: { color: "bg-red-200", text: "Systems Down" }
 	}
 	return (
 		<div class="relative bottom-0 w-full justify-between text-[10px] flex-nowrap flex">
