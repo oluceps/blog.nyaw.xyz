@@ -15,19 +15,19 @@ const Footer: Component = () => {
 	};
 	const [systat] = createResource(() => fetchOnlineStatus())
 	const enumStat = {
-		up: { color: "bg-sprout-300", text: "System Operational" },
+		up: { color: "bg-sprout-300", text: "All System Operational" },
 		downgrade: { color: "bg-yellow-200", text: "System Downgraded" },
 		down: { color: "bg-red-200", text: "System Down" }
 	}
 	return (
-		<div class="relative bottom-0 w-full justify-between text-[10px] group flex-nowrap flex">
-			<div class="flex items-center ml-1 px-0.5 my-0.5 hover:cursor-pointer hover:bg-zinc-200 rounded-sm" onclick={() => window.open("https://status.nyaw.xyz", "_blank")}>
+		<div class="relative bottom-0 w-full justify-between text-[10px] flex-nowrap flex">
+			<div class="flex items-center ml-1 px-0.5 my-1 hover:cursor-pointer group transition-all hover:bg-zinc-200 rounded-sm" onclick={() => window.open("https://status.nyaw.xyz", "_blank")}>
 				<Show when={systat()}>
 					{(how) => {
 						const stat = how().down === 0 ? "up" : how().up === 0 ? "down" : "downgrade" as keyof typeof enumStat;
-						return <div class="flex items-center gap-0.5">
+						return <div class="flex items-center gap-1 group">
 							<div class={twMerge("w-2.5 h-2.5 rounded-full", enumStat[stat].color)} />
-							<div class="leading-tight text-zinc-500">{enumStat[stat].text}</div>
+							<div class="group-hover:opacity-100 opacity-0 text-zinc-500">{enumStat[stat].text}</div>
 						</div>
 					}}
 				</Show>
