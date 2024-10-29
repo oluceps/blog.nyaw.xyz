@@ -70,13 +70,13 @@ export default function Me() {
 				<div class="pointer-events-none i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
 			),
 		},
-		{
-			title: "Discord",
-			href: "https://discord.gg/RbFvkEPg",
-			icon: () => (
-				<div class="pointer-events-none i-ci:discord w-8 h-8 text-sprout-500" />
-			),
-		},
+		// {
+		// 	title: "Discord",
+		// 	href: "https://discord.gg/RbFvkEPg",
+		// 	icon: () => (
+		// 		<div class="pointer-events-none i-ci:discord w-8 h-8 text-sprout-500" />
+		// 	),
+		// },
 		// {
 		// 	title: "Status",
 		// 	href: "https://status.nyaw.xyz",
