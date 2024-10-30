@@ -38,7 +38,7 @@ export default {
 	],
 	about: {
 		tags: [
-			"Epicureanism",
+			"恋词癖",
 			"Still Alive!",
 			"不用睡觉",
 			"业余画师",
