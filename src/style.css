@@ -16,7 +16,7 @@
 
 }
 *::selection {
-   @apply bg-chill-200;
+   @apply bg-[#CCCAFC];
 }
 
 @layer utilities {
