@@ -25,7 +25,7 @@ const Header: Component<{ sticky: boolean }> = (props) => {
 				<div class="relative h-4">
 					<div
 						class={twMerge(
-							"absolute h-4 w-4 -top-1.5 -left-1.5 bg-sprout-300 dark:bg-sprout-400 rounded-sm transition-all duration-500 delay-300 transform-gpu",
+							"absolute h-4 w-4 -top-1.5 -left-1.5 bg-sprout-300 dark:bg-sprout-400 rounded-full transition-all duration-500 delay-300 transform-gpu",
 							afterHover(),
 						)}
 					/>
