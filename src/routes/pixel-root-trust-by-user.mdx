@@ -12,6 +12,8 @@ title: Pixel AVB 自签名
 ---
 本文描述使用 [avbroot](https://github.com/chenxiaolong/avbroot) 和自己的密钥对 Pixel 的OTA包进行patch，以及刷入 AVB custom key 的过程。
 
+在 `Pixel 7 Pro` 和 `Pixel 8` 设备上试验正常。
+
 这些步骤旨在：
 
 + 提升安全性，使用自己的证书进行签名，减少攻击面。
@@ -182,7 +184,7 @@ fastboot flash avb_custom_key /path/to/avb_pkmd.bin
 
 7. **[可选]** 在锁定引导加载程序之前，先重启到 Android 系统以确认所有内容均已正确签名。
 
-安装 Magisk 或 KernelSU 应用程序并运行以依据需求可：
+安装 Magisk 或 KernelSU 应用程序，并将手机连接电脑运行：
 
 ```bash
 adb shell su -c 'dmesg | grep libfs_avb'
