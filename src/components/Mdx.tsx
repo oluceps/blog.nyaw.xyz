@@ -243,7 +243,7 @@ const components = {
 		</ul>
 	),
 	ol: (props: ParentProps) => (
-		<ol {...props} class="list-decimal pl-8 mb-2 marker:text-sprout-400">
+		<ol {...props} class="list-decimal pl-8 mb-2 marker:text-sprout-500">
 			{props.children}
 		</ol>
 	),
