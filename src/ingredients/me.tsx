@@ -136,7 +136,7 @@ export default function Me() {
 									"ZHO / ENG / CDO / JPN",
 									"BEng 4rd year",
 									"UTC + 8?",
-									"she / her",
+									// "she / her",
 								]}
 							>
 								{(i) => (
