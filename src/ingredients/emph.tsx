@@ -25,7 +25,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 				<div class={twMerge(`h-7 w-7 text-red-400`, icons[props.type])} />
 			),
 			border: (props: ParentProps) => (
-				<div class="w-full outline-1 outline-red-300 outline-dashed rounded-md bg-[#fee2e5] p-2 sm:py-4 sm:px-6">
+				<div class="w-full outline-1 outline-red-300 outline-dashed rounded-md bg-[#fff1f2] p-2 sm:py-4 sm:px-6">
 					{props.children}
 				</div>
 			),
@@ -47,7 +47,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 				<div class={twMerge(`h-7 w-7 text-ouchi-500`, icons[props.type])} />
 			),
 			border: (props: ParentProps) => (
-				<div class="w-full outline-1 outline-chill-300 outline-dashed rounded-md bg-chill-100 p-2 sm:py-4 sm:px-6 my-2">
+				<div class="w-full outline-1 outline-chill-300 outline-dashed rounded-md bg-chill-50 p-2 sm:py-4 sm:px-6 my-2">
 					{props.children}
 				</div>
 			),
@@ -58,7 +58,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 				<div class={twMerge(`h-7 w-7 text-ouchi-400`, icons[props.type])} />
 			),
 			border: (props: ParentProps) => (
-				<div class="w-full outline-1 outline-ouchi-300 outline-dashed rounded-md bg-ouchi-100 p-2 sm:py-4 sm:px-6 my-2">
+				<div class="w-full outline-1 outline-ouchi-300 outline-dashed rounded-md bg-ouchi-50 p-2 sm:py-4 sm:px-6 my-2">
 					{props.children}
 				</div>
 			),
@@ -77,9 +77,9 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 			</div>
 
 			<div class="flex overflow-x-scroll">
-				<p>
+				<div>
 					{props.children}
-				</p>
+				</div>
 			</div>
 		</Dynamic>
 	);
