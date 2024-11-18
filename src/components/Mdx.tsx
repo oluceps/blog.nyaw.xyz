@@ -144,7 +144,7 @@ const components = {
 			if (childRef && childRef()!.parentElement) {
 				// console.log('Parent tag name:', childRef()!.parentElement?.tagName);
 				if (childRef()!.parentElement?.tagName != "PRE")
-					setInlineCodeClass("bg-sprout-100 px-1 text-sprout-950 rounded-sm inline-block font-medium leading-tight text-ellipsis");
+					setInlineCodeClass("bg-sprout-100 px-1 text-sprout-950 rounded-sm inline-block flex-none font-medium leading-tight");
 			}
 		});
 		return <code ref={setChildRef} class={inlineCodeClass()}>{props.children}</code>;
@@ -237,13 +237,13 @@ const components = {
 	ul: (props: ParentProps) => (
 		<ul
 			{...props}
-			class="pl-6 mb-2 list-disc decoration-sprout-300 marker:text-sprout-400 overflow-hidden"
+			class="pl-6 mb-2 list-disc decoration-sprout-300 marker:text-sprout-400 overflow-x-scroll"
 		>
 			{props.children}
 		</ul>
 	),
 	ol: (props: ParentProps) => (
-		<ol {...props} class="list-decimal pl-8 mb-2 marker:text-sprout-500">
+		<ol {...props} class="list-decimal pl-8 mb-2 marker:text-sprout-500 overflow-scroll">
 			{props.children}
 		</ol>
 	),

@@ -25,7 +25,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 				<div class={twMerge(`h-7 w-7 text-red-400`, icons[props.type])} />
 			),
 			border: (props: ParentProps) => (
-				<div class="w-full outline-1 outline-red-300 outline-dashed rounded-md bg-[#fee2e5] py-4 px-6">
+				<div class="w-full outline-1 outline-red-300 outline-dashed rounded-md bg-[#fee2e5] p-2 sm:py-4 sm:px-6">
 					{props.children}
 				</div>
 			),
@@ -36,7 +36,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 				<div class={twMerge(`h-7 w-7 text-sprout-400`, icons[props.type])} />
 			),
 			border: (props: ParentProps) => (
-				<div class="w-full outline-1 outline-sprout-300 outline-dashed rounded-md bg-sprout-100 py-4 px-6 my-2">
+				<div class="w-full outline-1 outline-sprout-300 outline-dashed rounded-md bg-sprout-50 p-2 sm:py-4 sm:px-6 my-2">
 					{props.children}
 				</div>
 			),
@@ -47,7 +47,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 				<div class={twMerge(`h-7 w-7 text-ouchi-500`, icons[props.type])} />
 			),
 			border: (props: ParentProps) => (
-				<div class="w-full outline-1 outline-chill-300 outline-dashed rounded-md bg-chill-100 py-4 px-6 my-2">
+				<div class="w-full outline-1 outline-chill-300 outline-dashed rounded-md bg-chill-100 p-2 sm:py-4 sm:px-6 my-2">
 					{props.children}
 				</div>
 			),
@@ -58,7 +58,7 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 				<div class={twMerge(`h-7 w-7 text-ouchi-400`, icons[props.type])} />
 			),
 			border: (props: ParentProps) => (
-				<div class="w-full outline-1 outline-ouchi-300 outline-dashed rounded-md bg-ouchi-100 py-4 px-6 my-2">
+				<div class="w-full outline-1 outline-ouchi-300 outline-dashed rounded-md bg-ouchi-100 p-2 sm:py-4 sm:px-6 my-2">
 					{props.children}
 				</div>
 			),
@@ -67,29 +67,20 @@ export const Emph: ParentComponent<EmphProps> = (props) => {
 
 	return (
 		<Dynamic component={styleOpts[props.type].border}>
-			<div class="flex flex-col items-start prose">
+			<div class="flex flex-col items-start prose flex-initial">
 				<div class="flex items-center">
 					<Dynamic component={styleOpts[props.type].icon} />
 					<div class="text-lg text-slate-600 font-bold capitalize no-underline pl-3">
 						{styleOpts[props.type].text}
 					</div>
 				</div>
-				<div class="whitespace-nowrap text-wrap mt-2">{props.children}</div>
+			</div>
+
+			<div class="flex overflow-x-scroll">
+				<p>
+					{props.children}
+				</p>
 			</div>
 		</Dynamic>
 	);
 };
-// <Dynamic component={styleOpts[props.type].border}>
-
-//   <div class="relative overflow-hidden rounded-xl px-5 py-4">
-//     <div class="flex items-center">
-//       <Dynamic component={styleOpts[props.type].icon} />
-//       <div class="text-xl text-slate-900 dark:text-white capitalize no-underline pl-3">
-//         {styleOpts[props.type].text}
-//       </div>
-//     </div>
-//     <p class="text-[0.91rem] pl-1 text-balance text-slate-800 dark:text-slate-300 -mb-2">
-//       {props.children}
-//     </p>
-//   </div>
-// </Dynamic>
