@@ -125,7 +125,7 @@ export const verifiedPr = (pr: string): Throwable<number, "Invalid"> => {
 	} catch (e) { console.log(e) }
 	if (pr.startsWith("#")) {
 		const assume = pr.slice(1);
-		if (isValidPrNum(assume)) return Ok(Number(pr));
+		if (isValidPrNum(assume)) return Ok(Number(assume));
 	}
 	if (isValidPrNum(pr)) {
 		return Ok(Number(pr));
