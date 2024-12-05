@@ -50,7 +50,7 @@ const imgContent = (
 	<Switch
 		fallback={
 			<img
-				class={`w-full rounded-sm ${props.class}`}
+				class={`w-full ${props.class}`}
 				src={props.src}
 				alt={props.alt}
 				loading="lazy"
@@ -59,7 +59,7 @@ const imgContent = (
 	>
 		<Match when={!props.src.startsWith("http")}>
 			<img
-				class={`w-full rounded-sm ${props.class}`}
+				class={`w-full ${props.class}`}
 				src={cfg.obj_store + "/" + props.src}
 				alt={props.alt}
 				loading="lazy"
