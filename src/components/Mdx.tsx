@@ -85,7 +85,7 @@ const imgContent = (
 );
 
 const components = {
-	p: (props: ParentProps) => <p {...props} class="font-sans text-base">{props.children}</p>,
+	p: (props: ParentProps) => <p {...props} class="leading-relaxed font-sans text-base">{props.children}</p>,
 	nav: (props: ParentProps) => <nav {...props}>{props.children}</nav>,
 	TesterComponent: () => (
 		<p>
