@@ -44,20 +44,39 @@ export const Arti: Component = () => {
 				<Show
 					when={
 						ctx()
-						// ?.filter((n) => {
-						// 	if (!limit()) return true
-						// 	if (n.hideLevel > 9) return true
-						// 	return false
-						// })
 					}
 				>
 					{(data) => {
 						const dataArray = Array.from(data());
-						const getSeason = (d: Date) =>
-							Math.floor((d.getMonth() / 12) * 4) % 4;
+						const solarTerms = {
+							"立春": { month: 2, day: 4 },   // 2月4日左右
+							"立夏": { month: 5, day: 6 },   // 5月6日左右
+							"立秋": { month: 8, day: 8 },   // 8月8日左右
+							"立冬": { month: 11, day: 7 }   // 11月7日左右
+						};
+
+						function getSeason(date: Date): number {
+							const year = date.getFullYear();
+							const { "立春": lichun, "立夏": lixia, "立秋": liqiu, "立冬": lidong } = solarTerms;
+
+							const lichunDate = new Date(year, lichun.month - 1, lichun.day);
+							const lixiaDate = new Date(year, lixia.month - 1, lixia.day);
+							const liqiuDate = new Date(year, liqiu.month - 1, liqiu.day);
+							const lidongDate = new Date(year, lidong.month - 1, lidong.day);
+
+							if (date >= lichunDate && date < lixiaDate) {
+								return 0; // 春
+							} else if (date >= lixiaDate && date < liqiuDate) {
+								return 1; // 夏
+							} else if (date >= liqiuDate && date < lidongDate) {
+								return 2; // 秋
+							} else {
+								return 3; // 冬
+							}
+						}
 						const harvest: Array<number> = new Array();
 
-						const HARVEST_LIMIT = 8;
+						const HARVEST_LIMIT = 8; // regular desktop screen height allows
 						let count = 0;
 						let prev = 0;
 						for (const i of dataArray) {
@@ -94,7 +113,7 @@ export const Arti: Component = () => {
 												}
 											>
 												<div class="ml-1 md:ml-4 2xl:text-xl font-sans font-normal text-slate-500 dark:text-chill-100">
-													{["冬", "春", "夏", "秋"][getSeason(attr().date)]}
+													{["春", "夏", "秋", "冬"][getSeason(attr().date)]}
 												</div>
 											</Show>
 											<Suspense fallback="h-8 my-3 w-full skeleton">
