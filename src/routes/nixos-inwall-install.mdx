@@ -17,7 +17,7 @@ toc: true
 
 + Channel
 
-  狭义指 [nix channels](https://nixos.wiki/wiki/Nix_channels)，属于旧的 nix 系列命令。引申为 nixpkgs 的所有branch, 包括 `master`, `nixos-unstable` 等。在某些镜像站的文档中，可能与二进制缓存（见下）混淆。如 [ustc镜像站](https://mirrors.ustc.edu.cn/help/nix-channels.html)，使用不同path区分channel和二进制缓存（如 /nixos-unsable 和 /store）。
+  狭义指 [nix channels](https://nixos.wiki/wiki/Nix_channels)，属于旧的 nix- 系列命令。引申为 nixpkgs 的所有branch, 包括 `master`, `nixos-unstable` 等。在某些镜像站的文档中，可能与二进制缓存（见下）混淆。如 [ustc镜像站](https://mirrors.ustc.edu.cn/help/nix-channels.html)，使用不同path区分channel和二进制缓存（如 /nixos-unstable 和 /store）。
 
 + Binary Cache (二进制缓存)
 
@@ -87,11 +87,13 @@ nixpkgs已经包含大量相关工具和设施，相见[tracking issue](https://
 
 ## 镜像
 
++ [flake](https://wiki.nixos.org/wiki/Flakes) 是一种狭义 nix channel 的替代。作用是更好地锁定版本。
+
 <Emph type="note">如果你使用flake，则无法正常使用channel镜像，但是由于它支持所有git仓库，你可以指定任意国内的nixpkgs git仓库镜像。但是我没找到。</Emph>
 
 ### 初次安装
 
-我们假定你不使用flake了。[flake](https://wiki.nixos.org/wiki/Flakes) 是一种狭义 nix channel 的替代。作用是更好地锁定版本。
+出于上述原因，我们先假定你不使用flake了。
 
 参考 [ustc镜像站](https://mirrors.ustc.edu.cn/help/nix-channels.html) 的添加流程。你也可以选择国内的 sjtu、tuna、bfsu 的镜像，看地区和个人喜好来。
 
