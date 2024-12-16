@@ -31,7 +31,7 @@ export async function GET(e: APIEvent) {
   const repo = userParamsRaw.repo || "nixos/nixpkgs";
   const api = new API(repo, userParamsRaw.token ? { Authorization: `token ${userParamsRaw.token}` } : {})
 
-  let toQueryBranches: string[] = (userParamsRaw.branch.length == 0) ? commonBranch : userParamsRaw.branch;
+  const toQueryBranches: string[] = (userParamsRaw.branch.length == 0) ? commonBranch : userParamsRaw.branch;
 
   const meta = await vdPr.pipe(async p => await api.getMeta(p)).unwrap();
 
