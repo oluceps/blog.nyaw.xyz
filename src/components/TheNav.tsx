@@ -24,7 +24,7 @@ export default function Home() {
 	const handleScroll = () => {
 		setIsScrolling(true);
 		clearTimeout(scrollTimeout);
-		scrollTimeout = window.setTimeout(() => setIsScrolling(false), 100);
+		scrollTimeout = window.setTimeout(() => setIsScrolling(false), 70);
 	};
 
 	onMount(() => {
