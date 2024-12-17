@@ -20,12 +20,7 @@ export default function Home() {
 		tabRefs()[hoveredIdx() ?? -1]?.getBoundingClientRect(),
 	);
 	const handleScroll = () => {
-		if (hoveredIdx() !== null) {
-			const tab = tabRefs()[hoveredIdx() ?? -1];
-			if (tab) {
-				setHoveredTab(tab.getBoundingClientRect());
-			}
-		}
+		setHoveredTab(undefined)
 	};
 
 	let ticking = false;
