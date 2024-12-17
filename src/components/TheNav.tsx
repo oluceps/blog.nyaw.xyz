@@ -1,5 +1,5 @@
 import { cache, createAsync, useNavigate } from "@solidjs/router";
-import { createEffect, createSignal, For, Show } from "solid-js";
+import { createEffect, createSignal, For, onCleanup, onMount, Show } from "solid-js";
 import { Motion, Presence } from "solid-motionone";
 import cfg from "../constant";
 import { useLocation } from "@solidjs/router";
@@ -16,9 +16,24 @@ export default function Home() {
 	const [hoveredTab, setHoveredTab] = createSignal<DOMRect | undefined>(
 		tabRefs()[hoveredIdx() ?? -1]?.getBoundingClientRect(),
 	);
+	const [isScrolling, setIsScrolling] = createSignal(false);
+	let scrollTimeout: number | undefined;
+
+	// since the element position determined while scrolling is not consistent with
+	// which final position is, we don't allow determine hoveredTab DOMRect while scrolling.
+	const handleScroll = () => {
+		setIsScrolling(true);
+		clearTimeout(scrollTimeout);
+		scrollTimeout = window.setTimeout(() => setIsScrolling(false), 100);
+	};
+
+	onMount(() => {
+		window.addEventListener("scroll", handleScroll);
+		onCleanup(() => window.removeEventListener("scroll", handleScroll));
+	});
 
 	createEffect(() => {
-		setHoveredTab(tabRefs()[hoveredIdx() ?? -1]?.getBoundingClientRect());
+		setHoveredTab(!isScrolling() ? tabRefs()[hoveredIdx() ?? -1]?.getBoundingClientRect() : undefined);
 	});
 
 	return (
