@@ -4,6 +4,8 @@ import { Motion, Presence } from "solid-motionone";
 import cfg from "../constant";
 import { useLocation } from "@solidjs/router";
 import { twMerge } from "tailwind-merge";
+import { createScrollPosition, getScrollPosition } from "@solid-primitives/scroll";
+
 
 export default function Home() {
 	const menu = cfg.menu;
@@ -12,28 +14,40 @@ export default function Home() {
 	type TabRef = HTMLButtonElement | null;
 	const [tabRefs] = createSignal<TabRef[]>([]);
 
+
 	const [hoveredIdx, setHoveredIdx] = createSignal<number | null>(null);
 	const [hoveredTab, setHoveredTab] = createSignal<DOMRect | undefined>(
 		tabRefs()[hoveredIdx() ?? -1]?.getBoundingClientRect(),
 	);
-	const [isScrolling, setIsScrolling] = createSignal(false);
-	let scrollTimeout: number | undefined;
-
-	// since the element position determined while scrolling is not consistent with
-	// which final position is, we don't allow determine hoveredTab DOMRect while scrolling.
 	const handleScroll = () => {
-		setIsScrolling(true);
-		clearTimeout(scrollTimeout);
-		scrollTimeout = window.setTimeout(() => setIsScrolling(false), 90);
+		if (hoveredIdx() !== null) {
+			const tab = tabRefs()[hoveredIdx() ?? -1];
+			if (tab) {
+				setHoveredTab(tab.getBoundingClientRect());
+			}
+		}
+	};
+
+	let ticking = false;
+	const scrollLoop = () => {
+		if (!ticking) {
+			window.requestAnimationFrame(() => {
+				handleScroll();
+				ticking = false;
+			});
+			ticking = true;
+		}
 	};
 
 	onMount(() => {
-		window.addEventListener("scroll", handleScroll);
-		onCleanup(() => window.removeEventListener("scroll", handleScroll));
+		window.addEventListener("scroll", scrollLoop);
+		onCleanup(() => {
+			window.removeEventListener("scroll", scrollLoop);
+		});
 	});
 
 	createEffect(() => {
-		setHoveredTab(!isScrolling() ? tabRefs()[hoveredIdx() ?? -1]?.getBoundingClientRect() : undefined);
+		setHoveredTab(tabRefs()[hoveredIdx() ?? -1]?.getBoundingClientRect());
 	});
 
 	return (
