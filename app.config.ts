@@ -107,6 +107,7 @@ export default defineConfig({
 		],
 	},
 	server: {
+		compatibilityDate: '2024-12-17',
 		preset: "vercel-edge",
 		prerender: {
 			crawlLinks: true,
