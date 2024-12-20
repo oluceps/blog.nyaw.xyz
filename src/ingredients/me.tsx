@@ -70,6 +70,13 @@ export default function Me() {
 				<div class="pointer-events-none i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
 			),
 		},
+		{
+			title: "Simplex",
+			href: "https://simplex.chat/contact#/?v=2-7&smp=smp%3A%2F%2FZKe4uxF4Z_aLJJOEsC-Y6hSkXgQS5-oc442JQGkyP8M%3D%40smp17.simplex.im%2FVqvpzoTtMd9S9G4bcDGZjnwfYfX2g5Fo%23%2F%3Fv%3D1-3%26dh%3DMCowBQYDK2VuAyEA4wYBaT68Co9uhtxf71aNMOqOAvAzqbEoWANy5TiZdmY%253D%26srv%3Dogtwfxyi3h2h5weftjjpjmxclhb5ugufa5rcyrmg7j4xlch7qsr5nuqd.onion",
+			icon: () => (
+				<div class="pointer-events-none i-material-symbols:grid-3x3-rounded rotate-45 w-8 h-8 text-sprout-500" />
+			),
+		},
 		// {
 		// 	title: "Discord",
 		// 	href: "https://discord.gg/RbFvkEPg",
