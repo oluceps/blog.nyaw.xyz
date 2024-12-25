@@ -91,7 +91,7 @@ $ yubico-piv-tool -a verify-pin -a request-certificate -s 9c -S '/CN=digi_sign/O
 
 # 用 ROOT CA 签名
 
-<Emph type="warn">截止 17 Dec 02:29:29 canokey canary 于此方案存在问题，CSR被签名会出现报错且不成功。Yubikey 5 NFC 经测试没有问题。</Emph>
+<Emph type="warn">截止 17 Dec 02:29:29 canokey canary 3.0.0 于此方案存在问题，CSR被签名会出现报错且不成功，见[discuss](https://github.com/canokeys/canokey-product/discussions/28)。Yubikey 5 NFC 经测试没有问题。</Emph>
 
 不存在硬件密钥A的情况，使用文件CA签：
 
