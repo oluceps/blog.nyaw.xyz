@@ -65,7 +65,7 @@ export default function Home() {
 								useLocation().pathname.length != 1
 								? "bg-sprout-100 text-neutral-700/80"
 								: "",
-						)}
+							tab.url == "/me" ? "[&:not(:hover)]:opacity-0" : "")}
 						onpointerenter={() => {
 							setHoveredIdx(idx);
 						}}

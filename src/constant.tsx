@@ -20,7 +20,7 @@ export default {
 	license: "CC BY-SA 4.0",
 	menu: [
 		{
-			name: "关于",
+			name: "我?",
 			url: "/me",
 		},
 		{
