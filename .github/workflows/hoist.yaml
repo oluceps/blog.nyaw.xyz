@@ -34,4 +34,4 @@ jobs:
 
       - name: Clean The Corp
         run: |
-          curl -s -X DELETE -u ${{ steps.generate_token.outputs.token }} https://api.github.com/repos/${{ github.repository }}/git/refs/heads/${{ github.head_ref }}
+          curl -s -X DELETE --header "Authorization: Bearer ${{ steps.generate_token.outputs.token }}" https://api.github.com/repos/${{ github.repository }}/git/refs/heads/${{ github.head_ref }}
