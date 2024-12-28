@@ -35,13 +35,13 @@ export default function Me() {
 				<div class="pointer-events-none i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />
 			),
 		},
-		{
-			title: "Telegram",
-			href: "https://t.me/Secpm_bot",
-			icon: () => (
-				<div class="pointer-events-none i-ci:paper-plane w-8 h-8 text-sprout-500" />
-			),
-		},
+		// {
+		// 	title: "Telegram",
+		// 	href: "https://t.me/Secpm_bot",
+		// 	icon: () => (
+		// 		<div class="pointer-events-none i-ci:paper-plane w-8 h-8 text-sprout-500" />
+		// 	),
+		// },
 		{
 			title: "Signature",
 			href: cfg.base_url + "/api/minisign",
@@ -56,13 +56,13 @@ export default function Me() {
 				<div class="pointer-events-none i-material-symbols:key-outline w-8 h-8 text-sprout-500" />
 			),
 		},
-		{
-			title: "DN42",
-			href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
-			icon: () => (
-				<div class="pointer-events-none i-ci:planet w-8 h-8 text-sprout-500" />
-			),
-		},
+		// {
+		// 	title: "DN42",
+		// 	href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
+		// 	icon: () => (
+		// 		<div class="pointer-events-none i-ci:planet w-8 h-8 text-sprout-500" />
+		// 	),
+		// },
 		{
 			title: "Donate",
 			href: cfg.base_url + "/api/donate",
