@@ -57,7 +57,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 								/>
 								<Meta
 									property="og:image"
-									content={cfg.base_url + "/api" + `?title=${article.title}`}
+									content={cfg.base_url + "/api/og" + `?title=${article.title}`}
 								/>
 								<Meta property="og:title" content={cfg.title} />
 								<Meta property="og:description" content={cfg.description} />
