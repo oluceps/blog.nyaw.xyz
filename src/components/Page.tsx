@@ -47,7 +47,7 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 					if (article) {
 						const date = new Date(article.date);
 						return (
-							<article class="antialiased prose font-sans md:max-w-2/3 2xl:prose-lg dark:prose-invert justify-self-center mx-auto mb-16 w-full mt-10 break-words">
+							<>
 								<MetaProvider>
 									<Title>{`${article?.title} - ${cfg.title}`}</Title>
 									<Link rel="canonical" href={currentUrl} />
@@ -68,25 +68,26 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 										content={formatDate(date)}
 									/>
 								</MetaProvider>
+								<article class="antialiased prose font-sans md:max-w-2/3 2xl:prose-lg dark:prose-invert justify-self-center mx-auto mb-16 w-full mt-10 break-words">
+									<h1 class="font-sans font-medium prose-h1">{article?.title}</h1>
+									<div class="text-zinc-500 font-serif mb-2 font-light text-sm 2xl:text-lg">
+										{formatDate(date)}
+									</div>
 
-								<h1 class="font-sans font-medium prose-h1">{article?.title}</h1>
-								<div class="text-zinc-500 font-serif mb-2 font-light text-sm 2xl:text-lg">
-									{formatDate(date)}
-								</div>
-
-								<div class="flex w-auto mb-10 justify-end items-end font-sans">
-									<Show when={1}>
-										<i class="text-pretty text-slate-500 text-start text-sm 2xl:text-lg font-mono leading-loose">
-											{article?.description}
-										</i>
+									<div class="flex w-auto mb-10 justify-end items-end font-sans">
+										<Show when={1}>
+											<i class="text-pretty text-slate-500 text-start text-sm 2xl:text-lg font-mono leading-loose">
+												{article?.description}
+											</i>
+										</Show>
+									</div>
+									<Show when={article?.toc}>
+										<TableOfContents children={resolved()} />
 									</Show>
-								</div>
-								<Show when={article?.toc}>
-									<TableOfContents children={resolved()} />
-								</Show>
-								{resolved()}
-								<div class="h-[30vh]" />
-							</article>
+									{resolved()}
+									<div class="h-[30vh]" />
+								</article>
+							</>
 						);
 					}
 					// TODO: This must tolerate the delay
