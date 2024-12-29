@@ -1,4 +1,4 @@
-import { Link, Meta, Title } from "@solidjs/meta";
+import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { Show, type ParentComponent, children, Suspense } from "solid-js";
 import cfg from "../constant";
 import { cache, createAsync, useLocation } from "@solidjs/router";
@@ -48,24 +48,26 @@ const Page: ParentComponent<{ isError?: false }> = (props) => {
 						const date = new Date(article.date);
 						return (
 							<article class="antialiased prose font-sans md:max-w-2/3 2xl:prose-lg dark:prose-invert justify-self-center mx-auto mb-16 w-full mt-10 break-words">
-								<Title>{`${article?.title} - ${cfg.title}`}</Title>
-								<Link rel="canonical" href={currentUrl} />
-								<Meta property="og:url" content={currentUrl} />
-								<Meta
-									name="description"
-									content={article?.description || cfg.description}
-								/>
-								<Meta
-									property="og:image"
-									content={cfg.base_url + "/api/og" + `?title=${article.title}`}
-								/>
-								<Meta property="og:title" content={cfg.title} />
-								<Meta property="og:description" content={cfg.description} />
-								<Meta name="keywords" content={article?.tags?.join(",")} />
-								<Meta
-									property="article:published_time"
-									content={formatDate(date)}
-								/>
+								<MetaProvider>
+									<Title>{`${article?.title} - ${cfg.title}`}</Title>
+									<Link rel="canonical" href={currentUrl} />
+									<Meta property="og:url" content={currentUrl} />
+									<Meta
+										name="description"
+										content={article?.description || cfg.description}
+									/>
+									<Meta
+										property="og:image"
+										content={cfg.base_url + "/api/og" + `?title=${article.title}`}
+									/>
+									<Meta property="og:title" content={cfg.title} />
+									<Meta property="og:description" content={cfg.description} />
+									<Meta name="keywords" content={article?.tags?.join(",")} />
+									<Meta
+										property="article:published_time"
+										content={formatDate(date)}
+									/>
+								</MetaProvider>
 
 								<h1 class="font-sans font-medium prose-h1">{article?.title}</h1>
 								<div class="text-zinc-500 font-serif mb-2 font-light text-sm 2xl:text-lg">
