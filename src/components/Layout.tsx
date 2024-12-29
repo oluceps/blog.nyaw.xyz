@@ -44,7 +44,7 @@ export function Layout(props: ParentProps) {
 					<Meta name="twitter:card" content="summary_large_image" />
 					<Meta
 						property="og:image"
-						content={cfg.base_url + "/" + "twitter-card.png"}
+						content={cfg.base_url + "/api" + "?title=test"}
 					/>
 					<Meta property="og:url" content={cfg.base_url} />
 					<Meta property="og:site_name" content={cfg.title} />
