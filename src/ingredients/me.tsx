@@ -142,7 +142,6 @@ export default function Me() {
 								each={[
 									"ZHO / ENG / CDO / JPN",
 									"BEng 4rd year",
-									"UTC + 8?",
 									"she / her",
 								]}
 							>
