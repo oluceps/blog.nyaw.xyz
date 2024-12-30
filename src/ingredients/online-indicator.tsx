@@ -28,7 +28,7 @@ const OnlineIndicator: Component = () => {
 				<div class="absolute top-1.5 right-1.5 w-6 h-6 md:-top-2 md:-right-2 z-20 bg-sprout-200 rounded-full animate-ping pointer-events-none" />
 			</Show>
 			<a
-				data-tip={isOnline() ? "online" : "offline"}
+				data-tip={isOnline() ? "online" : "待机"}
 				class={twMerge(
 					`absolute tooltip ring-2 z-10 ring-sprout-50 top-1.5 right-1.5 w-6 h-6 md:-top-2 md:-right-2 rounded-full`,
 					isOnline() ? "bg-sprout-200" : "bg-slate-300",
