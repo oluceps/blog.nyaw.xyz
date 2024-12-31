@@ -8,23 +8,19 @@ export const isExternalURL = (url: string) =>
 
 export type QuickLinksProps = {
 	title: string;
-	href: string | Promise<string>;
+	href: string;
 	icon: () => JSXElement;
 	description?: string;
 	children?: JSXElement;
 };
 
 export const QuickLinks: ParentComponent<QuickLinksProps> = (props) => {
-	let [href, setHref] = createSignal('')
-	onMount(async () => {
-		setHref(props.href instanceof Promise ? await props.href : props.href)
-	})
 	return (
 		<div class="group relative not-prose rounded-xl shadow-md border">
 			<div class="absolute -inset-px rounded-xl border-transparent opacity-0 transition-all [background:linear-gradient(var(--quick-links-hover-bg,theme(colors.sprout.100)),var(--quick-links-hover-bg,theme(colors.sprout.100)))_padding-box,linear-gradient(to_top,theme(colors.sprout.500),theme(colors.sprout.300))_border-box] group-hover:opacity-80" />
 
 			<div class="relative overflow-hidden h-full w-full grow">
-				<a onClick={() => window.open(href())} class="hover:cursor-pointer" target="_blank">
+				<a onClick={() => window.open(props.href)} class="hover:cursor-pointer" target="_blank">
 					<span class="absolute -inset-px rounded-xl" />
 				</a>
 

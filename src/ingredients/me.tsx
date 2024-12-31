@@ -30,7 +30,7 @@ export default function Me() {
 		},
 		{
 			title: "Mailbox",
-			href: "mailto:i@nyaw.xyz",
+			href: cfg.base_url + "/api/base64d?text=bWFpbHRvOmlAbnlhdy54eXoK",
 			icon: () => (
 				<div class="pointer-events-none i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />
 			),
