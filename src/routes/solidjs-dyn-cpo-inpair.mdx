@@ -62,34 +62,3 @@ return (<For each={shuffle(mul())}>
 </div>
 
 `mul` 是按预期的对象数组形式保持不变的，每次 shuffle 都应该保留每个 title 和对应的 icon 之间的对应关系, 但是在云端的渲染表现则不是这样，对象之内的对应关系也被打乱。虽然我有理由怀疑是缓存什么的问题，查看 devtool 的 Element 后无果。可能是因为神奇编译期优化？
-
-最后的workaround是更改 `Face` 的定义，并在调用组件内使用 `<Dynamic component={i.icon}/>{:jsx}`
-
-
-```jsx
-// ...
-interface Face {
-  icon: JSElement; // [!code --]
-  icon: () => JSElement; // [!code ++]
-  title: string;
-}
-const mul = createSignal<Face[]>([
-  {
-    icon: <div class="i-ci:some"/>, // [!code --]
-    icon: () => <div class="i-ci:some"/>, // [!code ++]
-    title: "foo"
-  },
-// ...
-])
-
-return (<For each={shuffle(mul())}>
-          {(i) => <div>
-/* 在真实情况中Dynamic组件在其它组件中，并在此传入 `mul` 调用该组件 */
-                    <Dynamic component={()=>i.icon}/>  // [!code --]
-                    <Dynamic component={i.icon}/>  // [!code ++]
-                    {i.title}
-                  </div>}
-        </For>
-)
-```
-

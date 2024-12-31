@@ -20,78 +20,84 @@ export default function Me() {
 			setDescIdx((prev) => (prev + 1) % randDesc.length);
 		}, 50);
 
-	const [qlProps, _setqlProps] = createSignal<QuickLinksProps[]>([
-		{
-			title: "Matrix",
-			href: "https://matrix.to/#/@sec:nyaw.xyz",
-			icon: () => (
-				<div class="pointer-events-none i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />
-			),
-		},
-		{
-			title: "Mailbox",
-			href: cfg.base_url + "/api/base64d?text=bWFpbHRvOmlAbnlhdy54eXoK",
-			icon: () => (
-				<div class="pointer-events-none i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />
-			),
-		},
-		// {
-		// 	title: "Telegram",
-		// 	href: "https://t.me/Secpm_bot",
-		// 	icon: () => (
-		// 		<div class="pointer-events-none i-ci:paper-plane w-8 h-8 text-sprout-500" />
-		// 	),
-		// },
-		{
-			title: "Signature",
-			href: cfg.base_url + "/api/minisign",
-			icon: () => (
-				<div class="pointer-events-none i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />
-			),
-		},
-		{
-			title: "Pubkey",
-			href: "https://github.com/oluceps.keys",
-			icon: () => (
-				<div class="pointer-events-none i-material-symbols:key-outline w-8 h-8 text-sprout-500" />
-			),
-		},
-		// {
-		// 	title: "DN42",
-		// 	href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
-		// 	icon: () => (
-		// 		<div class="pointer-events-none i-ci:planet w-8 h-8 text-sprout-500" />
-		// 	),
-		// },
-		{
-			title: "Donate",
-			href: cfg.base_url + "/api/donate",
-			icon: () => (
-				<div class="pointer-events-none i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
-			),
-		},
-		{
-			title: "Simplex",
-			href: "https://simplex.chat/contact#/?v=2-7&smp=smp%3A%2F%2FZKe4uxF4Z_aLJJOEsC-Y6hSkXgQS5-oc442JQGkyP8M%3D%40smp17.simplex.im%2FVqvpzoTtMd9S9G4bcDGZjnwfYfX2g5Fo%23%2F%3Fv%3D1-3%26dh%3DMCowBQYDK2VuAyEA4wYBaT68Co9uhtxf71aNMOqOAvAzqbEoWANy5TiZdmY%253D%26srv%3Dogtwfxyi3h2h5weftjjpjmxclhb5ugufa5rcyrmg7j4xlch7qsr5nuqd.onion",
-			icon: () => (
-				<div class="pointer-events-none i-material-symbols:grid-3x3-rounded rotate-45 w-8 h-8 text-sprout-500" />
-			),
-		},
-		// {
-		// 	title: "Discord",
-		// 	href: "https://discord.gg/RbFvkEPg",
-		// 	icon: () => (
-		// 		<div class="pointer-events-none i-ci:discord w-8 h-8 text-sprout-500" />
-		// 	),
-		// },
-		// {
-		// 	title: "Status",
-		// 	href: "https://status.nyaw.xyz",
-		// 	icon: () => (
-		// 		<div class="pointer-events-none i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />
-		// 	),
-		// },
-	]);
+	const [qlProps, _setqlProps] = createSignal<
+		[QuickLinksProps,
+			QuickLinksProps,
+			QuickLinksProps,
+			QuickLinksProps,
+			QuickLinksProps,
+			QuickLinksProps]>([
+				{
+					title: "Matrix",
+					href: "https://matrix.to/#/@sec:nyaw.xyz",
+					icon: () => (
+						<div class="pointer-events-none i-material-symbols:grid-3x3-rounded w-8 h-8 text-sprout-500" />
+					),
+				},
+				{
+					title: "Mailbox",
+					href: cfg.base_url + "/api/base64d?text=bWFpbHRvOmlAbnlhdy54eXoK",
+					icon: () => (
+						<div class="pointer-events-none i-material-symbols:alternate-email w-8 h-8 text-sprout-500" />
+					),
+				},
+				// {
+				// 	title: "Telegram",
+				// 	href: "https://t.me/Secpm_bot",
+				// 	icon: () => (
+				// 		<div class="pointer-events-none i-ci:paper-plane w-8 h-8 text-sprout-500" />
+				// 	),
+				// },
+				{
+					title: "Signature",
+					href: cfg.base_url + "/api/minisign",
+					icon: () => (
+						<div class="pointer-events-none i-material-symbols:center-focus-strong-outline w-8 h-8 text-sprout-500" />
+					),
+				},
+				{
+					title: "Pubkey",
+					href: "https://github.com/oluceps.keys",
+					icon: () => (
+						<div class="pointer-events-none i-material-symbols:key-outline w-8 h-8 text-sprout-500" />
+					),
+				},
+				// {
+				// 	title: "DN42",
+				// 	href: "https://explorer.dn42.dev/?#/person/SECIRIAN-DN42",
+				// 	icon: () => (
+				// 		<div class="pointer-events-none i-ci:planet w-8 h-8 text-sprout-500" />
+				// 	),
+				// },
+				{
+					title: "Donate",
+					href: cfg.base_url + "/api/donate",
+					icon: () => (
+						<div class="pointer-events-none i-material-symbols:cookie-outline w-8 h-8 text-sprout-500" />
+					),
+				},
+				{
+					title: "Simplex",
+					href: "https://simplex.chat/contact#/?v=2-7&smp=smp%3A%2F%2FZKe4uxF4Z_aLJJOEsC-Y6hSkXgQS5-oc442JQGkyP8M%3D%40smp17.simplex.im%2FVqvpzoTtMd9S9G4bcDGZjnwfYfX2g5Fo%23%2F%3Fv%3D1-3%26dh%3DMCowBQYDK2VuAyEA4wYBaT68Co9uhtxf71aNMOqOAvAzqbEoWANy5TiZdmY%253D%26srv%3Dogtwfxyi3h2h5weftjjpjmxclhb5ugufa5rcyrmg7j4xlch7qsr5nuqd.onion",
+					icon: () => (
+						<div class="pointer-events-none i-material-symbols:grid-3x3-rounded rotate-45 w-8 h-8 text-sprout-500" />
+					),
+				},
+				// {
+				// 	title: "Discord",
+				// 	href: "https://discord.gg/RbFvkEPg",
+				// 	icon: () => (
+				// 		<div class="pointer-events-none i-ci:discord w-8 h-8 text-sprout-500" />
+				// 	),
+				// },
+				// {
+				// 	title: "Status",
+				// 	href: "https://status.nyaw.xyz",
+				// 	icon: () => (
+				// 		<div class="pointer-events-none i-material-symbols:settings-rounded w-8 h-8 text-sprout-500" />
+				// 	),
+				// },
+			]);
 
 	return (
 		<>
@@ -164,7 +170,7 @@ export default function Me() {
 				</div>
 
 				<div class="flex gap-3 transition-all justify-between duration-500 overflow-x-scroll scrollbar-none sm:overflow-visible pb-3 sm:py-0">
-					<For each={shuffle(qlProps()).slice(0, 6)}>
+					<For each={qlProps().slice(0, 6)}>
 						{(i) => (
 							<div class="flex-none hover:flex-1 transition-all duration-500 delay-75">
 								<QuickLinks {...i} />
