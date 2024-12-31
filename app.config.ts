@@ -112,7 +112,7 @@ export default defineConfig({
 			crawlLinks: true,
 			autoSubfolderIndex: false,
 			failOnError: true,
-			ignore: [/\{\getPath}/, /.*?emojiSvg\(.*/],
+			ignore: [/\{\getPath}/, /.*?emojiSvg\(.*/, /.*?QuickLinks\(.*/],
 		},
 	},
 });
