@@ -22,6 +22,10 @@ export const preprocessed = Promise.all(
 	res.filter((i) => i !== null).sort((a, b) => (b.date > a.date ? 1 : -1)),
 );
 
+type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
+
+export type MateriaType = UnwrapPromise<typeof preprocessed>;
+
 export const Arti: Component = () => {
 	const ctx = createAsync(
 		() =>

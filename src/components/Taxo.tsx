@@ -11,8 +11,9 @@ import cfg from "../constant";
 import { Link, Meta, MetaProvider, Title } from "@solidjs/meta";
 import { useTaxoState } from "./PageState";
 import { isIn } from "~/lib/fn";
-import { preprocessed as raw } from "./Arti";
+import { MateriaType, preprocessed as raw } from "./Arti";
 import Spinner from "./Spinner";
+import TagReasm from "./TagReasm";
 
 enum Bi {
 	tag = 0,
@@ -43,86 +44,32 @@ export default function Taxo() {
 			cache(async () => {
 				"use server";
 				const preprocessed = await raw;
-				const allTags = new Set(
+
+				const tags = new Set(
 					preprocessed.reduce<string[]>((acc, item) => {
 						return item.tags ? acc.concat(item.tags) : acc;
 					}, []),
 				);
 
-				const allCate = new Set(
+				const cates = new Set(
 					preprocessed.reduce<string[]>((acc, item) => {
 						return item.categories ? acc.concat(item.categories) : acc;
 					}, []),
 				);
 
-				// find all only one article tag
-				const onlyTag: Map<string, string> = new Map();
-
-				for (const t of allTags) {
-					let count = 0;
-					let last;
-					for (const it of preprocessed) {
-						if (isIn(it.tags, t)) {
-							count++;
-							last = it.title;
-						}
-					}
-					if (count == 1 && last) {
-						onlyTag.set(t, last);
-						allTags.delete(t);
-					}
-				}
 				// [A -> bbb, B -> bbb] => [ [A, B] -> bbb ]
 				const outputMap = new Map<string[], string>();
 				const tempMap = new Map<string, string[]>();
 
-				onlyTag.forEach((value, key) => {
-					if (!tempMap.has(value)) {
-						tempMap.set(value, []);
-					}
-					tempMap.get(value)?.push(key);
-				});
 				tempMap.forEach((keys, value) => {
 					outputMap.set(keys, value);
 				});
 
-				for (const i of outputMap.keys()) {
-					allTags.add(i.join(" / "));
-				}
+				// tag | cate map artis
+				const taxoArtisMap: Map<string, MateriaType> = new Map();
 
-				const reversedMap: Map<string, string[]> = new Map();
-
-				outputMap.forEach((value, key) => {
-					reversedMap.set(value, key);
-				});
-
-				// console.log(outputMap)
-				const dag: Map<string, typeof preprocessed> = new Map();
-
-				// console.log(data)
-				preprocessed.forEach((i) => {
-					i.tags.forEach((t) => {
-						if (Array.from(onlyTag.keys()).includes(t)) {
-							const a = Array.from(outputMap).find((i) => i[0].includes(t))!;
-							if (a[1] == i.title) {
-								dag.set(a[0].join(" / "), [i]);
-								// console.log(a[0].join(" / "), i);
-							}
-						} else {
-							if (
-								Array.from(dag.values()).some((ii) =>
-									ii.some((iii) => iii.title === i.title),
-								)
-							) {
-							} else {
-								dag.set(t, dag.get(t)?.concat(i) || [i]);
-							}
-						}
-					});
-				});
-
-				allCate.forEach((i) => {
-					dag.set(
+				cates.forEach((i) => {
+					taxoArtisMap.set(
 						i,
 						preprocessed.filter((a) => {
 							if (a.categories.length != 0) {
@@ -133,10 +80,15 @@ export default function Taxo() {
 						}),
 					);
 				});
+
+				let reasmedTagArtisMap = await TagReasm(preprocessed, tags);
+				let _tags = reasmedTagArtisMap.keys();
+
 				return {
-					cate: allCate,
-					tag: allTags,
-					dag,
+					cate: cates,
+					// reassembled tags
+					tag: _tags,
+					taxo: taxoArtisMap,
 				};
 			}, "taxoData")(),
 		{ deferStream: true },
@@ -186,17 +138,17 @@ export default function Taxo() {
 							<p class="text-neutral-700 text-md font-sans">All</p>
 							<div class="flex flex-wrap text-sm justify-center">
 								<Index each={Array.from(checked() ? ctx().tag : ctx().cate)}>
-									{(cat) => {
+									{(catOrTag) => {
 										return (
 											<button
 												class="bg-transparent px-2 py-1 2xl:text-base font-sans text-neutral-600 dark:text-chill-100 justify-self-end text-nowrap whitespace-nowrap group transition-all duration-300 ease-in-out leading-snug"
 												onClick={() => {
 													document
-														.getElementById(cat())!
+														.getElementById(catOrTag())!
 														.scrollIntoView({ behavior: "smooth" });
 												}}
 											>
-												{cat()}
+												{catOrTag()}
 												<span class="block max-w-0 group-hover:max-w-full transition-all duration-350 h-px bg-sprout-500" />
 											</button>
 										);
@@ -210,11 +162,12 @@ export default function Taxo() {
 						<div class="antialiased flex flex-col sm:mx-3 md:mx-10 2xl:mx-16">
 							<For
 								each={(() => {
-									const dag = Array.from(ctx().dag);
+									const cam = Array.from(ctx().taxo);
 
 									return checked()
-										? dag.filter((i) => !ctx().cate.has(i[0]))
-										: dag.filter((i) => ctx().cate.has(i[0]));
+										// hide categories or not
+										? cam.filter((i) => !ctx().cate.has(i[0]))
+										: cam.filter((i) => ctx().cate.has(i[0]));
 								})()}
 							>
 								{(outerAttr) => {
