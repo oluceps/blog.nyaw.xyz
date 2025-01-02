@@ -7,13 +7,13 @@ import { isIn } from '~/lib/fn';
 async function TagReasm(materia: MateriaType, tags: Set<string>): Promise<Map<string, MateriaType>> {
   let ret: Map<string, MateriaType> = new Map();
 
-  let { map, cleanTags } = binTreeBorn(materia, 1).unwrap();
+  let { newmap, cleanTags } = binTreeBorn(materia, 1).unwrap();
 
   return new Map()
 }
 
 // construct binarya trree
-function binTreeBorn(materia: MateriaType, targetHeight: number): Throwable<{ map: Map<string, MateriaType>, cleanTags: string[] }> {
+function binTreeBorn(materia: MateriaType, targetHeight: number): Throwable<{ newmap: Map<string, MateriaType>, cleanTags: Set<string> }, null> {
   let root = buildFrequencyTree(materia);
   let newmap: Map<string, MateriaType> = new Map();
 
@@ -21,7 +21,7 @@ function binTreeBorn(materia: MateriaType, targetHeight: number): Throwable<{ ma
   if (root) {
     // console.log("Frequency Tree:");
     // printTree(root.unwrap());
-    let tagTobeClean = new Set();
+    let tagTobeClean: Set<string> = new Set();
 
     const nodesAtTargetHeight = findNodesAtHeight(root.unwrap(), targetHeight);
     if (nodesAtTargetHeight.length > 0) {
@@ -44,10 +44,11 @@ function binTreeBorn(materia: MateriaType, targetHeight: number): Throwable<{ ma
       }
       console.log(tagTobeClean, newmap)
 
+
+      return Ok({ newmap, cleanTags: tagTobeClean })
     } else {
       console.log(`\nNo nodes found at height ${targetHeight}.`)
     }
-
   } else {
     console.log("No tags found in the data.");
   }
@@ -59,8 +60,8 @@ function binTreeBorn(materia: MateriaType, targetHeight: number): Throwable<{ ma
   // }
 
   // console.log(root)
+  return Err(null)
 
-  return Ok({ map: new Map(), cleanTags: [] })
 }
 
 class Node {
