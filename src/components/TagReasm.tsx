@@ -1,69 +1,80 @@
 import { Ok, Err, Throwable } from '@typ3/throwable'
 
 import { MateriaType } from "./Arti";
+import { isIn } from '~/lib/fn';
 
 
 async function TagReasm(materia: MateriaType, tags: Set<string>): Promise<Map<string, MateriaType>> {
   let ret: Map<string, MateriaType> = new Map();
 
-  binTreeBorn(materia)
-
-
-
-
+  let { map, cleanTags } = binTreeBorn(materia, 1).unwrap();
 
   return new Map()
 }
 
 // construct binarya trree
-function binTreeBorn(materia: MateriaType): Throwable<Map<string, MateriaType>> {
+function binTreeBorn(materia: MateriaType, targetHeight: number): Throwable<{ map: Map<string, MateriaType>, cleanTags: string[] }> {
   let root = buildFrequencyTree(materia);
+  let newmap: Map<string, MateriaType> = new Map();
+
 
   if (root) {
     // console.log("Frequency Tree:");
     // printTree(root.unwrap());
+    let tagTobeClean = new Set();
 
-    const height2Nodes = findNodesAtHeight(root.unwrap(), 2);
-    if (height2Nodes.length > 0) {
-      console.log("\nNodes at height 2:")
-      for (const node of height2Nodes) {
+    const nodesAtTargetHeight = findNodesAtHeight(root.unwrap(), targetHeight);
+    if (nodesAtTargetHeight.length > 0) {
+      console.log(`\nNodes at height: ${targetHeight}`)
+      let nodesATHR = nodesAtTargetHeight.reverse();
+      for (let n = 0; n < nodesAtTargetHeight.length / 4; n++) {
+        let node = nodesATHR[n]!;
+
         console.log(`  ${node.value} (${node.frequency})`);
+        let artiCoresp: Set<MateriaType[0]> = new Set()
+        node.value.forEach((i) => {
+          tagTobeClean.add(i)
+
+          materia.filter((a) => isIn(a.tags, i)).forEach((at) => {
+            artiCoresp.add(at)
+          })
+        })
+        console.log(artiCoresp)
+        newmap.set(node.value.join(' / '), Array.from(artiCoresp))
       }
+      console.log(tagTobeClean, newmap)
+
     } else {
-      console.log("\nNo nodes found at height 2.")
+      console.log(`\nNo nodes found at height ${targetHeight}.`)
     }
+
   } else {
     console.log("No tags found in the data.");
   }
 
-  const noTagEntries = materia.filter(item => item.tags.length === 0).map(item => item.title);
-  if (noTagEntries.length > 0) {
-    console.log("\nEntries without tags:");
-    console.log(noTagEntries);
-  }
+  // const noTagEntries = materia.filter(item => item.tags.length === 0).map(item => item.title);
+  // if (noTagEntries.length > 0) {
+  //   console.log("\nEntries without tags:");
+  //   console.log(noTagEntries);
+  // }
 
   // console.log(root)
 
-  return Ok(new Map())
+  return Ok({ map: new Map(), cleanTags: [] })
 }
 
 class Node {
-  value: string;
+  value: string[];
   frequency: number;
   left: Node | null;
   right: Node | null;
 
-  constructor(value: string, frequency: number = 0) {
+  constructor(value: string[], frequency: number = 0) {
     this.value = value;
     this.frequency = frequency;
     this.left = null;
     this.right = null;
   }
-}
-
-interface DataItem {
-  title: string;
-  tags: string[];
 }
 
 function buildFrequencyTree(data: MateriaType): Throwable<Node, null | undefined> {
@@ -77,7 +88,7 @@ function buildFrequencyTree(data: MateriaType): Throwable<Node, null | undefined
 
   const nodes: Node[] = [];
   for (const tag in tagCounts) {
-    nodes.push(new Node(tag, tagCounts[tag]));
+    nodes.push(new Node([tag], tagCounts[tag]));
   }
 
   if (nodes.length === 0) {
@@ -90,7 +101,7 @@ function buildFrequencyTree(data: MateriaType): Throwable<Node, null | undefined
     const left = nodes.shift()!; // ! 断言 nodes.shift() 不会返回 undefined
     const right = nodes.shift()!;
 
-    const mergedNode = new Node(`${left.value}+${right.value}`, left.frequency + right.frequency);
+    const mergedNode = new Node(left.value.concat(right.value), left.frequency + right.frequency);
     mergedNode.left = left;
     mergedNode.right = right;
 
@@ -100,13 +111,13 @@ function buildFrequencyTree(data: MateriaType): Throwable<Node, null | undefined
   return Ok(nodes[0]);
 }
 
-function printTree(root: Node | null, indent: string = ""): void {
-  if (root) {
-    console.log(indent + `${root.value} (${root.frequency})`);
-    printTree(root.left, indent + "  ");
-    printTree(root.right, indent + "  ");
-  }
-}
+// function printTree(root: Node | null, indent: string = ""): void {
+//   if (root) {
+//     console.log(indent + `${root.value} (${root.frequency})`);
+//     printTree(root.left, indent + "  ");
+//     printTree(root.right, indent + "  ");
+//   }
+// }
 
 function getHeight(node: Node | null): number {
   if (!node) {
