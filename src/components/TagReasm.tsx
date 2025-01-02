@@ -4,19 +4,33 @@ import { MateriaType } from "./Arti";
 import { isIn } from '~/lib/fn';
 
 
-async function TagReasm(materia: MateriaType, tags: Set<string>): Promise<Map<string, MateriaType>> {
+function TagReasm(materia: MateriaType): Map<string, MateriaType> {
   let ret: Map<string, MateriaType> = new Map();
+  let varMateria = materia;
+  while (true) {
+    let tree = binTreeBorn(varMateria);
+    if (tree.isOk) {
+      let { newmap, cleanTags } = tree.unwrap();
+      ret = new Map([...newmap, ...ret]);
+      // diaaaammmmmnnnn
+      varMateria = varMateria.filter((i) => {
+        return !i.tags.some((e) => cleanTags.has(String(e)));
+      });
+    } else {
+      break
+    }
+  }
 
-  let { newmap, cleanTags } = binTreeBorn(materia, 1).unwrap();
-
-  return newmap
+  return ret
 }
 
 // construct binarya trree
-function binTreeBorn(materia: MateriaType, targetHeight: number): Throwable<{ newmap: Map<string, MateriaType>, cleanTags: Set<string> }, null> {
+function binTreeBorn(materia: MateriaType): Throwable<{ newmap: Map<string, MateriaType>, cleanTags: Set<string> }, null> {
   let root = buildFrequencyTree(materia);
   let newmap: Map<string, MateriaType> = new Map();
 
+  console.log("root height", getHeight(root.unwrap()))
+  let targetHeight = getHeight(root.unwrap()) > 4 ? 1 : 2;
 
   if (root) {
     // console.log("Frequency Tree:");
@@ -39,11 +53,10 @@ function binTreeBorn(materia: MateriaType, targetHeight: number): Throwable<{ ne
             artiCoresp.add(at)
           })
         })
-        console.log(artiCoresp)
+        // console.log(artiCoresp)
         newmap.set(node.value.join(' / '), Array.from(artiCoresp))
       }
-      console.log(tagTobeClean, newmap)
-
+      // console.log(tagTobeClean)
 
       return Ok({ newmap, cleanTags: tagTobeClean })
     } else {

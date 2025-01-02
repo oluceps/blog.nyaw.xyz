@@ -81,10 +81,8 @@ export default function Taxo() {
 					);
 				});
 
-				let reasmedTagArtisMap = await TagReasm(preprocessed, tags);
+				let reasmedTagArtisMap = TagReasm(preprocessed);
 				let _tags = reasmedTagArtisMap.keys();
-
-
 
 				return {
 					cate: cates,
