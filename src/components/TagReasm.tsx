@@ -9,7 +9,7 @@ async function TagReasm(materia: MateriaType, tags: Set<string>): Promise<Map<st
 
   let { newmap, cleanTags } = binTreeBorn(materia, 1).unwrap();
 
-  return new Map()
+  return newmap
 }
 
 // construct binarya trree

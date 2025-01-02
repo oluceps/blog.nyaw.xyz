@@ -84,11 +84,13 @@ export default function Taxo() {
 				let reasmedTagArtisMap = await TagReasm(preprocessed, tags);
 				let _tags = reasmedTagArtisMap.keys();
 
+
+
 				return {
 					cate: cates,
 					// reassembled tags
 					tag: _tags,
-					taxo: taxoArtisMap,
+					taxo: new Map([...taxoArtisMap, ...reasmedTagArtisMap]),
 				};
 			}, "taxoData")(),
 		{ deferStream: true },
