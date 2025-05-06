@@ -1,0 +1,59 @@
+.warichu {
+  color: #1e3a8a;
+}
+
+.warichu-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  font-size: calc(2em / 3);
+  line-height: 1em;
+  transform: translateX(-0.5em);
+}
+
+
+.warichu-wrapper::before {
+  content: "";
+  width: max(var(--big-line-height), calc(100% - var(--big-line-height)));
+  height: var(--before-height);
+  float: left;
+  clip-path: var(--polygon);
+  shape-outside: var(--polygon);
+  background-color: #f003;
+}
+
+.text-area {
+  flex: 1;
+  overflow-x: auto;
+  writing-mode: vertical-rl;
+  /* font-family: "SourceHanSerif"; */
+  font-size: 3em;
+  line-height: 2em;
+  color: #333;
+  margin: 1em 0;
+  padding: 0 1em;
+  text-align: justify;
+  position: relative;
+}
+.warichu-text::before {
+  content: "";
+  float: right;
+  width: var(--big-line-height);
+  height: var(--end-bottom);
+  background-color: #00f3;
+}
+
+
+i.warichu-ph-start {
+  margin-top: 0.5em;
+}
+
+i.warichu-ph-end {
+  margin-bottom: 0.5em;
+}
+
+.warichu-placeholder {
+  visibility: hidden;
+  font-size: 0.66em;
+  user-select: none;
+}
