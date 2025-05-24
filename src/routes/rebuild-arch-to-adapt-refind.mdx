@@ -1,0 +1,77 @@
+---
+title: 重建arch分区以使用refind
+date: '2021-07-18T14:44:16.000Z'
+draft: true
+---
+
+在使用[这篇博文](https://www.bitflipper.top/2021/07/08/The-Refind-bootloader-has-no-ability-to-read-f2fs-format/#:~:text=%E6%88%91%E5%B0%9D%E8%AF%95%E6%8A%8A%E5%86%85%E6%A0%B8%E5%8F%8A%E5%BE%AE%E7%A2%BC%E4%BB%8E/boot%E5%A4%8D%E5%88%B6%E5%88%B0efi%E5%88%86%E5%8C%BA%E4%B8%AD%EF%BC%8C%E4%BB%A5%E4%B8%8B%E4%B8%BA%E4%BF%AE%E6%94%B9%E5%90%8Eefi/EFI/Arch%E7%BB%93%E6%9E%84%EF%BC%9A)中的方法规避refind无法读取f2fs分区的缺陷后，我在一次滚动升级之后感受到了极大的恶意，每天滚一次的频率让我无暇注意返回值中更新内核的字段，这将导致原本在/boot中跟随其它部件更新的内核与我手动移动到esp区的内核不同步，导致启动时直接引导失败
+然而更新是必然要更新的，为了不至于每次都心惊胆战，我尝试了回到套娃引导的时代，而后因为启动缓慢的缘故，打算重新安装一遍Arch系统（保留/home）
+
+# 磁盘分区数据：
+
+| 设备           | 起点       | 末尾       | 扇区       | 大小   | 类型               |
+| -------------- | ---------- | ---------- | ---------- | ------ | ------------------ |
+| /dev/nvme0n1p1 | 2048       | 616447     | 614400     | 300M   | EFI 系统           |
+| /dev/nvme0n1p2 | 616448     | 1469085695 | 1468469248 | 700.2G | Microsoft          |
+| /dev/nvme0n1p3 | 1469085696 | 1470109695 | 1024000    | 500M   | Linux 文件系统     |
+| /dev/nvme0n1p4 | 1603303424 | 1953525134 | 350221711  | 167G   | Linux home         |
+| /dev/nvme0n1p5 | 1470109696 | 1603303423 | 133193728  | 63.5G  | Linux root(x86-64) |
+
+## blkid数据
+
+/dev/nvme0n1p5: UUID=”38b6c7d5-4b18-4e82-9205-a2c5685620b” BLOCK_SIZE=”4096” TYPE=”f2fs” PARTUUID=”08621bd5-7f75-cd45-8018-06ab5689c6b”  
+/dev/nvme0n1p3: UUID=”89d17543-9e90-4778-a96d-e89f9347e61” BLOCK_SIZE=”1024” TYPE=”ext4” PARTUUID=”5072f8ab-3f5f-2141-9220-059d5543a0d”  
+/dev/nvme0n1p1: UUID=”F680-4A3” BLOCK_SIZE=”512” TYPE=”vfat” PARTLABEL=”EFI system partition” PARTUUID=”12ec21bc-94bd-4f7e-a217-acaf43f1e9e”  
+/dev/nvme0n1p4: UUID=”8a5b5553-a6ed-4b8e-9fe1-a3cd07be0a1” BLOCK_SIZE=”4096” TYPE=”f2fs” PARTUUID=”40de648c-36d8-a840-9672-7bd29fd893e”  
+/dev/nvme0n1p2: BLOCK_SIZE=”512” UUID=”3A747E036B1FC8F” TYPE=”ntfs” PARTLABEL=”Basic data partition”PARTUUID=”2f9c11aa-a504-40bf-b54c-82865d9a49d”  
+在多次调试下refind终于可以完整引导Arch,以下为详细配置文件备份：
+
+## refind_linux.conf
+
+- 这个文件是在refind自动检测到内核时起到提供内核参数的作用。在liveCD系统中执行refind-install命令安装后，位于/boot的此文件将以CD盘相关的错误参数作为启动参数。故执行install后重启将导致引导失败
+
+- 可将首行改为：
+  “Boot with standard options” “root=UUID=38b6c7d5-4b18-4e82-9205-a2c5685620b rw quiet”
+  root后的UUID即blkid中根目录uuid  
+  然后保存并重新启动，便可以正常进入系统，此时需要再执行一次refind-install,使文件中的参数纠正为安装完成的系统
+
+另外，使用内核检测功能可能影响开机速度,并且在启动界面系统图标只显示一个企鹅，并不能自定义  
+所以，我在refind.conf中做了进一步的配置：
+
+## esp/EFI/refind/refind.conf
+
+找到 **scan_all_linux_kernels** 项目并更改为 **false**
+找到预设的 **menuentry “Arch Linux”** 项目并更改为
+
+```
+menuentry "Arch Linux" {
+    icon     /EFI/refind/themes/rEFInd-minimal/icons/os_arch.png
+    volume   5072F8AB-3F5F-2141-9220-059D5543A0D
+    loader   /vmlinuz-linux
+    initrd   /initramfs-linux.img
+    options  "root=UUID=38b6c7d5-4b18-4e82-9205-a2c5685620b initrd=\initramfs-linux.img
+ rw quiet"
+
+    submenuentry "Boot using fallback initramfs" {
+        initrd /boot/initramfs-linux-fallback.img
+    }
+    submenuentry "Boot to terminal" {
+        add_options "systemd.unit=multi-user.target"
+    }
+
+
+}
+```
+
+[您可能需要更改 volume以匹配文件系统的标签、PARTLABEL 或内核镜像所在分区的 PARTUUID。PARTUUID 必须大写的。如果未指定 volume，则默认为启动 rEFInd 的卷（通常是EFI系统分区）。](<https://wiki.archlinux.org/title/REFInd_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)#:~:text=%E6%82%A8%E5%8F%AF%E8%83%BD%E9%9C%80%E8%A6%81,%E5%8C%BA%E7%9A%84%20PARTUUID%E3%80%82>)
+
+### 这段话极为关键
+
+此处volume为/boot分区的大写PARTUUID(可对照上文blkid信息)以指定后文loader和initrd参数路径的根目录，参照如上参数，/vmlinuz-linux即为相对系统root分区的/boot/vmlinuz-linux,即直接令refind启动放置于ext4文件系统的内核文件再通过linux内核引导f2fs,完美解决问题  
+option中的uuid和refind_linux.conf中的第一行参数类似，都是用于指定系统根目录。  
+关于submenuentry后的initrd内核参数未作测试。如果无法启动fallback把这行参数的/boot去掉即可。  
+另icon参数为相对esp区的路径
+
+我可算知道为什么那么多linux发行版选择grub为启动引导了
+
+18/07/2021 16:01
