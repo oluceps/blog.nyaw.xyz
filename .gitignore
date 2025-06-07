@@ -1,0 +1,47 @@
+/minisign/target
+public/sitemap.xml
+src/routes/data.json
+src/routes/data.ts
+data.ts
+/imgs-backup
+/.direnv
+/.devenv
+dist
+.solid
+.output
+.vercel
+.netlify
+.vinxi
+
+# Environment
+.env
+.env*.local
+
+# dependencies
+/node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+*.launch
+.settings/
+
+# Temp
+gitignore
+
+# System Files
+.DS_Store
+Thumbs.db
+
+time.json
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
