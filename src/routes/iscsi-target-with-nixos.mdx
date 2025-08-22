@@ -1,0 +1,72 @@
+---
+date: 2025-07-03T03:30:54.045739259+08:00
+description: 使用 NixOS 配置 iSCSI target
+categories:
+  - 记录
+tags:
+  - iSCSI
+  - nixos
+  - linux
+title: 把 steam 游戏丢 NAS 上
+---
+
+
+前阵子给电脑换了个4K 24"显示器，但是换了显示屏呢当然要跟着把旧显卡换掉，
+但是换了新显卡呢当然要爽爽玩游戏，但是玩游戏呢肯定需要 Microsoft Windows[^1],
+但是装windows呢肯定要加一块硬盘，然后我预算有限加了个500G的，但是500G呢装了点小东西就满了，
+只好把目光投向我的NAS。
+
+
+
+(跳过论证)那末，iSCSI就是最佳的选择，首先安装 `targetcli-fb`
+
+```
+nix shell nixpkgs#targetcli-fb 
+```
+
+这时候可以先创建一个文件作为iSCSI的后端，当然直接用块设备什么的也是可以
+
+```
+dd if=/dev/zero of=./disk01.img bs=32M count=10240
+```
+
+然后 `sudo targetcli` 进它的shell，按照以下命令
+
+```
+/backstores/fileio create ntfs-games /path/to/disk01.img
+
+# Create an iSCSI target
+/iscsi create iqn.2005-10.org.nixos.ctl:ntfs-games
+
+# Create a LUN using the fileio backstore
+/iscsi/iqn.2005-10.org.nixos.ctl:ntfs-games/tpg1/luns create /backstores/fileio/disk01
+
+# Allow access (ACL). You can specify an initiator IQN or use wildcard for testing.
+/iscsi/iqn.2005-10.org.nixos.ctl:ntfs-games/tpg1/acls create iqn.1991-05.com.microsoft:hastur
+
+# Enable network portals (bind to IP and port)
+/iscsi/iqn.2005-10.org.nixos.ctl:ntfs-games/tpg1/portals create :: 3260
+
+# Save configuration and exit
+exit
+```
+
+配置会自动保存到 `/etc/target/saveconfig.json`, 如果你的etc ro的话可以先在shell的toplevel用`saveconfig`命令保存到其它路径再用nixos option的 `config` 给它放进去
+
+
+然后配置中开启service
+
+```
+services.target.enable = true;
+```
+
+
+部署后就可以用了，initiator如果说没有权限访问的话记得在dmesg里面找initiator的iqn然后使用上面shell里的acl相关的命令加到配置里。
+
+
+顺便吐槽windows这个HiDPI缩放的字体锯齿真是超级难看，就算在linux下面也很久没有看到过这么丑的效果了。
+![win-iscsi](win-iscsi.png)
+
+
+
+[^1]: 当然Linux也可以玩只是不想在使用作为小众中的小众的 NixOS 运行闭源艺术作品的时候在冷不丁的奇怪问题上浪费时间
