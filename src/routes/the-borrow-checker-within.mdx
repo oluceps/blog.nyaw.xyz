@@ -1,0 +1,300 @@
+---
+description: The borrow checker within
+date: '2024-06-09 07:55:21'
+draft: false
+title: 深入借用检查器
+tags: []
+categories:
+- 语言
+---
+
+Originally from [babysteps](https://smallcultfollowing.com/babysteps/blog/2024/06/02/the-borrow-checker-within/)
+
+
+---
+
+这篇文章提出了一个分为四个部分的借用检查器改进路线图，我（原作者，下同）称之为「内部的借用检查器」。这些变化旨在帮助Rust成为更好的版本，使代码模式更加符合Rust的精神，但不违反其法律条文。我对每项设计都相当有信心，尽管仍需详细规划。我的信念是，a-mir-formality是一个绝佳的工作场所。
+
+**Rust的精神是「可变 xor 共享」**
+
+当我提到借用检查器的精神时，我指的是Rust核心设计理念中的「可变 xor 共享」规则。这条基本规则是「当你使用变量x改变一个变量时，你就不该从另一个变量y读取这份数据」，这确保了rust的内存安全，也促成了rust给人们的整体感受：「能编译就能工作」。
+
+在某种意义上，可变或共享既不是必要的，也不是充分的。它不是必要的，因为有许多程序（例如用Java编写的程序）疯狂地共享数据，却仍然能正常工作。它也不是充分的，因为有许多问题需要一定程度的共享——这就是为什么Rust有「后门」如`Arc<Mutex<T>>`、AtomicU32和所有后门中最强大的——unsafe。
+
+
+但对我来说，研究Rust的最大惊喜是，一旦你学会了如何使用它，这种可变或共享模式「刚刚好」。另一个惊喜是随着时间推移看到的好处：以这种风格编写的程序基本上「更不令人惊讶」，从而意味着它们随着时间推移更易于维护。
+
+然而在今天的Rust中，有许多模式虽然符合可变或共享的规则，但却被借用检查器拒绝了。缩小这种差距，帮助使借用检查器的规则更加完美地反映可变或共享的精神，就是我所说的「内部的借用检查器」。
+
+> 我看到了大理石中的天使并不断雕刻直到我把他解放出来。 —— 米开朗基罗
+
+好了，灵感激励的话说够了，让我们来看代码吧。
+
+好的，让我们开始吧。
+
+### 第一步：用「Polonius」轻松条件返回引用
+
+Rust 2018 引入了「非词法生命周期」（NLL）——这个相当神秘的名称指的是借用检查器的扩展，使其能够更深入地理解函数内的控制流。这一变化使得使用Rust的体验更加「流畅」，因为借用检查器能够接受更多的代码。
+
+但NLL没有处理一个重要的情况：条件返回引用。下面是一个经典例子，取自Remy的Polonius更新博客文章：
+
+```rust
+fn get_default<'r, K: Hash + Eq + Copy, V: Default>(
+    map: &'r mut HashMap<K, V>,
+    key: K,
+) -> &'r mut V {
+    match map.get_mut(&key) {
+        Some(value) => value,
+        None => {
+            map.insert(key, V::default());
+            //  ------ 💥 目前会报错，
+            //            但有了polonius就不会
+            map.get_mut(&key).unwrap()
+        }
+    }
+}
+```
+
+Remy的文章详细解释了为什么会发生这种情况以及我们计划如何修复它。尽管时间表比我的预期要长，但我们最近在稳步前进。
+
+### 第二步：基于位置的生命周期语法
+
+下一步是为基于「位置表达式」（例如x或x.y）的生命周期添加显式语法。我在《没有生命周期的借用检查》中写到了这个。这基本上是把Polonius背后的公式加上语法。
+
+想法是，除了我们今天拥有的抽象生命周期参数外，你还可以引用程序变量甚至字段作为引用的「生命周期」。所以你可以写`'x`表示从变量x借用的值。你也可以写`'x.y`表示从x的字段y借用的值，甚至写`'(x.y, z)`表示从x.y或z借用的值。例如：
+
+```rust
+struct WidgetFactory {
+    manufacturer: String,
+    model: String,
+}
+
+impl WidgetFactory {
+    fn new_widget(&self, name: String) -> Widget {
+        let name_suffix: &'name str = &name[3..];
+                       // ——- 从「name」借用
+        let model_prefix: &'self.model str = &self.model[..2];
+                         // —————- 从「self.model」借用
+    }
+}
+```
+
+
+这将使我们今天写的许多生命周期参数变得不再必要。例如，经典的Polonius例子中函数接受一个参数`map: &mut HashMap<K, V>`并返回map中的引用，可以写成如下：
+
+```rust
+fn get_default<K: Hash + Eq + Copy, V: Default>(
+    map: &mut HashMap<K, V>,
+    key: K,
+) -> &'map mut V {
+    //---- 从参数map借用
+    ...
+}
+```
+
+这种语法更方便——但我认为它更大的影响将是使Rust更易于教学和学习。现在，生命周期处于一个棘手的位置，因为它们代表了一个用户通常不会明确思考的概念（代码范围），而且没有任何语法。
+
+语法在学习时很有用，因为它允许你将一切都明确化，这是内化一个概念的关键中间步骤——正如boats所称的辩证棘轮。根据我的经验，我在教授Rust时使用「基于位置的」语法，发现人们掌握它的速度要快得多。
+
+### 第三步：视图类型和跨过程借用
+
+计划的下一部分是视图类型，它是一种让函数声明它们访问哪些字段的方法。考虑一个像WidgetFactory这样的结构：
+
+```rust
+struct WidgetFactory {
+    counter: usize,
+    widgets: Vec<Widget>,
+}
+```
+
+它有一个辅助函数increment_counter：
+
+```rust
+impl WidgetFactory {
+    fn increment_counter(&mut self) {
+        self.counter += 1;
+    }
+}
+```
+
+今天，如果我们想迭代widgets并偶尔用increment_counter增加计数器，会遇到错误：
+
+```rust
+impl WidgetFactory {
+    fn increment_counter(&mut self) {...}
+    
+    pub fn count_widgets(&mut self) {
+        for widget in &self.widgets {
+            if widget.should_be_counted() {
+                self.increment_counter();
+                // ^ 💥 不能在迭代`self.widgets`时可变借用self
+            }
+        }    
+    }
+}
+```
+
+问题在于借用检查器一次只能操作一个函数。它不知道increment_counter具体会修改哪些字段。因此，它保守地认为self.widgets可能会被更改，这是不允许的。今天有许多解决方法，如编写一个「不接收&mut self而接收各字段引用」（例如counter: &mut usize）的「自由函数」，甚至将这些引用收集到一个「视图结构」（例如`struct widgetfactoryview<'a> { widgets: &'a [widget], counter: &'a mut usize }`)中，但这些方法不明显、烦人且非局部（需要更改代码的显著部分）。
+
+视图类型扩展了结构类型，这样你可以有一个「视图」，只包含部分字段，例如 `{counter} widgetfactory`。我们可以用这个来修改increment_counter，使其声明它将只访问字段counter：
+
+```rust
+impl WidgetFactory {
+    fn increment_counter(&mut {counter} self) {
+        //               -------------------
+        // 相当于 `self: &mut {counter} WidgetFactory`
+        self.counter += 1;
+    }
+}
+```
+
+这允许编译器顺利编译count_widgets，因为它可以看到迭代self.widgets并修改self.counter不是问题。
+### 视图类型也解决了分阶段初始化的问题
+
+还有另一个借用检查器规则不够完善的地方：分阶段初始化。Rust今天遵循函数式编程语言的风格，在创建结构时需要为所有字段赋值。大多数情况下这是可以的，但有时你会有一些结构希望先初始化一些字段，然后调用辅助函数（如increment_counter）来创建其余部分。在这种情况下你会被困住，因为那些辅助函数不能引用结构，因为你还没有创建结构。解决方法（自由函数、中间结构类型）非常相似。
+
+#### 从私有函数开始，考虑扩展到公共函数
+
+如上所述的视图类型有局限性。由于类型涉及字段名称，它们不太适合公共接口。在实践中使用它们可能也会很烦人，因为你会有成组的字段需要手动复制粘贴。所有这些都是真的，但我认为可以以后解决（例如，通过命名字段组）。
+
+我发现大多数时候我想使用视图类型是在私有函数中。私有方法通常执行一些小的逻辑，并利用结构的内部结构。相比之下，公共方法通常执行更大的操作，并向用户隐藏内部结构。这并不是一条普遍规律——有时我确实有应该能并发调用的公共函数——但这种情况较少。
+
+目前行为对于公共函数也有一个优势：它保留了前向兼容性。接受&mut self（与某些字段子集相比）意味着函数可以更改使用的字段集合而不影响其客户。这对于私有函数来说并不是问题。
+### 第四步：内部引用
+
+Rust目前无法支持字段引用其他数据的结构体。这一缺陷可以通过类似rental（现已不再维护）的库部分解决，但更多时候是通过使用索引来模拟内部引用。我们还有Pin，用于处理相关但更难解决的不可移动数据的问题。
+
+我一直在努力解决这个问题。在这篇文章中，我无法完全解释这个问题的解决方案，但我可以勾画出我的想法，并在未来的文章中详细说明（我已经对这一问题进行了一些形式化处理，足以让我相信这个方法是可行的）。
+
+例如，假设我们有一个Message结构体，包含一个大字符串以及几个对该字符串的引用。你可以这样建模：
+
+```rust
+struct Message {
+    text: String,
+    headers: Vec<(&'self.text str, &'self.text str)>,
+    body: &'self.text str,
+}
+```
+
+这个Message可以通过以下方式构造：
+
+```rust
+let text: String = parse_text();
+let (headers, body) = parse_message(&text);
+let message = Message { text, headers, body };
+```
+
+其中parse_message是类似如下的函数：
+
+```rust
+fn parse_message(text: &str) -> (
+    Vec<(&'text str, &'text str)>,
+    &'text str
+) {
+    let mut headers = vec![];
+    // ...
+    (headers, body)
+}
+```
+
+注意，Message没有任何生命周期参数——它不需要，因为它不借用任何外部的数据。实际上，`Message: 'static`是成立的，这意味着我可以将这个Message发送到另一个线程：
+
+```rust
+// 一个`Message`值的通道：
+let (tx, rx) = std::sync::mpsc::channel();
+
+// 一个线程来消费这些值：
+std::thread::spawn(move || {
+    for message in rx {
+        // 这里的`message`类型是`Message`
+        process(message.body);
+    }
+});
+
+// 生产这些值：
+loop {
+    let message: Message = next_message();
+    tx.send(message);
+}
+```
+
+这些想法发展到什么程度了？
+
+粗略地说：
+
+- Polonius——只是工程问题
+- 语法——只是自行车棚效应
+- 视图类型——需要建模，我心中有一两个悬而未决的问题
+- 内部引用——已经为简化版的Rust进行了详细建模，需要移植到Rust并解释我在此过程中所做的假设
+
+换句话说，我已经做了足够的工作，使自己相信这些设计是可行的，但仍有大量工作需要完成。
+
+我们如何优先考虑这些工作？
+
+每当我想到投资于借用检查器的可用性时，我都会感到有点内疚。如此有趣的事情，肯定是不该花费时间去做的。
+
+在RustNL的对话改变了我的看法。当我问到人们的痛点时，尤其是那些试图构建应用程序或GUI的人们，我不断听到相同的几个主题。
+
+我现在认为自己已经犯了可怕的「知识诅咒」，忘记了遇到借用检查器的限制而不知如何解决时的挫败感。
+
+## 结论
+
+本文提出了四个变更，旨在解决一些长期存在的问题：
+
+1. 条件返回的引用，通过Polonius解决。
+2. 生命周期语法的缺失或不便，通过显式生命周期语法解决。
+3. 必须内联的辅助方法，通过视图类型解决。
+4. 无法将值及其引用「打包」在一起，通过内部引用解决。
+
+你可能注意到，这些变更是相互依赖的。Polonius基于「位置表达式」（变量、字段）重构了借用机制。这使显式生命周期语法成为可能，反过来显式生命周期语法是内部引用的关键构建模块。视图类型则允许我们暴露可以操作「部分借用」（甚至部分初始化）值的辅助方法。
+
+为什么这些变更不会使Rust「更复杂」（或者，即使变复杂了，也值得）
+
+你可能会担心这些变更对Rust复杂性的影响。确实，它们扩展了类型系统可以表达的内容。但在我看来，它们就像之前的NLL（非词法生命周期）一样，属于那类实际上会让使用Rust感觉更简单的变更。
+
+要理解这一点，请设身处地想象一下今天的用户，他们写了我们在本文中看到的任何一个「显然正确」的程序——例如，我们在视图类型中看到的WidgetFactory代码。编译这个代码今天会报错：
+
+```rust
+error[E0502]: cannot borrow `*self` as mutable
+              because it is also borrowed as immutable
+  --> src/lib.rs:14:17
+   |
+12 | for widget in &self.widgets {
+   |               -------------
+   |               |
+   |               immutable borrow occurs here
+   |               immutable borrow later used here
+13 |     if widget.should_be_counted() {
+14 |         self.increment_counter();
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^
+   |         |
+   |         mutable borrow occurs here
+```
+
+尽管我们尽力将其解释清楚，但这个错误本质上令人困惑。从「直观」的角度无法解释为什么WidgetFactory不起作用，因为从概念上来说它应该工作，但它碰到了我们类型系统的一个限制。
+
+要理解为什么WidgetFactory无法编译，唯一的办法是深入了解Rust类型系统的工程细节，这正是人们不想学习的内容。此外，一旦你深入了解了，得到的回报是什么？最多你可以想出一个笨拙的变通方法。耶 🥳。
+
+现在想象一下使用视图类型会发生什么。你仍然会遇到错误，但现在这个错误可以附带一个建议：
+
+```rust
+help: consider declaring the fields
+      accessed by `increment_counter` so that
+      other functions can rely on that
+ 7 | fn increment_counter(&mut self) {
+   |                      ---------
+   |                      |
+   |      help: annotate with accessed fields: `&mut {counter} self`
+```
+
+你现在有两个选择。首先，你可以应用这个建议并继续——你的代码能运行了！接下来，你可以在闲暇时深入了解发生了什么。你可以了解促使这里需要显式声明的semver风险。
+
+是的，你学到了类型系统的一个新细节，但你是在自己的节奏下学习的，而且在需要额外注解的地方，它们是有充分理由的。耶 🥳！
+
+将借用检查器具体化为类型
+
+这里还有另一个主题：将借用检查器分析从编译器内部移出，并转化为可以表达的类型。现在，所有类型始终表示完全初始化、未借用的值。无法表达捕捉迭代过程中状态或移动了一两个字段但不是全部字段的类型。这些变更解决了这个问题。
+
+这个结论太长了
+
+我知道，我就像彼得·杰克逊试图结束《指环王：王者归来》，就是停不下来！我不断想到更多要说的内容。好吧，我现在停下了。祝大家周末愉快。
