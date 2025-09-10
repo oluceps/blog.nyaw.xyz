@@ -1,0 +1,69 @@
+---
+date: 2025-03-19T16:43:02.313452757+08:00
+description: 通过既有双栈机器和SNAT来实现
+categories:
+  - 记录
+tags:
+  - IPv6
+title: 给IPv4单栈机器拾个v6地址
+---
+
+啊记记
+
+几个小步骤，首先是基于[这篇文章](/wg-babel-dyn-routing)的组网，其中已存在一台双栈机器。
+思路就是IPv4单栈机器上面添加一条静态路由，然后在双栈机器上面进行SNAT。
+
+简单演示：
+
+双栈机器配置nftable SNAT<C>因为ULA不被允许访问公网地址，没有这个步骤的话会出现转发后使用单栈机器的内网地址直接访问公网然后被拒绝</C>：
+
+```diff
+diff --git a/hosts/abhoth/network.nix b/hosts/abhoth/network.nix
+index 898f0c2f..cabd7197 100755
+--- a/hosts/abhoth/network.nix
++++ b/hosts/abhoth/network.nix
+@@ -64,6 +64,12 @@
+             iifname $INGRESS_INTERFACE udp dport $PORT_RANGE counter redirect to :$HYSTERIA_SERVER_PORT
+           }
+         }
++        table ip6 nat {
++          chain postrouting {
++            type nat hook postrouting priority srcnat; policy accept;
++            iifname { hts-yidhra, hts-kaambl } oifname eth0 ip6 saddr fdcc::/16 snat to 2400:8905::public
++          }
++        }
+       '';
+     };
+     networkmanager.enable = lib.mkForce false;
+
+```
+
+
+IPv4单栈机器上添加bird静态路由：
+
+```diff
+diff --git a/hosts/kaambl/bird.nix b/hosts/kaambl/bird.nix
+index c0ebacbd..4fcd306f 100644
+--- a/hosts/kaambl/bird.nix
++++ b/hosts/kaambl/bird.nix
+@@ -33,6 +33,12 @@
+         '';
+       in
+       ''
++        protocol static {
++          ipv6;
++          route ::/0 via fdcc::5;
++        }
+         protocol babel {
+         ${lib.concatMapStrings genLink (lib.getPeerHostListFrom config)}
+           ipv6 {
+
+```
+
+或者直接用ip命令也可以，不过我是觉得统一用BIRD更好管理
+
+```console
+sudo ip -6 route add ::/0 via fdcc::5 dev hts-abhoth metric 512
+```
+
+上文中 `hts-*` 都为单栈机器入站双栈机器的网卡。`fdcc::5` 为双栈机器在overlay network中的IP。`*::public`为双栈机器的公网IP地址。`fdcc::/16`为我的overlay network的内网地址段。`eth0`为双栈机器上的出站设备。
