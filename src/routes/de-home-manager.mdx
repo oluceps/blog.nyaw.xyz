@@ -1,0 +1,332 @@
+---
+date: '2024-05-21T05:06:57.000Z'
+description: You may actually don't need it
+draft: false
+toc: true
+hideLevel: 10
+title: Replace home-manager
+tags:
+- NixOS
+- Linux
+categories:
+- 记录
+---
+
+# Intro
+
+[home-manager](https://github.com/nix-community/home-manager) is a basic system for managing a user environment using Nix. It allows setting declarative user envs.
+
+For a nixos user includes me, home-manager may already introduced at the same time as the config created, for managing user-spec configs. But it has really poor maintainence<C>maintenance</C> and code quality, it does produced few bugs several months I use it <C>it has produced a few bugs over the several months I've been using it</C>
+
+And I do considered removing it but seems there's no a better solution exist.
+
+Things changed when I saw [this post](https://zaynetro.com/post/2024-you-dont-need-home-manager-nix). TLDR:
+
+- Use `nix profile` mechanism instead of `home.packages`. User-spec package management solved.
+- Use `nix run` and `nix app (flake)` mechanism for deploying user-spec software configs. This could be conveniently migrate from existing home-manager profile.
+
+The blog above doesn't gave a detail implementation for referencing, which we'll discuss here.
+
+Before start,
+
+**Follow this post you could finally get:**
+
+- remove home-manager
+- User specific software config switch timecost reducing, significantly.
+  - use home-manager as nixos module will require priviledge when trying change user settings, and consume same eval time as entire nixos config, which about 20s. Time cost reduced to `~4s` after this.
+- Better maintainence
+
+
+**What we'll lost**
+
+- No more home-manager. Things may not be better.
+- Difficulties for calling OS config option in user specific config. In home-manager with nixosModule installation (standalone install has no this function as well btw) you generally do this by calling `osConfig`.
+- slate-symlink cleaning. Which could be easily solved by writting a simple script.
+
+## Prerequisites
+
+- A Nix Flake, with a working nixosConfiguration.
+- (optional) A home-manager config (either standalone or nixosModule installation)
+- Want, to get rid of the home-manager.
+- About 3 hours or days.
+
+# Start with user-spec config
+
+> Difference between user-specific packages/config and global's: they were stored under user home.
+
+You can always start from [install user specific package](#user-specific-packages)
+
+## Collect Configs (Optional)
+
+If you already <C>'ve had</C> have a deployed home-manager configuration, which linked <C>that links</C> things to your $HOME/.config directory, you may want to use this script to collect them all.
+
+```python
+import os
+import shutil
+
+def find_and_copy_symlinks(source_dir, target_dir):
+    """
+    Recursively find all symbolic links in source_dir and copy their real files to target_dir,
+    preserving the original directory structure.
+
+    Args:
+        source_dir (str): The directory to search for symbolic links.
+        target_dir (str): The directory where the real files will be copied.
+    """
+    for root, dirs, files in os.walk(source_dir):
+        for name in files + dirs:
+            path = os.path.join(root, name)
+            if os.path.islink(path):
+                real_path = os.path.realpath(path)
+                relative_path = os.path.relpath(path, source_dir)
+                target_path = os.path.join(target_dir, relative_path)
+
+                # Create directories in target path
+                os.makedirs(os.path.dirname(target_path), exist_ok=True)
+
+                # Copy the real file to the target path
+                if os.path.isfile(real_path):
+                    shutil.copy2(real_path, target_path)
+                elif os.path.isdir(real_path):
+                    shutil.copytree(real_path, target_path, dirs_exist_ok=True)
+
+                print(f"Copied {real_path} to {target_path}")
+
+if __name__ == "__main__":
+    source_directory = f'{os.environ["HOME"]}/.config'  # Replace with the source directory
+    target_directory = "./target"  # Replace with the target directory
+    find_and_copy_symlinks(source_directory, target_directory)
+```
+
+This will collect all symlink real paths into the ./target directory. Please note that you will still need to manually replace the /nix/store/xxhash-name strings in each file.
+
+Here’s an example of what it collected for me:
+
+```console
+~/Src/hmlink/target
+> tree
+.
+├── alacritty
+│   └── alacritty.toml
+├── aria2
+│   └── aria2.conf
+├── atuin
+│   └── config.toml
+├── bspwm
+.....<snip>
+```
+
+## Mapping target path & real file
+
+We need to automatically build an attrset from the tree above. e.g.
+
+```nix
+{
+  "/home/user/.config/alacritty/alacritty.toml" = abs_path_of_dir/alacritty/alacritty.toml;
+  # ...<snip>
+}
+```
+
+for further manipulating. To implement this a recursive read and update could be introduced:
+
+[code](https://github.com/oluceps/nixos-config/blob/dehm/nhome/default.nix)
+
+```nix
+{ lib, pkgs, ... }@args:
+# https://gist.github.com/thalesmg/ae5dc3c5359aed78a33243add14a887d
+let
+  configPlace = "~/.config";
+
+  inherit (builtins) readDir foldl' attrNames;
+  inherit (lib.attrsets) filterAttrs setAttrByPath recursiveUpdate;
+  inherit (lib) removeSuffix;
+  inherit (pkgs) writeText;
+
+  listRecursive = pathStr: listRecursive' { } pathStr;
+  listRecursive' =
+    acc: pathStr:
+    let
+      toPath = s: path + "/${s}";
+      path = ./. + pathStr;
+      contents = readDir path;
+      dirs = filterAttrs (k: v: v == "directory") contents;
+      files = filterAttrs (k: v: v == "regular" && k != "default.nix") contents;
+      dirs' = foldl' (acc: d: recursiveUpdate acc (listRecursive (pathStr + "/" + d))) { } (
+        attrNames dirs
+      );
+      files' = foldl' (
+        acc: f:
+        recursiveUpdate acc (
+          setAttrByPath [ "${configPlace}${pathStr}/${(removeSuffix ".nix" f)}" ] (
+            if lib.hasSuffix ".nix" f then
+              (writeText (removeSuffix ".nix" f) (import (toPath f) args))
+            else
+              (toPath f)
+          )
+
+        )
+      ) { } (attrNames files);
+    in
+    recursiveUpdate dirs' files';
+in
+listRecursive ""
+```
+
+This will structure the attribute set according to the directory structure. It also provides a mechanism for using variables, such as `pkgs.hello`, in the configuration. To do this, simply add the suffix `.nix` to the file name and wrap the file content with a Nix string.
+
+e.g.
+
+```nix
+# example.nix
+
+{pkgs, ...}:
+''
+foobar ${pkgs.hello}
+''
+```
+
+will evaluated to:
+
+```
+foobar /nix/store/xxxxxxxxxxxxxxxxxxxxxx-hello
+```
+
+Make a new dir in whatever place of your config repo. Place `default.nix` in and you could copy `target/*`, which above mentioned, or your `$HOME/.config` if u don't use home-manager, into this directory. See [structure](https://github.com/oluceps/nixos-config/tree/dehm/nhome) or maybe a more elegant way.
+
+This will read the entire dir and output a text:
+
+```
+mkdir -p /home/user/.config/alacritty; ln -sf ./alacritty/alacritty.toml /home/user/.config/alacritty/alacritty.toml
+mkdir ...<snip>
+```
+
+Finally we need a `nix app` for deploying these.
+
+```nix
+{
+# flake.nix toplevel
+# may require edit, each-system config has automatically append by flake-parts in my case.
+apps.default =
+  let homeCfgAttr = (import ./home { inherit pkgs lib; });
+      parent =
+         let
+           inherit (inputs.nixpkgs.lib)
+             concatStringsSep
+             reverseList
+             splitString
+             drop
+             ;
+         in
+         p: concatStringsSep "/" (reverseList (drop 1 (reverseList (splitString "/" p))));
+in
+{
+  type = "app";
+  program = pkgs.writeScriptBin "link-home" (
+    toString (
+      lib.concatStringsSep "\n" (
+        lib.foldlAttrs (
+          acc: n: v:
+          acc ++ lib.singleton "mkdir -p ${lib.parent n}; ln -sf ${v} ${n}"
+        ) [ ] homeCfgAttr
+      )
+    )
+  );
+};
+
+}
+```
+
+While config changed just run `nix run` and all will be set.
+
+Further more, to impl deeper ingegration with nixos module, benefiet from the `{ dest = source; }` structure, we can easily:
+
+```nix
+{ lib, pkgs, ... }@args: # [!code --]
+{ lib, pkgs, user, ... }@args: # [!code ++]
+let
+  configPlace = "~/.config";  # [!code --]
+  configPlace = "/home/${user}/.config";  # [!code ++]
+
+  inherit (builtins) readDir foldl' attrNames;
+  inherit (lib.attrsets) filterAttrs setAttrByPath recursiveUpdate;
+  inherit (lib) removeSuffix;
+  inherit (pkgs) writeText;
+
+  listRecursive = pathStr: listRecursive' { } pathStr;
+```
+
+and adding a nixos module, everything just works:
+
+```nix
+{
+  lib,
+  pkgs,
+  user,
+  ...
+}:
+let
+  homeCfgAttr = (import ../pathToAboveFile { inherit pkgs lib user; });
+in
+{
+  systemd.tmpfiles.rules = lib.foldlAttrs (
+    acc: n: v:
+    acc ++ lib.singleton "L+ ${n} - - - - ${v}"
+  ) [ ] homeCfgAttr;
+}
+```
+
+# User-specific Packages
+
+More easily.
+Add following to flake toplevel
+
+```nix
+{
+
+# flake.nix
+  packages.default = pkgs.symlinkJoin {
+    name = "user-pkgs";
+    paths =
+      import ./userPkgs.nix { inherit pkgs; }
+      # avoid being gc
+      ++ (lib.singleton (
+        map (
+          path:
+          let
+            source = homeCfgAttr.${path};
+          in
+          pkgs.writeTextDir path source
+        ) (builtins.attrNames homeCfgAttr)
+      ));
+  };
+
+}
+```
+
+and `userPkgs.nix`
+
+```nix
+# userPkgs.nix
+{pkgs, ...}:
+  with pkgs; [ hello cowsay ]
+```
+
+Trace by git.
+
+while first deploy, run `nix profile install .#userPkgs`.
+
+while changed, run `nix profile upgrade <index>` which index seen from `nix profile list`
+
+NOTICE that if using root on tmpfs, `~/.nix-profile` may not exsit at startup if home on tmpfs, which causes packages not loaded to env. Adding a link for solving this.
+
+```nix
+{
+  systemd.tmpfiles.rules = [
+    "L /home/${user}/.nix-profile - - - - /home/${user}/.local/state/nix/profiles/profile"
+  ];
+}
+```
+
+# Final
+
+You may need to pay attention to the behavior when garbage collection (GC) is executed, as discussed in the mentioned article.
