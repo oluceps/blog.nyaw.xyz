@@ -1,0 +1,28 @@
+---
+date: 2025-03-04T01:35:53.263497529+08:00
+description: 是圆角不是圆角
+categories:
+  - 记录
+tags:
+  - 圆角
+title: 圆角
+---
+
+破事水
+
+如果你用的是先进的 Chromium 浏览器，可能已经注意到了右上角的navigator bg和往下滚会出现的
+back-to-top 按钮，它们的圆角比常见的css圆角更圆润一点：
+
+一般圆角：
+<div class="h-10 w-10 rounded-lg bg-cerise-300"/>
+
+
+好看圆角,
+当然这个的浏览器支持[很有限](https://caniuse.com/?search=houdini)，比如你是火狐就看不出区别(fallback了)：
+<div class="h-10 w-10 squircle rounded-lg bg-cerise-300"/>
+
+因为前者是简单的1/4圆弧拼接而后者是~~G2曲率连续的图形拼接~~没看实现但是应该更复杂一点，详细区别可以看[b站](https://www.bilibili.com/video/av979946928)，总之过渡要平滑不少。
+
+但是copy不到G3连续的代码，可能确实比较吃性能？但是我假设用户最不缺的就是性能。等有空了手搓一个。
+
+哦差点忘了，我用的相关实现见[css houdini squircle](https://github.com/PavelLaptev/css-houdini-squircle)

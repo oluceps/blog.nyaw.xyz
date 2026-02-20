@@ -1,0 +1,40 @@
+---
+date: 2025-06-07T01:55:39.430923305+08:00
+description: 啊JS生态
+categories:
+  - 记录
+tags:
+  - solidstart
+  - frontend
+title: vinxi 状态更新不完全
+---
+
+昨天惊讶地发现blog的 smooth scroll 没了，然后查看了console：
+
+```
+client-wyZLf8sE.js:1 Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "text/html". Strict MIME type checking is enforced for module scripts per HTML spec.
+```
+
+根据[某些](https://community.cloudflare.com/t/failed-to-load-module-script-expected-a-javascript-module-script-but/530414/3)搜索结果的指引，可能是有js模块404了。
+
+此站托管在 cloudflare pages 并在本地使用 wrangler 进行构建然后直接推上去，这时我大概意识到可能是构建出了问题但是只想到依赖更炸了，因为前几天正好有一次大更新，但是回退之后发现显然不是依赖有问题。
+
+然后我判断是cloudflare的托管方式出了问题，直接果断跑路迁移到了 netlify，which 后来发现UI风格是我喜欢的类型。而且同技术栈（solidstart, vinxi + nitro）的网站 [solid docs](https://github.com/solidjs/solid-docs) 也是使用它托管，就想问题大概可以被这么解决。
+
+事实上我关联仓库自动部署完它确实没有出现错误了，但是今天我在本地弄了一个 netlify-cli 采用本地构建后问题完完美美地复现了。我对照了netlify从git repo head自动构建的环境，版本都是一致的，pnpm也提供了基础的可复现性，但就是这么个从本地部署有问题，托管服务直接拉仓库就没问题的情况。
+
+
+Preview build 的console出现的错误，这次比较清晰，和`vinxi serve --dir ./dist`出现的错误相似:
+```
+GET https://68433018650af7077de3c4df--effortless-pasca-ac584c.netlify.app/_build/assets/client-DBglQRiy.js net::ERR_ABORTED 404 (Not Found)
+```
+
+然后我终于开始怀疑本地的构建缓存<C>说是构建缓存实际上包含一切构建后的产物</C>，照理这是生产代码极难出现的问题，因为很低级；但是回头一想，哦这是js生态的东西，既然它都能出现[移除已注释的代码以通过编译](https://blog.nyaw.xyz/remove-comment-pass-compilation)这种离谱到家毁灭常识的事情，那遇到多混沌的事故都不应该感到奇怪了。
+
+于是我开始移除git tracing以外的一切事物。一开始是 `./dist` 因为这是最直观的与最终上传产物有关联的事物，并且以 `vinxi serve --dir ./dist` 为标准判断是否修复。
+
+但是光移除 `./dist` 问题依旧，然后移除了 `./.output`, `./.vinxi`。这次终于修复。
+
+所以问题从比较抽象笼统的层次分析就是，以vinxi为首的团伙作为工具链组成部分<C>可能没有全部参与此次bug，但是鉴于我对js生态失望无心深挖</C>，在 `.output` 或 `.vinxi` 缓存了某次编译的状态`A<=>B`，并且在后续的编译中异常地认为这个状态不应该更新，在`dist`中的编译产物中`B`更新为`B'`后出现了不一致。当server被访问时call `A` and then call `B` 就表现为404了。
+
+于是我在 `netlify deploy` 前将恒定而持久地清除这三个文件夹，不再默认它们的可靠性。

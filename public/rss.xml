@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>lyophylla's blog</title>
+        <link>https://blog.nyaw.xyz</link>
+        <description></description>
+        <lastBuildDate>Fri, 20 Feb 2026 12:15:48 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <language>zh-CN</language>
+        <copyright>All rights reserved 2026, lyophylla</copyright>
+        <item>
+            <title><![CDATA[心跳]]></title>
+            <link>https://blog.nyaw.xyz/heartrate</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/heartrate</guid>
+            <pubDate>Sun, 15 Feb 2026 16:11:21 GMT</pubDate>
+            <description><![CDATA[是心跳哦，但是不一定在广播]]></description>
+        </item>
+        <item>
+            <title><![CDATA[使用 SMTP Relay 和 Email Routing 架空 Stalwart]]></title>
+            <link>https://blog.nyaw.xyz/post/stalwart-smtprelay-cfmailrouting-selfhost-jmap-mailbox</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/stalwart-smtprelay-cfmailrouting-selfhost-jmap-mailbox</guid>
+            <pubDate>Thu, 29 Jan 2026 18:05:33 GMT</pubDate>
+            <description><![CDATA[一种发信成本和维护成本都很低的自建邮局方案]]></description>
+        </item>
+        <item>
+            <title><![CDATA[secrets]]></title>
+            <link>https://blog.nyaw.xyz/secrets</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/secrets</guid>
+            <pubDate>Tue, 23 Sep 2025 18:10:35 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Tunneling Back to Mainland]]></title>
+            <link>https://blog.nyaw.xyz/post/tunnel-back-to-mainland</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/tunnel-back-to-mainland</guid>
+            <pubDate>Thu, 18 Sep 2025 13:10:18 GMT</pubDate>
+            <description><![CDATA[including AI-generated content]]></description>
+        </item>
+        <item>
+            <title><![CDATA[把 steam 游戏丢 NAS 上]]></title>
+            <link>https://blog.nyaw.xyz/post/iscsi-target-with-nixos</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/iscsi-target-with-nixos</guid>
+            <pubDate>Wed, 02 Jul 2025 19:30:54 GMT</pubDate>
+            <description><![CDATA[使用 NixOS 配置 iSCSI target]]></description>
+        </item>
+        <item>
+            <title><![CDATA[flake-parts 初见]]></title>
+            <link>https://blog.nyaw.xyz/post/flake-parts-quick-intro</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/flake-parts-quick-intro</guid>
+            <pubDate>Sat, 07 Jun 2025 14:55:47 GMT</pubDate>
+            <description><![CDATA[一个功能丰富的、可能也是目前最靠谱的nix配置框架]]></description>
+        </item>
+        <item>
+            <title><![CDATA[vinxi 状态更新不完全]]></title>
+            <link>https://blog.nyaw.xyz/post/solidstart-incomplete-build-with-webhosting</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/solidstart-incomplete-build-with-webhosting</guid>
+            <pubDate>Fri, 06 Jun 2025 17:55:39 GMT</pubDate>
+            <description><![CDATA[啊JS生态]]></description>
+        </item>
+        <item>
+            <title><![CDATA[同一条河流]]></title>
+            <link>https://blog.nyaw.xyz/post/if-i-should-reword-my-record</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/if-i-should-reword-my-record</guid>
+            <pubDate>Mon, 12 May 2025 22:14:47 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[新世界より挺好看]]></title>
+            <link>https://blog.nyaw.xyz/post/sinsekaiyori-novel-anime-afteread</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/sinsekaiyori-novel-anime-afteread</guid>
+            <pubDate>Thu, 27 Mar 2025 20:37:18 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[给IPv4单栈机器拾个v6地址]]></title>
+            <link>https://blog.nyaw.xyz/post/empower-ipv4-vps-access-ipv6</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/empower-ipv4-vps-access-ipv6</guid>
+            <pubDate>Wed, 19 Mar 2025 08:43:02 GMT</pubDate>
+            <description><![CDATA[通过既有双栈机器和SNAT来实现]]></description>
+        </item>
+        <item>
+            <title><![CDATA[验证我的迷你签名]]></title>
+            <link>https://blog.nyaw.xyz/post/verify</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/verify</guid>
+            <pubDate>Sat, 15 Mar 2025 17:10:17 GMT</pubDate>
+            <description><![CDATA[只能验证我的！]]></description>
+        </item>
+        <item>
+            <title><![CDATA[圆角]]></title>
+            <link>https://blog.nyaw.xyz/post/css-houdini-rounded</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/css-houdini-rounded</guid>
+            <pubDate>Mon, 03 Mar 2025 17:35:53 GMT</pubDate>
+            <description><![CDATA[是圆角不是圆角]]></description>
+        </item>
+        <item>
+            <title><![CDATA[我用什么才能留住你]]></title>
+            <link>https://blog.nyaw.xyz/post/what-can-i-hold-you-with</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/what-can-i-hold-you-with</guid>
+            <pubDate>Tue, 18 Feb 2025 05:54:15 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[被阻断了呜呜]]></title>
+            <link>https://blog.nyaw.xyz/post/trival-sni-blocking-in-some-place-of-mainland</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/trival-sni-blocking-in-some-place-of-mainland</guid>
+            <pubDate>Mon, 17 Feb 2025 10:06:11 GMT</pubDate>
+            <description><![CDATA[对技术的追逐全部源于叛逆]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Full Mesh with wireguard & babel]]></title>
+            <link>https://blog.nyaw.xyz/post/wg-babel-dyn-routing</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/wg-babel-dyn-routing</guid>
+            <pubDate>Wed, 05 Feb 2025 05:50:01 GMT</pubDate>
+            <description><![CDATA[Redundant network based on wireguard and babel]]></description>
+        </item>
+        <item>
+            <title><![CDATA[使网页的滚动条表现一致]]></title>
+            <link>https://blog.nyaw.xyz/post/handle-scrollbar-gutter-in-diff-browser</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/handle-scrollbar-gutter-in-diff-browser</guid>
+            <pubDate>Fri, 31 Jan 2025 21:24:02 GMT</pubDate>
+            <description><![CDATA[在不同浏览器上，通过css]]></description>
+        </item>
+        <item>
+            <title><![CDATA[无题]]></title>
+            <link>https://blog.nyaw.xyz/post/survival-and-evo</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/survival-and-evo</guid>
+            <pubDate>Sat, 25 Jan 2025 10:04:02 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[智齿]]></title>
+            <link>https://blog.nyaw.xyz/post/wisdom-tooth</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/wisdom-tooth</guid>
+            <pubDate>Sat, 04 Jan 2025 23:48:41 GMT</pubDate>
+            <description><![CDATA[前天拔了两颗智齿喵]]></description>
+        </item>
+        <item>
+            <title><![CDATA[简单博客标签聚类]]></title>
+            <link>https://blog.nyaw.xyz/post/blog-tag-arrange</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/blog-tag-arrange</guid>
+            <pubDate>Wed, 01 Jan 2025 21:04:52 GMT</pubDate>
+            <description><![CDATA[朴素的，没有机器学习]]></description>
+        </item>
+        <item>
+            <title><![CDATA[变人]]></title>
+            <link>https://blog.nyaw.xyz/post/become-human</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/become-human</guid>
+            <pubDate>Sat, 28 Dec 2024 22:07:29 GMT</pubDate>
+            <description><![CDATA[Detroit]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Canokey Canary 与权威证书机构]]></title>
+            <link>https://blog.nyaw.xyz/post/canokey-ca</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/canokey-ca</guid>
+            <pubDate>Mon, 16 Dec 2024 16:51:17 GMT</pubDate>
+            <description><![CDATA[虽然说是canary的但是对yk5适用]]></description>
+        </item>
+        <item>
+            <title><![CDATA[NixOS 墙内小记]]></title>
+            <link>https://blog.nyaw.xyz/post/nixos-inwall-install</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/nixos-inwall-install</guid>
+            <pubDate>Sat, 14 Dec 2024 18:17:38 GMT</pubDate>
+            <description><![CDATA[即使身处果壳之中，仍自以为无限空间之王]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Logo and Banners for milieuim]]></title>
+            <link>https://blog.nyaw.xyz/post/milieuim-logos</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/milieuim-logos</guid>
+            <pubDate>Thu, 05 Dec 2024 19:34:18 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[rust 迭代器写法小坑]]></title>
+            <link>https://blog.nyaw.xyz/post/rust-iter-infrec</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/rust-iter-infrec</guid>
+            <pubDate>Fri, 22 Nov 2024 15:24:54 GMT</pubDate>
+            <description><![CDATA[随手被自己蠢到]]></description>
+        </item>
+        <item>
+            <title><![CDATA[享做无界手动档复位]]></title>
+            <link>https://blog.nyaw.xyz/post/xiangzuo-note-edgeless-defound-fix</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/xiangzuo-note-edgeless-defound-fix</guid>
+            <pubDate>Fri, 08 Nov 2024 12:31:16 GMT</pubDate>
+            <description><![CDATA[太厉害了享做笔记]]></description>
+        </item>
+        <item>
+            <title><![CDATA[SolidJS 跨组件组装组件小坑]]></title>
+            <link>https://blog.nyaw.xyz/post/solidjs-dyn-cpo-inpair</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/solidjs-dyn-cpo-inpair</guid>
+            <pubDate>Wed, 23 Oct 2024 01:11:24 GMT</pubDate>
+            <description><![CDATA[前端！]]></description>
+        </item>
+        <item>
+            <title><![CDATA[妆台秋思]]></title>
+            <link>https://blog.nyaw.xyz/post/zhuangtai-qiusi</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/zhuangtai-qiusi</guid>
+            <pubDate>Tue, 22 Oct 2024 20:00:36 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[移除已注释的代码以通过编译]]></title>
+            <link>https://blog.nyaw.xyz/post/remove-comment-pass-compilation</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/remove-comment-pass-compilation</guid>
+            <pubDate>Mon, 21 Oct 2024 07:11:32 GMT</pubDate>
+            <description><![CDATA[太颠了]]></description>
+        </item>
+        <item>
+            <title><![CDATA[NixOS 不见光凭据管理综述]]></title>
+            <link>https://blog.nyaw.xyz/post/nixos-secret-management-introduction</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/nixos-secret-management-introduction</guid>
+            <pubDate>Sun, 29 Sep 2024 11:13:48 GMT</pubDate>
+            <description><![CDATA[Most NixOS Secret Management Tools In Common]]></description>
+        </item>
+        <item>
+            <title><![CDATA[梁祝小提琴协奏]]></title>
+            <link>https://blog.nyaw.xyz/post/liangzhu</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/liangzhu</guid>
+            <pubDate>Sat, 28 Sep 2024 20:14:34 GMT</pubDate>
+            <description><![CDATA[我太喜欢这首了]]></description>
+        </item>
+        <item>
+            <title><![CDATA[mautrix telegram bridge conduit]]></title>
+            <link>https://blog.nyaw.xyz/post/mautrix-conduit-build</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/mautrix-conduit-build</guid>
+            <pubDate>Tue, 24 Sep 2024 14:55:15 GMT</pubDate>
+            <description><![CDATA[使用 mautrix 桥接 telegram 和 conduit]]></description>
+        </item>
+        <item>
+            <title><![CDATA[未完成ランデヴー]]></title>
+            <link>https://blog.nyaw.xyz/post/mikansei-randevu</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/mikansei-randevu</guid>
+            <pubDate>Tue, 17 Sep 2024 19:06:32 GMT</pubDate>
+            <description><![CDATA[by Lezel]]></description>
+        </item>
+        <item>
+            <title><![CDATA[在 SolidJS 中展示 Typst]]></title>
+            <link>https://blog.nyaw.xyz/post/using-typst-in-solidjs</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/using-typst-in-solidjs</guid>
+            <pubDate>Sat, 07 Sep 2024 21:25:45 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[来自用户的信任根进入像素]]></title>
+            <link>https://blog.nyaw.xyz/post/pixel-root-trust-by-user</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/pixel-root-trust-by-user</guid>
+            <pubDate>Wed, 14 Aug 2024 22:23:26 GMT</pubDate>
+            <description><![CDATA[Pixel8配置用户重签名的A/B OTAs]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Nixpkgs Pull Request Tracker]]></title>
+            <link>https://blog.nyaw.xyz/post/nixpkgs-tracker</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/nixpkgs-tracker</guid>
+            <pubDate>Wed, 07 Aug 2024 14:32:44 GMT</pubDate>
+            <description><![CDATA[Where the pr goes]]></description>
+        </item>
+        <item>
+            <title><![CDATA[disko for btrfs on luks2]]></title>
+            <link>https://blog.nyaw.xyz/post/luks-btrfs-nixos-disko</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/luks-btrfs-nixos-disko</guid>
+            <pubDate>Fri, 05 Jul 2024 11:02:02 GMT</pubDate>
+            <description><![CDATA[在 NixOS 上使用 disko 声明 btrfs on luks 和 root on tmpfs]]></description>
+        </item>
+        <item>
+            <title><![CDATA[未完成タイムリミッター]]></title>
+            <link>https://blog.nyaw.xyz/post/mikansei-taimurimitta</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/mikansei-taimurimitta</guid>
+            <pubDate>Mon, 17 Jun 2024 17:17:05 GMT</pubDate>
+            <description><![CDATA[by orangestar]]></description>
+        </item>
+        <item>
+            <title><![CDATA[深入借用检查器]]></title>
+            <link>https://blog.nyaw.xyz/post/the-borrow-checker-within</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/the-borrow-checker-within</guid>
+            <pubDate>Sat, 08 Jun 2024 23:55:21 GMT</pubDate>
+            <description><![CDATA[The borrow checker within]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Wikipedia IPBE 审核超慢]]></title>
+            <link>https://blog.nyaw.xyz/post/wikipedia-ipbe-badbad</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/wikipedia-ipbe-badbad</guid>
+            <pubDate>Sat, 01 Jun 2024 18:30:13 GMT</pubDate>
+            <description><![CDATA[慢到什么程度呢,我单开一条blog吐槽]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Replace home-manager]]></title>
+            <link>https://blog.nyaw.xyz/post/de-home-manager</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/de-home-manager</guid>
+            <pubDate>Tue, 21 May 2024 05:06:57 GMT</pubDate>
+            <description><![CDATA[You may actually don't need it]]></description>
+        </item>
+        <item>
+            <title><![CDATA[严格别名规则的那些事]]></title>
+            <link>https://blog.nyaw.xyz/post/strict-aliasing-rule</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/strict-aliasing-rule</guid>
+            <pubDate>Sun, 12 May 2024 12:38:23 GMT</pubDate>
+            <description><![CDATA[What is the Strict Aliasing Rule and Why do we care?]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Multidev bcachefs on NixOS]]></title>
+            <link>https://blog.nyaw.xyz/post/nixos-nas-with-bcachefs</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/nixos-nas-with-bcachefs</guid>
+            <pubDate>Mon, 06 May 2024 05:21:32 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[写了个博客好耶]]></title>
+            <link>https://blog.nyaw.xyz/post/new-to-hugo</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/new-to-hugo</guid>
+            <pubDate>Tue, 30 Apr 2024 17:36:45 GMT</pubDate>
+            <description><![CDATA[装修报告]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Remote System Rescue]]></title>
+            <link>https://blog.nyaw.xyz/post/remote-rescue</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/remote-rescue</guid>
+            <pubDate>Fri, 29 Mar 2024 06:40:51 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Rubaiyat - exc.]]></title>
+            <link>https://blog.nyaw.xyz/post/rubaiyat-63</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/rubaiyat-63</guid>
+            <pubDate>Thu, 03 Aug 2023 15:30:28 GMT</pubDate>
+            <description><![CDATA[One thing is certain, and the Rest is Lies]]></description>
+        </item>
+        <item>
+            <title><![CDATA[使用 Yubikey FIDO2 签名]]></title>
+            <link>https://blog.nyaw.xyz/post/replace-gpg-in-signing</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/replace-gpg-in-signing</guid>
+            <pubDate>Sun, 16 Jul 2023 22:53:00 GMT</pubDate>
+            <description><![CDATA[拜拜GPG]]></description>
+        </item>
+        <item>
+            <title><![CDATA[冥想 之二]]></title>
+            <link>https://blog.nyaw.xyz/post/meditation-2</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/meditation-2</guid>
+            <pubDate>Sun, 21 May 2023 14:50:40 GMT</pubDate>
+            <description><![CDATA[原来我的全部努力，不过完成了普通的生活]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Vim & Inotify Issue]]></title>
+            <link>https://blog.nyaw.xyz/post/vim-not-fired-inotify-modify-event</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/vim-not-fired-inotify-modify-event</guid>
+            <pubDate>Tue, 09 May 2023 12:46:12 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[真間の手児奈]]></title>
+            <link>https://blog.nyaw.xyz/post/mamanotekona</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/mamanotekona</guid>
+            <pubDate>Fri, 05 May 2023 18:27:42 GMT</pubDate>
+            <description><![CDATA[言のみも　名のみも我は　忘らえなくに]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Queen Mab - exc.]]></title>
+            <link>https://blog.nyaw.xyz/post/queen-mab</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/queen-mab</guid>
+            <pubDate>Sun, 12 Feb 2023 15:26:37 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[使用 lanzaboote 实现安全启动]]></title>
+            <link>https://blog.nyaw.xyz/post/lanzaboote-secureboot-on-nixos</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/lanzaboote-secureboot-on-nixos</guid>
+            <pubDate>Wed, 04 Jan 2023 23:42:17 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[「红雨」]]></title>
+            <link>https://blog.nyaw.xyz/post/find-red-rain</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/find-red-rain</guid>
+            <pubDate>Mon, 21 Nov 2022 21:21:06 GMT</pubDate>
+            <description><![CDATA[如果你看见他，请告诉他我想对他说一声「再见」]]></description>
+        </item>
+        <item>
+            <title><![CDATA[home-manager debugging]]></title>
+            <link>https://blog.nyaw.xyz/post/loss-reproducibility-nixos</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/loss-reproducibility-nixos</guid>
+            <pubDate>Wed, 09 Nov 2022 13:56:22 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[canokey nrf52 小试]]></title>
+            <link>https://blog.nyaw.xyz/post/low-cost-hardware-key-solution</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/low-cost-hardware-key-solution</guid>
+            <pubDate>Mon, 05 Sep 2022 16:58:43 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[冥想 其一]]></title>
+            <link>https://blog.nyaw.xyz/post/meditation-1</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/meditation-1</guid>
+            <pubDate>Thu, 28 Apr 2022 16:24:12 GMT</pubDate>
+            <description><![CDATA[为什么由手写出的这些字，竟比这只手更长久，健壮？]]></description>
+        </item>
+        <item>
+            <title><![CDATA[Ozymandias]]></title>
+            <link>https://blog.nyaw.xyz/post/ozymandias</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/ozymandias</guid>
+            <pubDate>Sat, 05 Mar 2022 18:33:06 GMT</pubDate>
+            <description><![CDATA[by Percy Bysshe Shelley]]></description>
+        </item>
+        <item>
+            <title><![CDATA[嗅觉与记忆]]></title>
+            <link>https://blog.nyaw.xyz/post/smell-memory</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/smell-memory</guid>
+            <pubDate>Fri, 01 Oct 2021 16:16:18 GMT</pubDate>
+            <description><![CDATA[它从何而来？又意味着什么？哪里才能领受到它？]]></description>
+        </item>
+        <item>
+            <title><![CDATA[终端模拟器 terminfo 缺失]]></title>
+            <link>https://blog.nyaw.xyz/post/backspace-become-space-in-ssh</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/backspace-become-space-in-ssh</guid>
+            <pubDate>Fri, 25 Jun 2021 12:36:50 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Wayland in KDE-plasma]]></title>
+            <link>https://blog.nyaw.xyz/post/wayland-in-KDE-plasma-new-procetion</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/wayland-in-KDE-plasma-new-procetion</guid>
+            <pubDate>Fri, 07 Aug 2020 20:55:06 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Interrupt]]></title>
+            <link>https://blog.nyaw.xyz/post/break-record</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/break-record</guid>
+            <pubDate>Tue, 04 Aug 2020 19:00:26 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[无常]]></title>
+            <link>https://blog.nyaw.xyz/post/wuchang</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/wuchang</guid>
+            <pubDate>Fri, 29 May 2020 12:12:10 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[阶梯]]></title>
+            <link>https://blog.nyaw.xyz/post/3-body-prob-afteread</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/3-body-prob-afteread</guid>
+            <pubDate>Mon, 23 Mar 2020 10:59:03 GMT</pubDate>
+            <description><![CDATA[「给岁月以文明，而不是给文明以岁月」]]></description>
+        </item>
+        <item>
+            <title><![CDATA[马车座驾的宽度]]></title>
+            <link>https://blog.nyaw.xyz/post/spicy-n-wolf-AfterRead</link>
+            <guid isPermaLink="false">https://blog.nyaw.xyz/post/spicy-n-wolf-AfterRead</guid>
+            <pubDate>Thu, 05 Mar 2020 16:30:37 GMT</pubDate>
+            <description><![CDATA[狼と香辛料第一季(2012)好看]]></description>
+        </item>
+    </channel>
+</rss>

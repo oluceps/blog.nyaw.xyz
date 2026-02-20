@@ -1,0 +1,96 @@
+---
+date: '2021-02-09T13:14:13.000Z'
+draft: true
+title: 搭建MongoDB及导入txt大量数据
+tags:
+- MongoDB实例
+---
+
+> 弄到了几个巨大的txt文档，数据是一一对应关系，考虑了一下还是用**nosql**数据库比较简洁，并且对以后爬虫数据的管理也是比较方便的，另外过年期间用**MySQL**（没压岁钱）不吉利，于是开始搞这个项目，应该不算太难，边搞边记录，预计5h内搞完。
+
+- 一、配置mongodb环境，简单，不必多说
+- 二、开始敲代码
+
+```python
+import pymongo
+import os
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["SEL"]#Social Engineering Library
+mycol = mydb["QQleaks"]
+
+f=open(r"D:\SEL\QQleaks-6.9.txt")#open the file
+for line in f:#iterate the file lines
+    qq = int(line[:line.index('-')])#cut and write them to mongodb
+    pnb = int(line[line.index('----')+4:])
+    Single = {"QQ":qq,"Phone":pnb}
+    mycol.insert_one(Single)
+
+print("finish!enjoy it.")#I've not use 'finished'
+f.close
+```
+
+### 运行。
+
+- for remember  
+  查询数据时只需进入到数据库：
+
+```
+    >show dbs
+    >use SEL
+    >show collections
+    QQleaks
+    >db.QQleaks.find({"QQ/phone":example})
+    //就会返回数据辣~
+```
+
+### 接下来还会导入名为Weibo的collection,不过已经是顺手的事了
+
+> 结束，比我预想的快，用了不到一个小时  
+> 这个方案因为是逐行导入，可以规避内存不够大的问题，缺点就是速度可能极慢，导入进行时磁盘占用0.6MB/s，全部导入17G的数据需要8.05个小时，还是比较恐怖的
+
+# 2/12 Updated
+
+> 想到了一个不错的方法
+
+#### csv文档格式可以使用普通的逗号分隔符，并且没有行数限制，简直是加工大数据的首选。对于程序实现方面只需要简单切片重组，并且**mongoDB**数据库支持通过**mongoimport**来直接导入csv文档，于是就可以：
+
+- 0x01 将规律的**txt大文档**通过**python**读取并逐行重组成“xxxx,xxxx"的形式
+- 0x02 将 **.txt** 后缀直接改为 **.csv**
+- 通过**mongoimport**直接导入
+
+#### 很简单的三个步骤，具体实现:
+
+```python
+import pymongo
+import os
+import json
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["SEL"]
+mycol = mydb["QQleaks"]
+
+f=open(r"D:\SEL\QQleaks-6.9.txt")#open the file
+o=open(r"D:\SEl\qleaks.txt","w")
+o.write("QQ,Phone")#write header info
+print("今始めよう‼")
+for i in f:#iterate the file lines
+    try:#add exception handing,Thus we don't need to afraid empty lines.
+        qq = str(i[:i.index('-')])#cut and write them to mongodb
+    except ValueError:
+        continue
+    pnb = str(i[i.index('----')+4:i.index('----')+15])
+    Single = ("\n"+qq+","+pnb)
+    o.write(Single)
+
+    #mycol.insert_one(Single)
+
+print("finish!enjoy it.")
+f.close
+```
+
+#### 而后只需要简单的导入：
+
+```
+mongoimport --db SEL --collection test --type csv --columnsHaveTypes --fields "QQ.string(),Phone.string()" --file D:\SEL\qleaks.csv
+```
+
+查询步骤与上相同

@@ -1,0 +1,74 @@
+---
+date: '2020-04-01T18:44:13.000Z'
+draft: true
+title: trojan代理从搭建到应用(Deprecated)
+tags:
+- trojan代理搭建
+---
+
+<Emph type="warn">Trojan协议在如今已经不再建议使用</Emph>
+
+> 众所周知，一般来说，基于解决为适应我国国情而做出的部分国际互联网限制所导致的学术信息交流不方便等问题而提出的大多数加密流量型代理协议(SS/SSR等)~~已经不再稳定和安全~~ (02 Oct 2021 update: 随着ss项目的进一步发展，似乎其在某些方面比较受大型机场的青睐，安全性现阶段也有保障)，众多网友迫切地寻找一款真正能够满足日常需求的代理软件。于是，**v2ray**以及**Trojan**就应运而生。二者都是伪装流量类型的代理方式。
+> [Trojan in github](https://github.com/trojan-gfw/trojan)
+
+- v2ray是完整的网络框架，对服务器及用户的资源占用是比较大的。但是使用比较广泛。
+- trojan可以说是v2ray的简化版，由于使用C++编写以及简化了一层加密，理论速度会比v2ray高，负载也较小。但是**Trojan不能套接CDN加速**。
+
+本文主要讲述trojan在Azure服务器的安装过程。
+
+### 一、搞到一台VPS
+
+文中采用Azure的日本东部免费订阅，Ubuntu服务器作为示例。
+
+**服务器必须开放80及443端口**
+
+方法自查。
+
+### 二、DNS解析配置
+
+推荐Cloudflare，**不要使用VPS自带的dns**
+
+在cloudflare填写配置完成后需要几个小时才能生效，判定方法为ping出的ip是否为服务器ip。
+
+### 三、开始配置服务端
+
+1. 使用SSH连接服务器，以root用户登录
+2. 注册SSL证书，如果已经有证书可以跳过这步。
+   1. `apt update&&apt upgrade&&apt install certbot`
+   2. `certbot certonly --standalone -d [你的域名]`
+   3. 按照提示填写信息即可。
+3. 完成生成SSL证书后，可运行`certbot certificates` 来获取证书路径，分别有两个pem文件。
+4. `bash -c "$(curl -fsSL https://raw.githubusercontent.com/trojan-gfw/trojan-quickstart/master/trojan-quickstart.sh)"`
+
+5. `apt install nginx` _此为安装nginx框架搭建伪装网页_
+
+6. 配置Trojan：` vim /usr/local/etc/trojan/config.json`
+
+   按i编辑`"password":`中的两个密码，默认使用第一个。接着修改`cert`和`key`,分别填入ssl证书（pem文件）的绝对路径。
+
+   完成后`ESC`后`：wq`保存退出。
+
+7. 就此安装完成，接下来配置开机自启及启动
+
+```
+systemctl enable trojan&&systemctl enable nginx&&systemctl start trojan&&systemctl start nginx
+```
+
+### 以上服务端配置完成，可`ss -lp | grep trojan`检测运行状况，有输出即正常，无输出检查步骤。
+
+### 四、客户端配置
+
+windows可使用trojan.exe或clash、V2rayN，linux参考windows。Mac未知可自行查询。  
+路由器多数第三方固件可使用三月中旬后更新的clash。
+
+clash配置参考（第102、104、106、128、130、132修改为自己的参数，其它依用户水平自己调整。）：
+https://raw.githubusercontent.com/Dabrit/LinkFiles/master/clash.yaml
+
+复制后保存为yml文件就可以拖动至clash使用，或者直接复制进路由器clash配置。  
+[Clash for windows](https://github.com/Dreamacro/clash)
+
+整个头图最后。  
+![头图](https://s1.ax1x.com/2020/04/01/G8pcrj.png)
+
+本文完结。  
+2020.4.1.19:35 latest edit

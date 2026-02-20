@@ -1,0 +1,33 @@
+---
+date: 2025-02-01T05:24:02.537345017+08:00
+description: 在不同浏览器上，通过css
+categories:
+  - 记录
+tags:
+  - css
+  - scrollbar
+  - 前端
+title: 使网页的滚动条表现一致
+---
+
+
+之前在chromium上画面不overflow时滚动条随之消失，导致切换界面的时候整个页面会往左挤压一下再回来<C>因为我的两个有bar的页面之间有一个没bar的加载动画页面</C>，造成一个 shake 的效果，
+而且只在webkit浏览器上出现（因为火狐的scrollbar是悬停于页面上方而不占用实际空间的），而且我的页面有些动画效果依赖计算元素的x轴坐标，所以也不好用 `scrollbar-gutter`。
+
+所以现在有一条比较hack的方案，在webkit的浏览器上始终显示bar，火狐上则不管。
+
+```css
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  html {
+    overflow-y: scroll;
+  }
+}
+```
+
+另外有个坑，solid-start 的「最外层」scrollbar 是由body决定的，然而body被抽象起来了在源码里看不到。要应用所谓全局bar样式的话需要：
+
+```css
+body {
+	@apply scrollbar scrollbar-rounded
+}
+```

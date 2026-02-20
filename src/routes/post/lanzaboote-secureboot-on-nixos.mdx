@@ -1,0 +1,209 @@
+---
+date: '2023-01-04T23:42:17.000Z'
+title: 使用 lanzaboote 实现安全启动
+tags:
+- lanzaboote
+- secureboot
+- NixOS
+categories:
+- 记录
+---
+
+跟随这篇文章描述的步骤,预期可以实现：
+
+- 在 NixOS 23.05 和现代x86_64计算机硬件之上实现安全启动(secure boot)
+
+安全启动是计算机的一种安全机制，它在计算机启动时检查系统启动过程中的所有软件和硬件组件，以确保它们都是可信的并未被篡改。如果发现任何不可信或已篡改的内容，安全启动将阻止系统继续启动并警告用户。
+
+安全启动通常包括固件级别的安全保障措施，如UEFI Secure Boot或BIOS中的Trusted Platform Module（TPM）等。这些机制可以防止未经授权的软件或恶意代码在计算机启动时运行。
+
+但是，
+如果开启了安全启动，但是签名使用的证书文件在磁盘上明文储存没有加密，则攻击者可以访问该证书文件并使用它来签名自己的恶意内核，从而破解安全启动。  
+因此，为了最大程度地保护安全启动机制，建议将签名证书文件存储在安全的位置，并对其进行加密和保护
+
+# 准备工作
+
+Add following into flake inputs:
+
+```nix
+lanzaboote = {
+  url = "github:nix-community/lanzaboote";
+};
+```
+
+并添加对应的module：
+
+```nix
+imports = [ lanzaboote.nixosModules.lanzaboote ];
+```
+
+确认使用 UEFI 模式安装 NixOS:
+
+```
+$ bootctl status
+System:
+     Firmware: UEFI 2.70 (Lenovo 0.4720)
+  Secure Boot: disabled (disabled)
+ TPM2 Support: yes
+ Boot into FW: supported
+
+Current Boot Loader:
+      Product: systemd-boot 251.7
+...
+```
+
+为了提供安全保障，你的系统需要防止攻击者:  
+关闭UEFI安全启动或使用我们将要生成的密钥签署二进制文件。
+
+实现这一目标的最简单方法是：
+
+    在你的系统中启用一个BIOS密码。
+    使用全磁盘加密。
+
+## 创建密钥
+
+```sh
+$ sudo sbctl create-keys
+[sudo] password for julian:
+Created Owner UUID 8ec4b2c3-dc7f-4362-b9a3-0cc17e5a34cd
+Creating secure boot keys...✓
+Secure boot keys created!
+```
+
+密钥将被储存至 `/etc/secureboot` 且为root可读
+如果启用了 `root on tmpfs` ，记得将这个目录持久化
+
+## 关闭旧的引导方式
+
+在nixos配置中关闭之前使用的引导方式以避免冲突, 以sd-boot为例：
+
+```nix
+systemd-boot.enable = lib.mkForce false;
+```
+
+Grub 等其它方式同理。
+
+## 添加[bootspec](https://github.com/grahamc/rfcs/blob/bootspec/rfcs/0125-bootspec.md)
+
+`bootspec` 当前以前瞻方式在 nixpkgs-unstable 提供，在配置中加入 `boot.bootspec.enable = true;` 以启用。  
+添加之后进行 rebuild 和重启, 并通过gc 清除老的generations。
+在这一步，ESP 中可能仍然存在老的启动入口，记得在备份ESP之后移除它们。
+
+## 配置lanzaboote
+
+添加以下到nixos配置:
+
+```nix
+environment.systemPackages = [
+  # For debugging and troubleshooting Secure Boot.
+  pkgs.sbctl
+];
+
+# Lanzaboote currently replaces the systemd-boot module.
+# This setting is usually set to true in configuration.nix
+# generated at installation time. So we force it to false
+# for now.
+boot.loader.systemd-boot.enable = lib.mkForce false;
+
+boot.lanzaboote = {
+  enable = true;
+  pkiBundle = "/etc/secureboot";
+};
+```
+
+进行rebuild之后，进行必要的验证：
+
+```sh
+  sudo sbctl verify
+```
+
+`bzImage.efi` 如果没有被签名，是预期的现象
+
+我运行的输出：
+
+```
+> doas sbctl verify
+Verifying file database and EFI images in /boot...
+✓ /boot/EFI/BOOT/BOOTX64.EFI is signed
+✓ /boot/EFI/Linux/nixos-generation-701.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-702.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-703.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-704.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-705.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-706.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-707.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-708.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-709.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-710.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-711.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-712.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-713.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-714.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-715.efi is signed
+✓ /boot/EFI/Linux/nixos-generation-716.efi is signed
+✗ /boot/EFI/nixos/5a1yhzf1ih99gsgvfmahbm3hv5ya6w5x-linux-6.3-bzImage.efi is not signed
+✗ /boot/EFI/nixos/hlpm5rkbk72fj4irpmlryal30zb6qcdq-linux-6.3-bzImage.efi is not signed
+✓ /boot/EFI/systemd/systemd-bootx64.efi is signed
+```
+
+# 正式开启 SecureBoot
+
+接下来将向UEFI固件中写入密钥以开启安全启动验证，
+
+## 进入安全启动设置模式
+
+- 打开 BIOS 中的 Secureboot 选项,如果有提供类型的选择，不要选 `Other OS`
+- 从中找到类似 `Reset to Setup Mode` 的选项并启用
+- 清除所有密钥(Clear All Secure Boot Keys)
+
+以上步骤缺一不可  
+具体可以参考 [这个视频](https://www.youtube.com/watch?v=aLuCAh7UzzQ)
+
+## 载入密钥
+
+重启进入系统，这时UEFI固件将进入配置模式以载入密钥。执行：
+
+```
+$ sudo sbctl enroll-keys --microsoft
+Enrolling keys to EFI variables...
+With vendor keys from microsoft...✓
+Enrolled keys to the EFI variables!
+```
+
+就基本完成。
+
+最后的状态:
+
+```
+> bootctl status
+System:
+      Firmware: UEFI 2.70 (American Megatrends 5.17)
+ Firmware Arch: x64
+   Secure Boot: enabled (user)
+  TPM2 Support: yes
+  Boot into FW: supported
+
+Current Boot Loader:
+      Product: systemd-boot 253.3
+     Features: ✓ Boot counting
+               ✓ Menu timeout control
+               ✓ One-shot menu timeout control
+               ✓ Default entry control
+               ✓ One-shot entry control
+               ✓ Support for XBOOTLDR partition
+               ✓ Support for passing random seed to OS
+               ✓ Load drop-in drivers
+               ✓ Support Type #1 sort-key field
+               ✓ Support @saved pseudo-entry
+               ✓ Support Type #1 devicetree field
+               ✓ Boot loader sets ESP information
+          ESP: /dev/disk/by-partuuid/12ec21bc-94bd-4f7e-a217-acaf43f1e9e1
+         File: └─/EFI/SYSTEMD/SYSTEMD-BOOTX64.EFI
+```
+
+## tips
+
+- 记得在磁盘外备份密钥文件
+- 如果在磁盘中密钥文件属于明文状态，安全启动似乎作用不大？(約等於把自家鑰匙藏在門口花瓶裡 —— 来自群友)  
+  或许全盘加密和安全启动才是最好的搭配,不幸的是我所使用的 btrfs 暂时没有支持 fscrypt 且不太想套luks
+- 配置时手上需要备一个好用的救援LiveCD

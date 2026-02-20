@@ -1,0 +1,113 @@
+import { redirect } from "@solidjs/router";
+import type { FetchEvent } from "@solidjs/start/server";
+
+/**
+ * Redirect Dictionary
+ * {origin: destination}
+ */
+const LEGACY_ROUTES = {
+	"/about": "/me",
+	"/21st-summer-arival": "/post/21st-summer-arival",
+	"/3-body-prob-afteread": "/post/3-body-prob-afteread",
+	"/abs": "/post/abs",
+	"/AMDvediocard-dont-output-motherboard-logo": "/post/AMDvediocard-dont-output-motherboard-logo",
+	"/a-success-tryment-of-backup-restore-partition-edit-of-Arch": "/post/a-success-tryment-of-backup-restore-partition-edit-of-Arch",
+	"/backspace-become-space-in-ssh": "/post/backspace-become-space-in-ssh",
+	"/become-human": "/post/become-human",
+	"/blog-tag-arrange": "/post/blog-tag-arrange",
+	"/break-record": "/post/break-record",
+	"/btrfs-replace": "/post/btrfs-replace",
+	"/build-mongodb-and-import-giant-data": "/post/build-mongodb-and-import-giant-data",
+	"/canokey-ca": "/post/canokey-ca",
+	"/css-houdini-rounded": "/post/css-houdini-rounded",
+	"/dae-proxy": "/post/dae-proxy",
+	"/de-home-manager": "/post/de-home-manager",
+	"/empower-ipv4-vps-access-ipv6": "/post/empower-ipv4-vps-access-ipv6",
+	"/facerig-and-live2D": "/post/facerig-and-live2D",
+	"/find-red-rain": "/post/find-red-rain",
+	"/flake-parts-quick-intro": "/post/flake-parts-quick-intro",
+	"/forgettable": "/post/forgettable",
+	"/handle-scrollbar-gutter-in-diff-browser": "/post/handle-scrollbar-gutter-in-diff-browser",
+	"/heliocentric-and-priori-judge": "/post/heliocentric-and-priori-judge",
+	"/if-i-should-reword-my-record": "/post/if-i-should-reword-my-record",
+	"/internet-bootstrap": "/post/internet-bootstrap",
+	"/iscsi-target-with-nixos": "/post/iscsi-target-with-nixos",
+	"/lanzaboote-secureboot-on-nixos": "/post/lanzaboote-secureboot-on-nixos",
+	"/liangzhu": "/post/liangzhu",
+	"/loss-reproducibility-nixos": "/post/loss-reproducibility-nixos",
+	"/low-cost-hardware-key-solution": "/post/low-cost-hardware-key-solution",
+	"/luks-btrfs-nixos-disko": "/post/luks-btrfs-nixos-disko",
+	"/mamanotekona": "/post/mamanotekona",
+	"/math-tex": "/post/math-tex",
+	"/mautrix-conduit-build": "/post/mautrix-conduit-build",
+	"/meditation-1": "/post/meditation-1",
+	"/meditation-2": "/post/meditation-2",
+	"/mikensei-randevu": "/post/mikansei-randevu",
+	"/mikensei-taimurimitta": "/post/mikansei-taimurimitta",
+	"/milieuim-logos": "/post/milieuim-logos",
+	"/mordenlization": "/post/mordenlization",
+	"/new-to-hugo": "/post/new-to-hugo",
+	"/nixos-inwall-install": "/post/nixos-inwall-install",
+	"/nixos-nas-with-bcachefs": "/post/nixos-nas-with-bcachefs",
+	"/nixos-secret-management-introduction": "/post/nixos-secret-management-introduction",
+	"/ozymandias": "/post/ozymandias",
+	"/pending-wireguard-subnet-interact": "/post/pending-wireguard-subnet-interact",
+	"/phantomsocks": "/post/phantomsocks",
+	"/pixel-root-trust-by-user": "/post/pixel-root-trust-by-user",
+	"/qcow2-extend": "/post/qcow2-extend",
+	"/queen-mab": "/post/queen-mab",
+	"/reading-list-0": "/post/reading-list-0",
+	"/rebuild-arch-to-adapt-refind": "/post/rebuild-arch-to-adapt-refind",
+	"/refind-unable-to-read-f2fs": "/post/refind-unable-to-read-f2fs",
+	"/remote-rescue": "/post/remote-rescue",
+	"/remove-comment-pass-compilation": "/post/remove-comment-pass-compilation",
+	"/replace-gpg-in-signing": "/post/replace-gpg-in-signing",
+	"/rubaiyat-63": "/post/rubaiyat-63",
+	"/run-mongo-in-docker": "/post/run-mongo-in-docker",
+	"/rust-iter-infrec": "/post/rust-iter-infrec",
+	"/secrets": "/post/secrets",
+	"/selection-structure": "/post/selection-structure",
+	"/sexual-minority-equity-rela-discuss": "/post/sexual-minority-equity-rela-discuss",
+	"/shojo-a": "/post/shojo-a",
+	"/sinsekaiyori-novel-anime-afteread": "/post/sinsekaiyori-novel-anime-afteread",
+	"/smell-memory": "/post/smell-memory",
+	"/solidjs-dyn-cpo-inpair": "/post/solidjs-dyn-cpo-inpair",
+	"/solidstart-incomplete-build-with-webhosting": "/post/solidstart-incomplete-build-with-webhosting",
+	"/spicy-n-wolf-AfterRead": "/post/spicy-n-wolf-AfterRead",
+	"/stalwart-smtprelay-cfmailrouting-selfhost-jmap-mailbox": "/post/stalwart-smtprelay-cfmailrouting-selfhost-jmap-mailbox",
+	"/strict-aliasing-rule": "/post/strict-aliasing-rule",
+	"/style-test": "/post/style-test",
+	"/survival-and-evo": "/post/survival-and-evo",
+	"/tb-relig-theo-est": "/post/tb-relig-theo-est",
+	"/the-2025-master-exam": "/post/the-2025-master-exam",
+	"/the-borrow-checker-within": "/post/the-borrow-checker-within",
+	"/trival-sni-blocking-in-some-place-of-mainland": "/post/trival-sni-blocking-in-some-place-of-mainland",
+	"/trojan-proxy-build": "/post/trojan-proxy-build",
+	"/tunnel-back-to-mainland": "/post/tunnel-back-to-mainland",
+	"/typst-test": "/post/typst-test",
+	"/using-typst-in-solidjs": "/post/using-typst-in-solidjs",
+	"/vim-not-fired-inotify-modify-event": "/post/vim-not-fired-inotify-modify-event",
+	"/waitting-btrfs-fscrypt": "/post/waitting-btrfs-fscrypt",
+	"/wayland-in-KDE-plasma-new-procetion": "/post/wayland-in-KDE-plasma-new-procetion",
+	"/wg-babel-dyn-routing": "/post/wg-babel-dyn-routing",
+	"/what-can-i-hold-you-with": "/post/what-can-i-hold-you-with",
+	"/wikipedia-ipbe-badbad": "/post/wikipedia-ipbe-badbad",
+	"/wisdom-tooth": "/post/wisdom-tooth",
+	"/wuchang": "/post/wuchang",
+	"/xiangzuo-note-edgeless-defound-fix": "/post/xiangzuo-note-edgeless-defound-fix",
+	"/xor-filter": "/post/xor-filter",
+	"/yubikey-usage": "/post/yubikey-usage",
+	"/zhuangtai-qiusi": "/post/zhuangtai-qiusi",
+} as const;
+
+function isLegacyRoute(path: string): path is keyof typeof LEGACY_ROUTES {
+	return path in LEGACY_ROUTES;
+}
+
+export const handleLegacyRoutes = (event: FetchEvent) => {
+	const { pathname } = new URL(event.request.url);
+
+	if (isLegacyRoute(pathname)) {
+		return redirect(LEGACY_ROUTES[pathname], 301);
+	}
+};

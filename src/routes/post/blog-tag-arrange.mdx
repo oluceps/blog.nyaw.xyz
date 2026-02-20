@@ -1,0 +1,319 @@
+---
+date: 2025-01-02T05:04:52.433278024+08:00
+description: 朴素的，没有机器学习
+categories:
+  - 记录
+tags:
+  - 博客
+  - 标签
+  - 聚类
+title: 简单博客标签聚类
+---
+
+> 事实证明挺无聊的。。考虑更有意义的设计吧，比如现在所呈现的。不过还是感谢一下哈夫曼和他的频次二叉树
+
+
+```py
+import graphviz
+from collections import Counter
+
+def visualize_tree(root, filename="frequency_tree"):
+    dot = graphviz.Digraph(comment='Frequency Tree')
+
+    def add_nodes_edges(node):
+        if node:
+            dot.node(str(id(node)), f"{node.value} ({node.frequency})")
+            if node.left:
+                dot.edge(str(id(node)), str(id(node.left)))
+                add_nodes_edges(node.left)
+            if node.right:
+                dot.edge(str(id(node)), str(id(node.right)))
+                add_nodes_edges(node.right)
+
+    add_nodes_edges(root)
+    dot.render(filename, view=True)
+
+class Node:
+    def __init__(self, value, frequency=0):
+        self.value = value  # 可以是 tag 或合并后的节点
+        self.frequency = frequency
+        self.left = None
+        self.right = None
+def get_height(node):
+    """递归计算节点的高度"""
+    if not node:
+        return -1  # 空节点高度为 -1，方便计算
+    return 1 + max(get_height(node.left), get_height(node.right))
+  
+def find_nodes_at_height(root, target_height):
+    """查找指定高度的所有节点"""
+    if not root:
+        return []
+
+    nodes_at_height = []
+    if get_height(root) == target_height:
+        nodes_at_height.append(root)
+
+    nodes_at_height.extend(find_nodes_at_height(root.left, target_height))
+    nodes_at_height.extend(find_nodes_at_height(root.right, target_height))
+
+    return nodes_at_height
+def build_frequency_tree(data):
+    """根据 tag 出现的频次构建二叉树。"""
+
+    tag_counts = Counter()
+    for item in data:
+        tag_counts.update(item["tags"])
+
+    # 创建叶子节点列表
+    nodes = [Node(tag, count) for tag, count in tag_counts.items()]
+
+    # 特殊情况处理：没有tag
+    if not nodes:
+        return None
+
+    while len(nodes) > 1:
+        # 按频率排序
+        nodes.sort(key=lambda node: node.frequency)
+
+        # 取出频率最低的两个节点
+        left = nodes.pop(0)
+        right = nodes.pop(0)
+
+        # 创建一个新节点，频率为两个子节点之和
+        merged_node = Node(f"{left.value}+{right.value}", left.frequency + right.frequency) # value保存合并信息
+        merged_node.left = left
+        merged_node.right = right
+
+        # 将新节点插入节点列表，并保持排序
+        nodes.append(merged_node)
+
+    return nodes[0]  # 返回根节点
+
+def print_tree(root, indent=""):
+    """以树状结构打印二叉树"""
+    if root:
+        print(indent + f"{root.value} ({root.frequency})")
+        print_tree(root.left, indent + "  ")
+        print_tree(root.right, indent + "  ")
+
+data = [
+  {
+    "title": "titleA",
+    "tags": ["玩后感"]
+  },
+  {
+    "title": "Canokey Canary 与权威证书机构",
+    "tags": ["证书"]
+  },
+  # ...
+]
+
+root = build_frequency_tree(data)
+
+if root:
+    visualize_tree(root)
+    print("Frequency Tree:")
+    print_tree(root)
+
+    height_1_nodes = find_nodes_at_height(root, 1)
+    if height_1_nodes:
+        print("\nNodes at height 1:")
+        for node in height_1_nodes:
+            print(f"  {node.value} ({node.frequency})")
+    else:
+        print("\nNo nodes found at height 2.")
+
+else:
+    print("No tags found in the data.")
+
+no_tag_entries = [item["title"] for item in data if not item["tags"]]
+if no_tag_entries:
+    print("\nEntries without tags:")
+    print(no_tag_entries)
+```
+
+整理得出
+
+```
+Nodes at height 1:
+  NixOS+诗 (12)
+  前端+记忆 (4)
+  玩后感+证书 (2)
+  nixos+安装 (2)
+  墙内+milieuim (2)
+  rust+iterator (2)
+  fix+享做笔记 (2)
+  无界笔记+未解决 (2)
+  妆台秋思+古曲 (2)
+  二胡+怪异 (2)
+  js+编译 (2)
+  sops-nix+agenix (2)
+  agenix-rekey+vaultix (2)
+  梁祝+小提琴 (2)
+  协奏+吕思清 (2)
+  matrix+bridge (2)
+  mautrix+conduit (2)
+  telegram+Lezel (2)
+  typst+avbroot (2)
+  pixel+nixpkgs (2)
+  tracker+pr (2)
+#...
+```
+
+从频次较少的组合来，从先验的 `节点个数/4` 得出第一次构建的预期。
+
+将已经构建完成的节点所指的文章从数据集中移除，开始第二次构建二叉树。
+在数深度大于4的时候继续迭代。
+
+鉴于文章数量已经大大减少，
+可预见地在树的深度等于4的时候，我们将选取的节点层数更改为2，以获得较少量的4个标签的聚类。
+
+
+```tsx
+import { Ok, Err, Throwable } from '@typ3/throwable'
+
+import { MateriaType } from "./Arti";
+import { isIn } from '~/lib/fn';
+
+
+function TagReasm(materia: MateriaType): Map<string, MateriaType> {
+  let ret: Map<string, MateriaType> = new Map();
+  let varMateria = materia;
+  while (true) {
+    let tree = binTreeBorn(varMateria);
+    if (tree.isOk) {
+      let { newmap, cleanTags } = tree.unwrap();
+      ret = new Map([...newmap, ...ret]);
+      // diaaaammmmmnnnn
+      // 这里我曾经被小坑了一下
+      varMateria = varMateria.filter((i) => {
+        return !i.tags.some((e) => cleanTags.has(String(e)));
+      });
+    } else {
+      break
+    }
+  }
+
+  return ret
+}
+
+// construct binarya trree
+function binTreeBorn(materia: MateriaType): Throwable<{ newmap: Map<string, MateriaType>, cleanTags: Set<string> }, null> {
+  if (materia.length == 0) return Err(null)
+  let root = buildFrequencyTree(materia);
+  let newmap: Map<string, MateriaType> = new Map();
+
+  console.log("root height", getHeight(root.unwrap()))
+  let targetHeight = getHeight(root.unwrap()) > 4 ? 1 : 2;
+
+  if (root) {
+    // console.log("Frequency Tree:");
+    // printTree(root.unwrap());
+    let tagTobeClean: Set<string> = new Set();
+
+    const nodesAtTargetHeight = findNodesAtHeight(root.unwrap(), targetHeight);
+    if (nodesAtTargetHeight.length > 0) {
+      console.log(`\nNodes at height: ${targetHeight}`)
+      let nodesATHR = nodesAtTargetHeight.reverse();
+      for (let n = 0; n < nodesAtTargetHeight.length / 4; n++) {
+        let node = nodesATHR[n]!;
+
+        console.log(`  ${node.value} (${node.frequency})`);
+        let artiCoresp: Set<MateriaType[0]> = new Set()
+        node.value.forEach((i) => {
+          tagTobeClean.add(i)
+
+          materia.filter((a) => isIn(a.tags, i)).forEach((at) => {
+            artiCoresp.add(at)
+          })
+        })
+        // console.log(artiCoresp)
+        newmap.set(node.value.join(' / '), Array.from(artiCoresp))
+      }
+      // console.log(tagTobeClean)
+
+      return Ok({ newmap, cleanTags: tagTobeClean })
+    } else {
+      console.log(`\nNo nodes found at height ${targetHeight}.`)
+    }
+  } else {
+    console.log("No tags found in the data.");
+  }
+
+  return Err(null)
+
+}
+
+class Node {
+  value: string[];
+  frequency: number;
+  left: Node | null;
+  right: Node | null;
+
+  constructor(value: string[], frequency: number = 0) {
+    this.value = value;
+    this.frequency = frequency;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+function buildFrequencyTree(data: MateriaType): Throwable<Node, null | undefined> {
+  const tagCounts: { [tag: string]: number } = {};
+
+  for (const item of data) {
+    for (const tag of item.tags) {
+      tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+    }
+  }
+
+  const nodes: Node[] = [];
+  for (const tag in tagCounts) {
+    nodes.push(new Node([tag], tagCounts[tag]));
+  }
+
+  if (nodes.length === 0) {
+    return Err(null);
+  }
+
+  while (nodes.length > 1) {
+    nodes.sort((a, b) => a.frequency - b.frequency);
+
+    const left = nodes.shift()!;
+    const right = nodes.shift()!;
+
+    const mergedNode = new Node(left.value.concat(right.value), left.frequency + right.frequency);
+    mergedNode.left = left;
+    mergedNode.right = right;
+
+    nodes.push(mergedNode);
+  }
+
+  return Ok(nodes[0]);
+}
+
+function getHeight(node: Node | null): number {
+  if (!node) {
+    return -1;
+  }
+  return 1 + Math.max(getHeight(node.left), getHeight(node.right));
+}
+
+function findNodesAtHeight(root: Node | null, targetHeight: number): Node[] {
+  if (!root) {
+    return [];
+  }
+
+  const nodesAtHeight: Node[] = [];
+  if (getHeight(root) === targetHeight) {
+    nodesAtHeight.push(root);
+  }
+
+  nodesAtHeight.push(...findNodesAtHeight(root.left, targetHeight));
+  nodesAtHeight.push(...findNodesAtHeight(root.right, targetHeight));
+
+  return nodesAtHeight;
+}
+export default TagReasm;
+```

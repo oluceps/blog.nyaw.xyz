@@ -1,0 +1,48 @@
+---
+date: '2021-06-25T12:36:50.000Z'
+title: 终端模拟器 terminfo 缺失
+tags:
+- 终端模拟器
+- terminfo
+draft: false
+---
+
+在sway下的alacritty使用ssh连接远程服务器的时候退格建(backspace)变成了空格键(space)，这究竟是怎么一回事呢？
+
+其实是缺了对应terminal的terminfo
+
+解决方法：
+
+```
+pacman -S ncurses
+```
+
+或在 `.zshrc` 或 `.bashrc` 中添加以下字串：
+
+```
+export TERM=xterm
+```
+
++ Sep15 22:31 2021 update:
+
+经archlinux-cn群友指导，发现问题没有那么复杂（或者说简单）  
+远程连接中键盘输入错误的原因很可能是因为远端并不支持我所用的终端模拟器 **Alacritty** 的 **Terminfo** ，故出现此种情况。  
+后续解决方案待补，似乎服务端安装上面的包就可以解决，其中最新版包含A的terminfo
+
++ Sep16 15:22 2021 update:
+
+When connecting to a remote system from an Alacritty terminal, for instance over SSH, it can occur that the system does not have an entry for Alacritty in its terminfo database (/usr/share/terminfo/a/alacritty\*). Therefore, all interactive terminal functionality does not work. This can be fixed by copying the terminfo for Alacritty to the remote server [reference](https://wiki.archlinux.org/title/Alacritty#:~:text=When%20connecting%20to,the%20remote%20server)
+
+On the local host, using Alacritty:
+
+```
+$ infocmp > alacritty.terminfo  # export Alacritty's Terminfo
+$ scp alacritty.terminfo user@remote-host:~/  # or any other method to copy to the remote host
+```
+
+On the remote host, in the directory where you copied alacritty.terminfo:
+
+```
+$ tic -x alacritty.terminfo  # import Terminfo for current user
+$ rm alacritty.terminfo  # optional: remove Terminfo file
+```

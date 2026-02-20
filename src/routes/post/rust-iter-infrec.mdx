@@ -1,0 +1,112 @@
+---
+date: 2024-11-22T23:24:54.687359856+08:00
+description: 随手被自己蠢到
+categories:
+  - 记录
+tags:
+  - rust
+  - iterator
+title: rust 迭代器写法小坑
+---
+
+昨天写了一点rust, 搓迭代器部分的时候忽生感应，不知道怎么的就这么水灵灵地写成了，没有报错，clippy 和 miri 检查全绿，但是release运行时整个在 `from_iter` 的时候卡住，单核100%。
+
+做了一个最小复现
+
+```rust
+#[derive(Debug)]
+struct A;
+
+impl A {
+    fn new() -> Self {
+        Self
+    }
+}
+
+#[derive(Debug)]
+#[allow(dead_code)]
+struct V<'a>(&'a Vec<A>);
+
+impl<'a> FromIterator<&'a A> for V<'a> {
+    fn from_iter<T: IntoIterator<Item = &'a A>>(iter: T) -> Self {
+        iter.into_iter().collect()
+    }
+}
+
+fn main() {
+    let mut b: Vec<A> = Vec::new();
+    b.push(A::new());
+
+    let c = V::from_iter(&b); // [!code warning]
+
+    println!("{:?}", c);
+}
+```
+
+仿佛和rust工具链进行了旷日持久的搏斗，但是对面突然蔫了，然后我一个收不住力 shot my foot。
+
+
+```
+=> cargo r
+   Compiling iter-infrec v0.1.0 (/home/elen/Src/iter-infrec)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.18s
+     Running `target/debug/iter-infrec`
+
+thread 'main' has overflowed its stack
+fatal runtime error: stack overflow
+Aborted (core dumped)
+```
+
+查看调用栈：
+
+```rust
+Starting program: /home/elen/Src/iter-infrec/target/debug/iter-infrec 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/nix/store/sl141d1g77wvhr050ah87lcyz2czdxa3-glibc-2.40-36/lib/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+iter_infrec::{impl#1}::from_iter<core::slice::iter::Iter<iter_infrec::A>> (iter=...)
+    at src/main.rs:16
+16	       iter.into_iter().collect()
+(gdb) bt
+#0  iter_infrec::{impl#1}::from_iter<core::slice::iter::Iter<iter_infrec::A>> (iter=...)
+    at src/main.rs:16
+#1  0x0000555555569ed3 in core::iter::traits::iterator::Iterator::collect<core::slice::iter::Iter<iter_infrec::A>, iter_infrec::V> (self=...)
+    at /nix/store/49l4vvfi9mi991kfy2wjxmmcx7a1z060-rust-complete-1.84.0-nightly-2024-11-22/lib/rustlib/src/rust/library/core/src/iter/traits/iterator.rs:1971
+#2  0x000055555556980e in iter_infrec::{impl#1}::from_iter<core::slice::iter::Iter<iter_infrec::A>> (
+    iter=...) at src/main.rs:16
+#3  0x0000555555569ed3 in core::iter::traits::iterator::Iterator::collect<core::slice::iter::Iter<iter_infrec::A>, iter_infrec::V> (self=...)
+    at /nix/store/49l4vvfi9mi991kfy2wjxmmcx7a1z060-rust-complete-1.84.0-nightly-2024-11-22/lib/rustlib/src/rust/library/core/src/iter/traits/iterator.rs:1971
+#4  0x000055555556980e in iter_infrec::{impl#1}::from_iter<core::slice::iter::Iter<iter_infrec::A>> (
+    iter=...) at src/main.rs:16
+```
+
+这段代码标黄部分使用了 `FromIterator` impl 然后其中 `collect` 的时候调用了自己：
+
+```rust
+impl<'a> FromIterator<&'a A> for V<'a> {
+    fn from_iter<T: IntoIterator<Item = &'a A>>(iter: T) -> Self {
+        iter.into_iter().collect() // [!code error]
+    }
+}
+```
+
+它进行了无止境的递归
+
+但是r-a和clippy之类的linter完全没有给出警告啊。。是相信用户的水平吗
+
+解决方案是
+
+```rust
+
+impl<'a> FromIterator<&'a A> for V<'a> {
+    fn from_iter<T: IntoIterator<Item = &'a A>>(iter: T) -> Self {
+        iter.into_iter().collect() // [!code --]
+        let mut m = Vec::new(); // [!code ++]
+        for i in iter.into_iter() { // [!code ++]
+            m.push(i.0); // [!code ++]
+        } // [!code ++]
+        Self(m) // [!code ++]
+    }
+}
+```

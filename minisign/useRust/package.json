@@ -1,0 +1,20 @@
+{
+  "name": "minisign",
+  "version": "0.1.0",
+  "files": [
+    "wasm/wasm_bg.wasm",
+    "wasm/wasm_bg.wasm.d.ts",
+    "wasm/wasm.d.ts",
+    "wasm/wasm.js",
+    "typeHelper.ts",
+    "useRust.js",
+    "useRust.d.ts"
+  ],
+  "type": "module",
+  "module": "useRust.js",
+  "types": "useRust.d.ts",
+  "sideEffects": false,
+  "dependencies": {
+    "solid-js": "^1.6.2"
+  }
+}
