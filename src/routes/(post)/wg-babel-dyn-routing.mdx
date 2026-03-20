@@ -1,0 +1,396 @@
+---
+date: 2025-02-05T13:50:01.938181315+08:00
+description: Redundant network based on wireguard and babel
+categories:
+  - 记录
+tags:
+  - Wireguard
+  - Babel
+  - NixOS
+  - Routing
+title: Full Mesh with wireguard & babel
+toc: true
+---
+
+[之前尝试过](/pending-wireguard-subnet-interact)使用静态的Wireguard路由定义来实现故障转移之类的东西，当然预期是用caddy内建的fallback来实现的，可不能指望路由真的自动迁移。
+但是我折腾傻了也没搞明白这个wg到底怎么处理，在群友的建议下<C>特别感谢@Moraxyc，提供了组网方案的思路</C>直接改造成了动态路由的 Overlay Network，Still based on wireguard.
+
+关于相关的[替代方案](#替代方案)
+
+由于 Wireguard 它不支持 [Multicast](https://en.wikipedia.org/wiki/Multicast) 而且我们使用 [babel](https://en.wikipedia.org/wiki/Babel_(protocol)) 进行路由，
+所以不能采用 Wiregurad 本身基于目的地址的端口复用[^1]<C>ranet作为rait的重写不支持wg也是出于这个原因</C>，
+于是就只能每个 Wireguard Interface 单个 Peer，那么如果要构建类似 full mesh 的网络就需要每个 node 上存在 `nodes - 1` 个interface [^2]。
+庆幸的是我参与组网的机器全部是nixos，一切可以优雅而高效地处理，不用手动创建和定义每个接口网络[^6]。
+
+[网络重构的全部更改](https://github.com/oluceps/nixos-config/pull/42)
+
+预期得到一个在 WireGuard tunnel 上搭建的 overlay network。具备以下特性：
+
++ full mesh
++ 动态路由
++ 故障转移
++ 基于边界的防御模型
++ 极高的拓展能力
+
+# 配置基础
+
+要做的是在每个node上创建 `n - 1` 个具有唯一 peer 的 wireguard interface，然后再给它们配置地址使其互相一一连接，再把 babel 跑起来；
+但是这些个地址有点讲究，babel要求 [IPv6 link local address](https://en.wikipedia.org/wiki/Link-local_address)才能运行，
+而 Wireguard 设备本身是不具备ll addr的，那我们就需要手动配置一下。
+
+回顾nixos上配置Wireguard，其实基本符合 sd-networkd 的原有配置格式。分为 `netdevs` 和 `networks`：
+
+```nix
+{
+  systemd.network = {
+   netdevs.wg2 = {
+      netdevConfig = {
+        Kind = "wireguard";
+        Name = "wg2";
+        MTUBytes = "1380";
+      };
+      wireguardConfig = {
+        PrivateKeyFile = config.vaultix.secrets.wgab.path;
+        ListenPort = 51821;
+        RouteTable = false;
+      };
+      wireguardPeers = [
+        {
+          PublicKey = "49xNnrpNKHAvYCDikO3XhiK94sUaSQ4leoCnTOQjWno=";
+          AllowedIPs = [ "::/0" "0.0.0.0/0"];
+          RouteTable = false;
+        }
+      ];
+    };
+
+    networks."10-wg2" = {
+      # match the netdevs.wg2.netdevConfig.Name
+      matchConfig.Name = "wg2";
+      addresses = [
+        {
+          # address, identical across different WireGuard interfaces on the same machine.
+          Address = "fdcc::2/128";
+          Peer = "fdcc::1/128"; # the address of peer
+        }
+        # also ipv4 addr
+        {
+          # link local address, identical across different WireGuard interfaces on the same machine,
+          Address = "fe80::216:3eff:fe15:ec52/64";
+          Peer = "fe80::baba:baba:1/64"; # link local address of peer
+          Scope = "link";
+        }
+      ];
+      networkConfig = {
+        DHCP = false;
+      };
+    };
+  };
+}
+```
+`Scope = "link"` 的 address 就是 link local addr 了，这是必需的地址，其他的可以配一两个IPv4/v6地址，我这里只配了v6。
+
+<Emph type="note">
+注意以上配置中的两个 `RouteTable=false`，关闭wg的自动路由配置非常重要
+</Emph>
+
+<Emph type="tips">
+WireGuard 接口上的 MTU 应比其隧道数据包所经过的以太网接口的 MTU 小 60 字节（使用 IPv4 传输隧道数据包时；使用 IPv6 时小 80 字节）。隧道 TCP 数据包的 MSS 应再小 40 字节（当数据包本身使用 IPv4 时；使用 IPv6 时为 60 字节）[^4]
+</Emph>
+
+上文的 link local address 可以用以下nushell脚本生成，或者使用参考[^2]的python脚本。
+
+```nushell
+$"fe80::(random binary 8 | encode hex --lower | split chars | window 4 --stride 4 | each {str join} | str join ':')"
+```
+
+# 抽象
+
+刚刚提到过每台机器上都需要创建 `nodes - 1` 的interfaces, 也就是需要不停重复添加 netdevs 和 networks 配置，是个人都得累死，那么引入 nixos module 自动处理吧。
+
+不过在这之前我们还有个问题。
+
+## 唯一端口分配
+
+因为每个node与另一node连接都需要占用双方一个端口，为统一管理，我需要预设所有node一对一连接所使用的端口唯一(AB连接时使用同一端口号)，并且nodes数量变动不改变已有端口配对。
+为解决这个问题我给每个机器递增唯一ID，
+然后使用[康托尔配对](https://en.wikipedia.org/wiki/Pairing_function)将两个机器的ID即两个自然数映射到唯一的自然数，
+作为index，之后再加上一个 base value 就是特定两台机器的全局唯一端口号。
+
+因为我的机器数量比较少(小于10)所以原始的 Cantor Pairing 就够用:
+
+```math
+C(i,j) = ((i + j) * (i + j + 1)) / 2 + j
+```
+
+从我的[网络结构](https://github.com/oluceps/nixos-config/blob/9959b787aa023c30744c9f906fdb1b3e35631e33/hosts/sum.toml#L1-L70)算出来的大概长这样：
+
+```
+nix-repl> :p (lib.conn {})
+{
+  abhoth = {
+    azasos = 51850;
+    eihort = 51825;
+    hastur = 51814;
+    kaambl = 51819;
+    yidhra = 51832;
+  };
+  azasos = {
+    abhoth = 51850;
+    eihort = 51833;
+    hastur = 51820;
+    kaambl = 51826;
+    yidhra = 51841;
+  };
+  eihort = {
+    abhoth = 51825;
+    azasos = 51833;
+    hastur = 51805;
+    kaambl = 51808;
+    yidhra = 51818;
+  };
+  #...
+}
+```
+
+[Nix实现](https://github.com/oluceps/nixos-config/blob/9959b787aa023c30744c9f906fdb1b3e35631e33/lib/conn.nix)
+
+接着完成最后一块拼图，即wg接口和地址配置的自动化。
+
+## 生成
+
+[Nix实现](https://github.com/oluceps/nixos-config/blob/79a71515aca27f10f96a0a0c4f0cbae2aaf6acd9/repack/plugIn.nix)，
+由于我的配置还涉及反审查和NAT下的机器的自动处理，可能会稍微复杂一点（填了半天真值表）。
+
+### 逻辑分析和简化
+
+P: (本机状态)
+
+Q: (对端状态)
+
+|Pnat​ (本NAT)|Qnat​ (对NAT)|Pcen​ (本墙)|Qcen​ (对墙)|Pnat​→Qnat​|Pcen​→Qcen​|结果|
+|---|---|---|---|---|---|---|
+|F|F|F|F|T|T|True|
+|F|F|F|T|T|T|True|
+|F|F|T|F|T|F|False|
+|F|F|T|T|T|T|True|
+|F|T|F|F|T|T|True|
+|F|T|F|T|T|T|True|
+|F|T|T|F|T|F|False|
+|F|T|T|T|T|T|True|
+|T|F|F|F|F|T|False|
+|T|F|F|T|F|T|False|
+|T|F|T|F|F|F|False|
+|T|F|T|T|F|T|False|
+|T|T|F|F|T|T|True|
+|T|T|F|T|T|T|True|
+|T|T|T|F|T|F|False|
+|T|T|T|T|T|T|True|
+
+然后应用卡诺图化简<C>或者德摩根律+蕴含瞪出来</C>一下得出 $("Pnat" -> "Qnat") and ("Pcen" -> "Qcen")$
+
+也就是这行的逻辑，说明机器是否需要监听端口<C>来被动地连接，通常只在公网能访问的机器监听</C>：
+
+```nix
+(optionalAttrs ((thisNode.nat -> peerNode.nat) && (thisNode.censor -> peerNode.censor)) {
+  ListenPort = port;
+})
+```
+
+另外类似地得出判断机器之间是否直连(否则通过外面套一层hysteria来连接)的逻辑表达式：$ ("Pnat" and "Qnat") or ("Pcen" <-> "Qcen")$ 即这行逻辑：
+
+```nix
+directConnect = ((thisNode.nat && peerNode.nat) || (thisNode.censor == peerNode.censor));
+```
+
+
+回顾我们已经具备的信息，
+
++ peer 两端的hostname<C>在我的实现中用以索引预计算的配对端口信息，和拼接私钥名</C>
++ peer两端端口<C>康托尔配对得出</C>
++ 两端公钥/私钥
++ 两端内网 ULA
++ 两端内网 Link Local Addr
++ peer的Endpoint
+
+然后生成所有对端的iface和地址配置，见如上[实现](#生成)。我推荐将地址信息和唯一id什么的统一管理，方便删改。
+
+
+
+# 锚定本机IP
+
+
+使用dummy节点锚定本机的地址 (据说(包括但不限于) babel 必须有一条 direct loopback，才能正常配置内核路由/向外导出路由，大概是起到类似 ospf stub 的作用[^5])
+
+```ts
+protocol direct {
+  ipv6;
+  interface "anchor-*"; // [!code ++]
+};
+```
+
+networkd中新增一个dummy接口，然后分配address为当前主机的组网内网ip。更改[见](https://github.com/oluceps/nixos-config/commit/8947b1022a155734d78dee3c3d2d9f588bed76ce#diff-a0aff5df5c2761b7b1f3105ca3806a4b51cfedecbff49e394553e6f82f6289b3)。
+
+
+# 配置 bird
+
+这里是迁移之后的bird配置，用以替代babeld。
+
+```txt
+log syslog all;
+debug protocols all;
+timeformat protocol iso long;
+
+# machine uniq
+router id 10.0.0.2;
+define HORTUS_OWNIP = fdcc::2;
+
+protocol device {
+  scan time 20;
+};
+
+protocol direct {
+  ipv6;
+  interface "anchor-*";
+};
+
+define HORTUS_FIELD = [ fdcc::/64+ ];
+
+function in_hortus() {
+  return net ~ HORTUS_FIELD;
+};
+
+filter to_hortus {
+  if in_hortus() && (source = RTS_BABEL || source = RTS_DEVICE) then accept;
+  reject;
+};
+
+filter to_kernel {
+  case source {
+    RTS_STATIC: reject;
+    RTS_BABEL: {
+      krt_prefsrc = HORTUS_OWNIP;
+      krt_metric = 128;
+      accept;
+    }
+    RTS_DEVICE: {
+      krt_metric = 64;
+      accept;
+    }
+    else: reject;
+  }
+};
+
+protocol kernel {
+  scan time 20;
+  metric 0;
+  ipv6 {
+    preference 100;
+    import none;
+    export filter to_kernel;
+  };
+};
+
+protocol babel {
+  interface "wg-*" {
+    type tunnel;
+    hello interval 1s;
+    update interval 2s;
+    rtt cost 192;
+    rtt max 300ms;
+    rtt decay 60;
+    check link no;
+    extended next hop yes;
+  };
+  ipv6 {
+    import where in_hortus();
+    export filter to_hortus;
+  };
+};
+```
+
+interface 的参数可以参考[^3]进行优化。
+
+在我的六台机器全联通状态下，预期的路由是：
+
+```
+> sudo birdc show babel route
+BIRD 3.0.1 ready.
+babel1:
+Prefix                   Nexthop                   Interface Metric F Seqno Expires
+fdcc::6/128              fe80::216:3eff:fe0f:37d8  wg-hastur    199       4  41.909
+fdcc::6/128              fe80::216:3eff:fe4f:e85f  wg-eihort    196       4  42.489
+fdcc::6/128              fe80::216:3eff:fe15:ec52  wg-abhoth    195       4  55.647
+fdcc::6/128              fe80::216:3eff:fe6c:5a57  wg-azasos     96 *     4  47.541
+fdcc::6/128              fe80::216:3eff:fe41:49c6  wg-yidhra    200       4  54.505
+# 手动分隔
+fdcc::3/128              fe80::216:3eff:fe0f:37d8  wg-hastur    199 +   185  41.909
+fdcc::3/128              fe80::216:3eff:fe4f:e85f  wg-eihort     99 *   185  42.489
+fdcc::3/128              fe80::216:3eff:fe15:ec52  wg-abhoth    192 +   185  55.647
+fdcc::3/128              fe80::216:3eff:fe6c:5a57  wg-azasos    193     185  47.541
+fdcc::3/128              fe80::216:3eff:fe41:49c6  wg-yidhra    202     185  54.505
+
+fdcc::1/128              fe80::216:3eff:fe0f:37d8  wg-hastur    103 *   203  46.935
+fdcc::1/128              fe80::216:3eff:fe4f:e85f  wg-eihort    195 +   203  47.036
+fdcc::1/128              fe80::216:3eff:fe15:ec52  wg-abhoth    288     203  55.647
+fdcc::1/128              fe80::216:3eff:fe6c:5a57  wg-azasos    194 +   203  47.541
+fdcc::1/128              fe80::216:3eff:fe41:49c6  wg-yidhra    200 +   203  54.505
+
+fdcc::4/128              fe80::216:3eff:fe0f:37d8  wg-hastur    199     110  41.909
+fdcc::4/128              fe80::216:3eff:fe4f:e85f  wg-eihort    195     110  42.489
+fdcc::4/128              fe80::216:3eff:fe15:ec52  wg-abhoth    192     110  55.647
+fdcc::4/128              fe80::216:3eff:fe6c:5a57  wg-azasos    193     110  47.541
+fdcc::4/128              fe80::216:3eff:fe41:49c6  wg-yidhra    104 *   110  54.505
+
+fdcc::5/128              fe80::216:3eff:fe0f:37d8  wg-hastur    199     463  41.909
+fdcc::5/128              fe80::216:3eff:fe4f:e85f  wg-eihort    195     464  45.468
+fdcc::5/128              fe80::216:3eff:fe15:ec52  wg-abhoth     96 *   464  55.647
+fdcc::5/128              fe80::216:3eff:fe6c:5a57  wg-azasos    192     464  47.541
+fdcc::5/128              fe80::216:3eff:fe41:49c6  wg-yidhra    200     464  54.505
+```
+
+`F`为星号代表已选择的路由。如果有哪个peer断开了，首先metric会上涨，到达阈值后自动切换到metric较小的路由（via other interface/peer)。
+
+bird的调试比babeld舒适太多，如果设备性能不是特别寒酸建议还是跑bird。
+
+
+
+# 替代方案
+
+> 为什么我依然用原装的内核wireguard而不是基于IPSec的 [ranet](https://github.com/NickCao/ranet) 或者同时支持 IPSec 和 Wireguard 的 [rait](https://gitlab.com/NickCao/RAIT/) 呢？
+
+因为
+
++ 没有合规性要求<C>部分组织可能硬性要求标准化的IPSec</C>
++ 没有非常高的安全要求<C>IPSec提供比较精密的密钥协商和认证机制</C>
+
+所以不想用比较古老而且性能稍微弱点的IPSec；
+
+因为不喜欢go和它不够专一所以不想选择rait（主要是它们两个文档对于不熟悉IPSec的人来说太稀缺了<C>虽然说本文描述的方案资料也是相当少qwq</C>）。
+
+> 为什么不用基于WireGuard协议的有 ACL 和 udp打洞 等更多功能的 tailscale / zerotier 呢？
+
++ ts 管得太多，比如magicdns，炸的时候影响也更大
++ ts 控制平面不够去中心化
++ ts 两点之间直接连接断开后并不能自动寻路用临近节点中转，而是必须用DERP，我不太喜欢
++ 没办法让wg流量走隧道了<C>由于众所周知的原因wg在中国大陆部分ISP可能会被QoS或者审查，可以用hy2或phantun或udp2raw这一类工具进行处理</C>
++ 我所 suffering 的 nat 全都是 Independent mapping<C>NAT对每个对外连接单独分配IP:PORT</C>, Port depended filtering<C>只允许来自内部主机最初通讯的IP:PORT返回的流量。</C> 所以没有打洞成功的可能，辜负了ts的feature
++ 我的小内网没有ACL的需求
++ 不好和 bird 集成以便未来的路由拓展
++ zerotier 乱发arp
++ go
+
+其它类似的现成组网工具大多同此理。
+
+
+# Topology
+
+![network-topology-v1](network-topology-v1.svg)
+
+generated by [nix-topology](https://github.com/oddlama/nix-topology), [definition](https://github.com/oluceps/nixos-config/blob/trival/topo.nix)
+
+[^1]: [在 WireGuard 构建的 Overlay Network 上跑 babel 路由协议](https://jia.je/networking/2018/08/10/use-babel-in-overlay-network-with-wireguard/)
+[^2]: [Run Babeld over Wireguard](https://blog.fugoes.xyz/2018/02/03/Run-Babeld-over-Wireguard.html)
+[^3]: [babel rtt options](https://mk16.de/blog/babel-rtt-options-en/)
+[^4]: [Wireguard performance tuning](https://www.procustodibus.com/blog/2022/12/wireguard-performance-tuning/#:~:text=should%20be%2060%20bytes%20smaller%20than%20the%20MTU)
+[^5]: https://dn42.dev/howto/Bird2#getting-routes-installed-to-the-kernel-automatically
+[^6]: 非NixOS的话也可以使用配置生成，见 https://github.com/vx3r/wg-gen-web
