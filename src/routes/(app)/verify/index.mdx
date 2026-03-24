@@ -1,0 +1,46 @@
+---
+date: 2025-03-16T01:10:17.580663195+08:00
+description: 只能验证我的！
+categories:
+  - 工具
+tags:
+  - 验证
+  - 签名
+title: 验证我的迷你签名
+---
+
+import Verify from "./MinisignVerify.tsx"
+
+~~这个现在不能用，因为wasm奇奇怪怪的问题，不信你试试~~
+
+_Mon 24 Mar 01:38:20 +08 2025 update_ : 修好了，不信你试试
+
+不过我好像也没签过什么东西，所以是摆设。。
+
+换成了 [useRust](https://github.com/ollipal/useRust) 这个hook, 感觉用起来挺傻瓜的，虽然直接用wasm-bindgen大概也不会麻烦到哪里去。
+
+bindgen部分抄的 [wasm-minisign-verify](https://github.com/threema-ch/wasm-minisign-verify) 小改了一部分
+
+错误处理部分现在很潦草，不管了。注意：换行符也算内容哦！
+
+<br/>
+
+<Verify/>
+
+
+## 测试用例
+
+原文本
+
+```text
+我能吞下玻璃而不伤身体
+```
+
+签名
+
+```text
+untrusted comment: signature from minisign secret key
+RUS5RHdT9CpLB2BQfx2ZdiG/jlKus/4quO7S20He0U+hDHrUFAeBQxUZvFNI0BRoyNC9InSNnvyoPns7/vK7BAQSzaw/EQnTAww=
+trusted comment: timestamp:1742764942	file:a	hashed
+EVRuxqVqFl6xt4tqEAZfiVlR1lxttybwXpBl+Ebxn6DYcaGIh8x6UxHQkz4mo/uLPcOlXysb1BUW4K8qnMX7Dg==
+```

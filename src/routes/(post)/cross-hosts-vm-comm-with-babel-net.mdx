@@ -1,0 +1,217 @@
+---
+date: 2026-03-17T22:06:36.466090051+08:00
+description: 纯 IPv6 与 v4-over-v6
+categories:
+  - 记录
+tags:
+  - vm
+  - babel
+  - sre
+title: 基于已有组网的跨宿主机的vm互联
+---
+
+当然这是在已经有组网的前提下，并且预期多台宿主机上的虚拟机能互相访问对方和宿主机。
+
+既然宿主机之间已经通过 Babel 运行了动态路由，我们完全可以利用 Babel 的特性，让虚拟机直接使用组网内的 IPv6 进行原生路由互联和双栈外部访问。
+
+# 规划
+
+```text
+                                Babel Network (fdcc::/16)
+                                           |
+                +--------------------------v--------------------------+
+                |                          |                          |
+      +---------+----------+               |                +---------+----------+
+      |      Host A        |               |                |      Host B        |
+      |     (fdcc::1)      |               |                |     (fdcc::2)      |
+      +---------+----------+               |                +---------+----------+
+                |                          |                          |
+      +---------+----------+               |                +---------+----------+
+      |     Bridge br0     |               |                |     Bridge br0     |
+      |   (fdcc:1::1/64)   |               |                |   (fdcc:2::1/64)   |
+      +---------+----------+               |                +---------+----------+
+                |                          |                          |
+      +---------v----------+               |                +---------v----------+
+      |        VM-A        |               |                |        VM-B        |
+      |   (fdcc:1::2/64)   |               |                |   (fdcc:2::2/64)   |
+      |   (172.0.0.1/24)   |               |                |   (172.0.0.2/24)   |
+      +--------------------+               |                +--------------------+
+```
+
+假设我们已经建立了一个底层网络，如[这个](/wg-babel-dyn-routing)，我们的组网大网段设定为 fdcc::/16。以两台宿主机的规模举例，
+
+宿主机 A：
++ Babel 内网 IP：fdcc::1
++ 虚拟机网桥 (br0)：fdcc:1::1/64
++ VM-A 分配 IP：172.0.0.1/24
+
+宿主机 B：
++ Babel 节点 IP：fdcc::2
++ 虚拟机网桥 (br0)：fdcc:2::1/64
++ VM-B 分配 IP：172.0.0.2/24
+
+我使用incus创建和管理虚拟机，所以可以有个preseed来预设配置：
+
+```nix
+{
+  networks = [
+    {
+      config = {
+        "ipv6.address" = "fdcc:1::1/64" # 上文的虚拟机网桥 (br0) 地址
+        "ipv6.nat" = "false";
+        "ipv6.routing" = "true";
+        "ipv4.address" = "none";
+        "dns.mode" = "none";
+      };
+      name = "br0";
+      type = "bridge";
+    }
+  ];
+  profiles = [
+    {
+      devices = {
+        eth0 = {
+          name = "eth0";
+          type = "nic";
+          network = "br0";
+        };
+        root = {
+          path = "/";
+          pool = "default";
+          size = "64GiB";
+          type = "disk";
+        };
+      };
+      config = {
+        "limits.cpu" = "4";
+        "limits.memory" = "4GiB";
+        "security.secureboot" = "false";
+      };
+      name = "default";
+    }
+  ];
+}
+```
+
+使用
+
+```
+incus create images:debian/14/amd64 node-2 --vm
+```
+
+创建虚拟机，start之后预期是仅有一个符合之前设定的br内网前缀的/64地址，
+
+```
+> incus ls
++--------+---------+------+------------------------------------+-----------------+-----------+
+|  NAME  |  STATE  | IPV4 |                IPV6                |      TYPE       | SNAPSHOTS |
++--------+---------+------+------------------------------------+-----------------+-----------+
+| node-2 | RUNNING |      | fdcc:3::1266:6aff:feac:78bd (eth0) | VIRTUAL-MACHINE | 0         |
++--------+---------+------+------------------------------------+-----------------+-----------+
+```
+
+
+# 宿主机路由宣告 (BIRD 配置)
+
+
+在宿主机的bird内添加一条抓br0的路由的声明：
+
+```babel
+protocol direct ext {
+  ipv6;
+  interface "br0";
+}
+```
+
+改改过滤器把路由宣告到宿主机之间的组网中：
+
+```babel
+# ... 前置基础配置省略 ...
+define HORTUS_PREFIX = fdcc::/16;
+define HORTUS_FIELD = [ fdcc::/16+ ];
+
+# 1. 捕获面向虚拟机的网桥接口
+protocol direct ext {
+  ipv6;
+  interface "br0";
+}
+
+# 2. 过滤规则：允许重分发 ext 协议捕获的直连路由
+filter to_hortus {
+  if in_hortus() && (source = RTS_BABEL || source = RTS_DEVICE) then accept;
+  if proto = "ext" then accept; # 将 br0 的网段放行
+  reject;
+};
+
+# 3. Babel 协议配置
+protocol babel {
+  interface "zt*" {
+    type wired;
+    # ... 认证参数省略 ...
+    extended next hop yes; # 开启 v4-over-v6 支持
+  };
+  ipv6 {
+    import where in_hortus();
+    export filter to_hortus; # 将 br0 的路由宣告出去
+  };
+};
+```
+
+当宿主机 A 的 BIRD 启动后，宿主机 B 的路由表中就会动态学习到 fdcc:1::/64 这个网段，且下一跳指向宿主机 A 的 zt 接口地址。
+
+# 宿主机防火墙改改
+
+因为后续计划用babel的 extended next hop (ietf rfc9229) 特性，把v4包下一跳设成v6，所以内核默认设置可能会狠狠拦它，得稍微调一下：
+
+
+## 开启转发与关闭源地址校验 (rp_filter)
+
+```
+# 开启 IPv4 和 IPv6 转发
+sysctl -w net.ipv4.ip_forward=1
+sysctl -w net.ipv6.conf.all.forwarding=1
+
+# 关闭涉及路由接口的严格逆向路径过滤
+sysctl -w net.ipv4.conf.all.rp_filter=0
+sysctl -w net.ipv4.conf.default.rp_filter=0
+sysctl -w net.ipv4.conf.br0.rp_filter=0
+# Babel 外部物理或隧道接口也要关闭
+sysctl -w net.ipv4.conf.eno1.rp_filter=0
+```
+
+
+## 配置 nftables 转发放行与状态追踪
+
+要允许已经建立连接的回程包返回 br0，需要修改nft：
+
+```nftable
+table inet filter {
+    chain forward {
+        type filter hook forward priority filter; policy drop;
+        
+        # 放行已建立连接的回程数据包
+        ct state { established, related } accept
+        
+        # 放行从网桥发起的出站流量
+        iifname "br0" accept
+        
+        # 放行 Babel 网段内的互相访问 (按需收紧)
+        ip6 saddr fdcc::/16 ip6 daddr fdcc::/16 accept
+    }
+}
+```
+
+# 虚拟机的极简配置
+
+
+尝试在 VM-A 中执行：
+
+```
+ip -6 addr add fdcc:1::2/64 dev eth0 # 用于虚拟机间互联
+ip addr add 172.0.0.1/24 dev eth0
+ip -4 route add default via inet6 fdcc:1::1 dev eth0
+```
+
+此时理应能ping通公网IP和任意宿主机的组网IP。
+
+B中类似，然后它俩预期就能相互通过组网内的地址互相连接了。

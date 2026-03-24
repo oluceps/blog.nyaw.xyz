@@ -1,0 +1,210 @@
+---
+date: 2026-01-30T02:05:33.692060673+08:00
+description: 一种发信成本和维护成本都很低的自建邮局方案
+categories:
+  - 记录
+tags:
+  - SMTP
+  - 邮箱
+  - infra
+title: 使用 SMTP Relay 和 Email Routing 架空 Stalwart
+---
+
+
+优点就是完全不需要在意IP信誉，大部分 ISP 不给开 IPv4 的 25 端口，但是我发现v6的25却挺多商家是出入站都允许的；使用cf和relay代理收发就可以直接规避 v6-only 的影响。
+
+分为几个小组件：
+
++ `stalwart` 基本邮件服务,当然邮箱该支持的特性它都支持了，而且进阶功能相当丰富比如 JMAP 协议<C>一种基于JSON和HTTP的致力替代IMAP的新标准，见 https://jmap.io</C>和表达式过滤之类的。
++ `Cloudflare Email Routing` 收信分拣，它可以简单CatchAll然后使用 Email Worker 进行黑名单，或者直接在stalwart拦截spam（用下来其实感觉还挺激进的）
++ `SMTP Relay (Amazon SES)` 发信，好像新用户有什么6个月免费额度？个人用户肯定特别够用了，试用期过了以后1000条0.1$，但是用得太少可能会累积账单不需要当月付费，还是很便宜的，就是面板有点繁琐。
+当然也可以选 resend.com 不过也是基于SES的，一天一百条免费但是 free plan 只能绑定一个域名，或者选SMTP2GO，似乎不限制域名？（更新：我现在就用的这家）。
+
+需要的设施是一个500M内存的小鸡，允许v6 25端口出入站，以及临时需要一个v4的vps允许v4 25端口入站<C>可以临时借一个azure或者允许25的云容器</C>，用于转发25入站邮件给cloudflare验证邮箱。
+
+以nixos为例，stalwart的配置是toml格式所以大差不差。
+
+先开个防火墙：
+
+```nix
+  networking.firewall.allowedTCPPorts = [
+    993
+    25
+    587
+    465
+  ];
+
+```
+
+stalwart 我使用的完整配置文本放[附录](#附录)了，可以参考文档释义。
+
+
+需要注意的配置项：
+
+以下以我的配置举例，我通常使用 i@nyaw.xyz 、 i@xxxx.onl 和同域名下的其它前缀收发邮件，对于这种配置下只需要将 stalwart 的 `server.hostname` 设置成 `box.nyaw.xyz` <C>前缀随意，如box，因为根域名要留给cf收件</C>我采用Caddy反向代理它的http端口，为了后端能正常获得ip地址我开了 `http.use-x-forward`。Caddy就一般反代。
+
+
+```
+box.nyaw.xyz {
+    # 注意和 server.listener.management.bind 对齐
+    reverse_proxy http://127.0.0.1:9313
+}
+```
+
+
+为了让JMAP等服务正常工作<C>JMAP client会访问 `/.well-known/JMAP` 来获取API URL字段，这个url在反代后面和直接让stalwart暴露HTTP端口的情况下是完全不一样的</C>，需要修改一下默认的
+`http.url` 为反代后的https地址，否则会出现JMAP客户端 (如mailtemi) 报错 HTTP ERROR CODE -1 和浏览器访问返回 `{"accounts":{}, "apiUrl":"http://..."}`：
+
+```diff
+2c2
+< url = "protocol + '://' + config_get('server.hostname') + ':' + local_port"
+---
+> url = "'https' + '://' + config_get('server.hostname')"
+```
+
+还有个需要强调的坑是 `[server.listener.smtp]` 别开 `tls.implicit` 不然收信会静默失败。
+
+加一条MX priority 10 指向 `box.nyaw.xyz`，然后加一条AAAA解析到它。去stalwart的管理面板进行登录（就是配置里的fallback admin），添加域名(\{,box}.nyaw.xyz)和一个邮箱账号(i@box.nyaw.xyz)。
+
+# Cloudflare Email Routing
+
+点开 Email Routing 正常添加 Destinations 然后验证一下，ns在cf的话record配置都挺自动化的，不需要费劲。这里又有个坑就是它们的邮件验证发信方疑似不支持 v6-only 的邮局，也就是你可能需要解析一个允许v4 25入站的vps<C>如azure？</C>来临时转发一下，
+
+```
+# server with tcp 25 inbound
+sudo socat TCP4-LISTEN:25,fork,reuseaddr TCP6:[你的v6-only邮局的地址]:25
+```
+
+验证通过之后预期地址`i@nyaw.xyz`收件正常。
+
+# SMTP Relay
+
+以SES为例，登录Amazon面板后搜SES点进去，看准区域create identity，创建域名和发信邮箱，手动添加三个CNAME验证DKIM通过以后就可以给已验证的邮箱发信了（是的，只能给已验证的发信，因为账号此时在sandbox里面），
+要开启随便发邮件的能力需要手动写小作文申请，我早上十点半发的小作文现在晚上十点还没回我。（update：它把我关了。改用SMTP2GO了，好用无需多言）
+
+![apply](amazon_ses.png)
+
+就是在这里的 `Request production access`。
+
+在 Stalwart 的管理面板找到 `Settings` > `SMTP` > `Outbound` > `Routing` 里面创建路由，Type选Relay host，把Amazon SES那边刚刚出现的包括端点账号密码都放进去，端口465协议SMTP，开启 Implicit TLS。ID填relay。
+
+![routing](stalwart-routing-relay.png)
+
+然后在stalwart那边也需要配置一下SMTP Relay，在 Amazon SES 的左侧面板有个SMTP Settings，创建一个账号密码然后返回 Stalwart 管理面板找到 `Outbound` > `Strategies`，修改 `Routing` 的策略：
+
+![strategies](stalwart-routing-strategies.png)
+
+把默认的fallback (`mx`) 改成 `relay`，也就是上一张图中的ID。至此出站邮件将全部走relay<C>站内存在的 local domains 就直接本站转发了</C>。当然如果需要更复杂的策略可以参考文档，这个expression功能还挺好用的。
+
+
+另需要把 `Settings` > `SMTP` > `Sender Authentication` > `DKIM` 中的 DKIM Signing 关掉，因为 SES 之类的relay服务发信会自动加 DKIM Header，如果这里再签就变成双重的了，可能报错：
+
+```
+dkim=fail reason="key not found in DNS" Transaction failed: Duplicate header 'DKIM-Signature'.
+```
+
+此时应该可以正常给 Amazon SES 上验证过的邮箱发信了，但是发给没验证的会拦截：
+
+```
+Message rejected: Email address is not verified. The following identities failed the check in region AP-NORTHEAST-3
+```
+
+等待Amazon SES审核通过后就可以满世界发。Mailtester自然也是接近满分。给 Account 添加不同的 alias 就能在 client 用对应的 identity 发送邮件了。
+
+顺便感叹一下JMAP的邮件同步速率相比IMAP确实是肉眼可见地更快。不过JMAP支持的客户端太少了，mailtemi 启动稍微有点慢，thunderbird iOS 端疑似天然支持JMAP。
+
+
+# 附录
+
+stalwart 配置文件
+
+[stalwart nixos 配置](https://github.com/oluceps/nixos-config/blob/e701d780c4041fc952f88d0f97b030527b14d7c6/repack/stalwart.nix)
+
+```toml
+[acme.cf]
+cache = "/var/lib/stalwart-mail/acme"
+challenge = "dns-01"
+contact = ["sec@nyaw.xyz"]
+default = true
+directory = "https://acme-v02.api.letsencrypt.org/directory"
+domains = ["box.nyaw.xyz"]
+provider = "cloudflare"
+renew-before = "30d"
+secret = "%{env:CF_API_TOKEN}%"
+
+[authentication.fallback-admin]
+secret = "%{env:ADMIN_SECRET}%"
+user = "admin"
+
+[directory.internal]
+store = "db"
+type = "internal"
+
+[http]
+url = "'https' + '://' + config_get('server.hostname')"
+use-x-forwarded = true
+
+[resolver]
+public-suffix = ["file:///nix/store/dlkas2sgry8a2zrcs8xs4j2g1qa1jfj5-publicsuffix-list-0-unstable-2025-11-14/share/publicsuffix/public_suffix_list.dat"]
+type = "system"
+
+[server]
+hostname = "box.nyaw.xyz"
+
+[server.listener.imaptls]
+bind = ["[::]:993"]
+protocol = "imap"
+
+[server.listener.imaptls.tls]
+implicit = true
+
+[server.listener.management]
+bind = ["127.0.0.1:9313"]
+protocol = "http"
+
+[server.listener.smtp]
+bind = ["[::]:25"]
+protocol = "smtp"
+
+[server.listener.submissions]
+bind = ["[::]:465"]
+protocol = "smtp"
+
+[server.listener.submissions.tls]
+implicit = true
+
+[server.tls]
+disable-ciphers = []
+disable-protocols = ["TLSv1.2"]
+enable = true
+ignore-client-order = true
+implicit = false
+timeout = "1m"
+
+[spam-filter]
+resource = "file:///nix/store/gg53n62ar4iwkl8cpg109w4rd29xshhd-spam-filter-2.0.5/spam-filter.toml"
+
+[storage]
+blob = "db"
+data = "db"
+directory = "internal"
+fts = "db"
+lookup = "db"
+
+[store.db]
+compression = "lz4"
+path = "/var/lib/stalwart-mail/db"
+type = "rocksdb"
+
+[tracer.stdout]
+ansi = false
+enable = true
+level = "info"
+type = "stdout"
+
+[webadmin]
+path = "/var/cache/stalwart-mail"
+resource = "file:///nix/store/pdz0jfy0c7ws70ckzrrs5fph4pdmd57x-webadmin-0.1.32/webadmin.zip"
+```
+
+另有基本等价的 [simple nixos mailserver configuration](https://github.com/oluceps/nixos-config/blob/e701d780c4041fc952f88d0f97b030527b14d7c6/repack/snm.nix)
