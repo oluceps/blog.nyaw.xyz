@@ -1,0 +1,27 @@
+---
+date: 2026-04-24T21:23:44.315238296+08:00
+description: 技嘉B850的BIOS超难用!
+categories:
+  - 吐槽
+tags:
+  - 技嘉
+  - bug
+title: GIGABYTE B850 SECUREBOOT DAMN BUG
+---
+
+GIGABYTE 的 B850M 芯片组 BIOS 有着血妈难用的 user-mode SecureBoot 配置方式，当你需要 enroll 用户自己的CA的时候，必须确保 BIOS 里的 secureboot 配置的初始状态是secureboot处于关闭状态
+
+然后严格进行以下步骤：
+
+- 将 secureboot 改为开启
+- reset factory keys，并No掉弹出来的让你saving并重启的弹框 （这步可能不必须因为下一步可能包含了）
+- reset to setup mode, 并No掉弹出来的让你saving并重启的弹框
+- 观察最顶上 Secureboot 的 Value 变成了 (Setup)
+- 不能saving重启，必须去 boot tab 那里从 boot option 直接 enter 你的系统，然后在系统里面才能观察到处于 setup mode
+- 进入系统后立即enroll，enroll完用 `bootctl status` 查看会发现又变成了disable，纯折磨人的，但是别担心，这时候再重启回BIOS然后什么都不用做直接开启SecureBoot就好了，enroll其实已经完成。
+
+根本就是反逻辑的操作，每一步都是大坑。我一开始天真地以为最直觉最普通的<C>which和华硕超微什么什么一样地</C>enable一下再reset to setup重启就行，结果发现重启居然直接denied我的自签名的efi启动；还试了改成disable再重启回bios再enable再reset setup再启动；从disable改成enable并reset setup再直接回boot options启动；等等等等，
+
+Disable secureboot，Enable secureboot, Reset to setup mode, Reset factory keys, boot from boot options 五个items排列组合弄了半个晚上，太蠢了。啊啊啊啊啊！！
+
+另外关于 [Measured boot](https://github.com/nix-community/lanzaboote/blob/master/docs/how-to-guides/enable-measured-boot.md)，如果遇到[问题](https://github.com/systemd/systemd/issues/40381) 将 TPM mode 从 ASP fTPM 和 Pluton fTPM 俩都试试可能有效果，因为这个硬件实在是有点不规范，只能说有变化而且目前来看有效吧。。

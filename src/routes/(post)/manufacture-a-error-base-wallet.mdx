@@ -1,0 +1,166 @@
+---
+date: 2026-02-21T11:09:16.561166457+08:00
+description: 没什么食用价值，只是好玩，base钱包
+categories:
+  - 记录
+tags:
+  - web3
+  - crypto
+title: 制造一个错版base账户抽象钱包
+---
+
+起因是试了一下 [base](https://play.google.com/store/apps/details?id=org.toshi&hl=en)，它自动给我注册了一个 [ens](https://ens.domains/) 而且是比较心水的id，
+随即发现不对劲，它的APP设置里面关于安全验证的部分只有一个TOTP验证码<C>Time-based One-Time Password，时间型一次性密码，常见的二次验证方式</C>，没有导出 recovery code 或者添加 passkey 的选项，而且登录新设备也没有要求旧设备验证，只需要邮箱验证码和TOTP就登上了，
+那不就说明是完全托管的钱包吗<C>钱包的私钥由服务器托管，用户无法自己控制私钥</C>？因为恢复完整账号需要的全部要素都在服务端哪。
+
+查了一些资料发现 Coinbase 的产品线极其混乱，包括浏览器拓展的 base wallet 就是正经的传统自托管钱包<C>私钥由用户自己保管，不依赖服务器</C>，通过恢复码恢复账号，
+新的 Base APP 如果用邮箱注册就是[MPC](https://www.coinbase.com/en-gb/learn/wallet/what-is-a-multi-party-computation-mpc-wallet)钱包<C>Multi-Party Computation，多方计算钱包，私钥被拆分存储在多个节点</C>
+<C>也可能是纯托管的？毕竟密钥拆两半又全存在服务端上也太多此一举了</C>，
+在官方文档的表述中算 [Server Wallet v2](https://docs.cdp.coinbase.com/server-wallets/v2/introduction/welcome#more-on-smart-accounts)，
+具有戏剧性的是，私钥安全那里v2标注的是 _Secured in AWS Nitro Enclave TEE_ <C>可信执行环境，密钥在硬件级安全隔离区域处理</C>，从字面上看邮箱注册的话它即使把私钥放TEE了也还是一个托管钱包，实际用起来也是。
+
+但是如果用passkey<C>基于FIDO标准的新一代认证方式，可替代密码</C>注册的话结果又完全不一样了，它就会变成一个正儿八经的用户抽象钱包<C>User Abstraction Wallet，基于ERC-4337标准，用合约替代EOA管理账户</C>，疑似只能用passkey来进行登录验证。
+
+进行到这里其实应该可以直接放弃用 Base 了，但是不舍得放弃我的 ENS，所以决定折腾一下让它能支持我使用passkey登录。
+
+在过程中我发现 https://keys.coinbase.com/ 可以通过支付Gas费和0元交易触发智能合约然后添加一个13 phases的恢复码，随后又令人惊讶地发现使用这个恢复码恢复钱包就可以在恢复过程中添加passkey。
+
+# 删除owner
+
+现在唯一的问题就是怎么删掉合约地址初始化时写在链上的那个带给Coinbase访问权限的公钥，类似Base的[账户抽象(AA)](https://eips.ethereum.org/EIPS/eip-4337)<C>Account Abstraction，ERC-4337标准，允许合约作为账户使用</C>钱包本质就是一个合约地址上运行的智能合约，
+所以通过地址查询到合约就可以拿到owner相关的原始值。这里用前端 https://basescan.org/ 进行尝试，以我的地址举例可以直接读到[owners](https://basescan.org/address/0x2F6b3F6A8f022813Fa8784142BA6590420bbdFb5#readContract#F13)，
+可以看到idx0、idx1、idx2都是32位有效值加padding<C>idx指owners数组的索引，0表示第一个owner</C>，我猜idx0就是带给Coinbase访问权限的公钥，接下来进行验证。
+
+## 验证公钥所属
+
+在Base APP上面用邮箱+TOTP登录，由于账户抽象钱包的特性，登录使用的密钥会用于登录后的交易签名，所以我向自己的地址发起了一次交易以便查看Signature。交易达成后在 [internalTx](https://basescan.org/address/0x2F6b3F6A8f022813Fa8784142BA6590420bbdFb5#internaltx)
+中可以看到最近发往 EntryPoint 的 transaction <C>账户抽象的核心合约，负责处理UserOperation的入口点</C>，这是发起交易的前摇，作为合约逻辑的起点，鉴权也是在这里做的。所以我们把这个transaction的 TxHash 复制到专用于账号抽象合约地址的查看器比如 [jiffyscan](https://jiffyscan.xyz/userOpHash/0x01994acb60570f21abc0837c526c4a8a98467eb497695b81e3db6aed5bad1edd?network=base&section=dev_details)
+就可以看到 Developer Details 里面的 signature。
+
+从邮箱登录的钱包APP中发出的交易Hash:
+
+```
+0xf7265b3e6944aab73b8855458e25441c6bdb41ce37c38802268b448255b1c1dd
+```
+
+签名：
+
+```
+0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000004102cafca48bfddb50f0a0650460d7c47b6797eb4e9f87d9c6e5438316e2b9efeb0a11be42ea695852e3b4b38d93a4723ea3c015f12dc3ecd021862461667cbbea1c00000000000000000000000000000000000000000000000000000000000000
+```
+
+逐行解析一下：
+
+```
+// ABI 动态类型偏移量 (外层 bytes 的包裹)
+0000000000000000000000000000000000000000000000000000000000000020 
+
+// Owner Index (索引值) [0]
+0000000000000000000000000000000000000000000000000000000000000000 
+
+// 内部 signature bytes 的偏移量 (64 字节后)
+0000000000000000000000000000000000000000000000000000000000000040 
+
+// 签名的真实长度 (0x41 = 十进制的 65 字节)
+0000000000000000000000000000000000000000000000000000000000000041 
+
+// ECDSA 签名的 r 值 (32 字节)
+02cafca48bfddb50f0a0650460d7c47b6797eb4e9f87d9c6e5438316e2b9efeb 
+
+// ECDSA 签名的 s 值 (32 字节)
+0a11be42ea695852e3b4b38d93a4723ea3c015f12dc3ecd021862461667cbbea 
+
+// ECDSA 签名的 v 值 (0x1c = 十进制的 28)
+1c00000000000000000000000000000000000000000000000000000000000000
+```
+
+然后对应地我们用使用恢复码恢复时添加的 passkey 进行登录，然后再次对自己发起交易并查看一下发往 EntryPoint 的 UserOps<C>User Operation，账户抽象中的交易载体</C>的 Signature：
+
+```
+// ABI 动态偏移量
+0000000000000000000000000000000000000000000000000000000000000020 
+
+// Owner Index (索引值) = 4
+0000000000000000000000000000000000000000000000000000000000000004 // [!code warning]
+
+// ...
+```
+
+4当然<C>在检查签名长度后几乎肯定，因为passkey的签名长度显著不同</C>就是刚刚添加的passkey对应的公钥索引值，所以接下来只需要放心把idx 0删除掉就好了。
+
+
+
+## 删除
+
+
+易得 basescan 上面其实有一个接口 [removeOwnerAtIndex](https://basescan.org/address/0x2F6b3F6A8f022813Fa8784142BA6590420bbdFb5#writeContract#F8)，我预期是连上钱包然后填上idx0支付一笔gas就完成收工，
+但是中途又遇到一个问题，直接用 base smart wallet 发起智能合约删除这个idx会导致报错：
+
+<div class="md:w-1/3">
+![coinbase-error](keys.coinbase-error-img.png)
+</div>
+
+Copy出来是：
+
+```json
+{
+  "message": "Self calls are not allowed.",
+  "stack": "Error: Self calls are not allowed.\n    at QDe (https://keys.coinbase.com/static/main.5ba3ae8a16e7fe315ed7.js:2:2937960)\n    at lWe (https://keys.coinbase.com/static/main.5ba3ae8a16e7fe315ed7.js:2:3424202)\n    at pi (https://keys.coinbase.com/static/18189.a2d9f0ef25be2f3eb03c.js:8:1631700)\n    at es (https://keys.coinbase.com/static/18189.a2d9f0ef25be2f3eb03c.js:8:1651441)\n    at gs (https://keys.coinbase.com/static/18189.a2d9f0ef25be2f3eb03c.js:8:1662126)\n    at Zc (https://keys.coinbase.com/static/18189.a2d9f0ef25be2f3eb03c.js:8:1707411)\n    at Wc (https://keys.coinbase.com/static/18189.a2d9f0ef25be2f3eb03c.js:8:1707339)\n    at $c (https://keys.coinbase.com/static/18189.a2d9f0ef25be2f3eb03c.js:8:1707181)\n    at jc (https://keys.coinbase.com/static/18189.a2d9f0ef25be2f3eb03c.js:8:1703943)\n    at wu (https://keys.coinbase.com/static/18189.a2d9f0ef25be2f3eb03c.js:8:1716795)\n    at MessagePort.T (https://keys.coinbase.com/static/18189.a2d9f0ef25be2f3eb03c.js:8:2221411)"
+}
+```
+
+虽然不知道为什么不能call自己但是姑且认为是什么新奇的安全机制，防止自毁？
+
+易得[这个脚本](https://keys.coinbase.com/static/main.5ba3ae8a16e7fe315ed7.js)中的函数在 __用户端__ 有检查：
+
+```js
+function QDe(e, t) {
+    var n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};
+    return e.some((function(e) {
+        var n;
+        return (null === (n = e.target) || void 0 === n ? void 0 : n.toLowerCase()) === (null == t ? void 0 : t.toLowerCase())
+    }
+    )) && !n.skipSelfCallCheck && (e.length > 1 || void 0 !== e[0].data && "0x" !== e[0].data) ? new Error("Self calls are not allowed.") : e.some((function(e) { // [!code warning]
+        var t;
+        return (null === (t = e.target) || void 0 === t ? void 0 : t.toLowerCase()) === JA.toLowerCase()
+    }
+    )) && !n.skipPermissionManagerCallCheck ? new Error("Spend permission calls are not allowed.") : void 0
+}
+```
+
+众所周知用户端的检查等于没检查，虽然但是我试了一下devtools里的override content不太好使，所以我用[requestly](https://requestly.com/) 进行 Response Body 的一整个修改，把`QDe`函数换掉了。
+
+```js
+function QDe(e, t) {
+    return void 0; 
+}
+```
+
+![requestly](requestly-rsp.png)
+
+一整个js文档下载下来改然后把resp body替换了，方便
+
+最后在requestly里面的network打开浏览器，因为smart wallet不需要插件什么的所以很方便，干净环境就可以直接登录。随后当然就是在basescan上通过 `removeOwnerAtIndex (0x89625b57)` 支付gas fee进行链上广播，完美移除了idx0。
+
+
+# 效果
+
+
+![idx0-rem](idx0-removed.png)
+
+好了，在remove掉idx0的随后几分钟内再在手机的Base APP上尝试用邮箱登录，你会发现虽然能登录上去并看到余额，但是在交易预演的步骤就会产生未知错误，当然也根本无法进行交易，因为basecoin上面托管的那份私钥已经完全失效了。
+在移除idx0后的半天后再去试图用邮箱进行登录，会发现APP报了一个network error并且用邮箱完全登录不上，当然passkey和恢复码还是完全没问题。
+
+<div class="md:w-1/3">
+![base-app](base-app-net-err.png)
+</div>
+
+现在正式产生了一个错版<C>特指非标准、好玩、兼容性差</C>的账户抽象钱包， Coinbase 服务器已经完全失去了对钱包的掌控...吗？
+
+# 后话
+
+细心的小伙伴可能会发觉，base的所有链都是统一的地址，这在某种程度上是账户抽象带来的好处；为了在所有链都拥有同一个地址，钱包必须在每个链上部署合约，合约地址由[SmartWalletFactory](https://github.com/code-423n4/2024-03-coinbase/blob/main/src/SmartWallet/CoinbaseSmartWalletFactory.sol#L38)创建，接受一个owners列表，
+在app邮箱注册的前提下代表邮箱的权限的公钥放在了`owners[]`的第一位，在链上创建wallet的时候用于计算 `initCode` 然后再根据它计算钱包地址。所以为了保证钱包地址不变，initcode必须不变，owners也必须不变，这意味着什么呢？每次在新链上部署地址，那个idx0都会重新出现并且作为唯一的owner。即Coinbase的服务器上存在一个固定的链初始化状态<C>initCode，用于初始化合约的代码，包含owner列表等信息</C>，
+不过这样的话 remove 那个初始的owner公钥岂不是又变成一个极难解决的问题了？就算成功remove已经部署了地址的所有链的idx0，等到新链出现时进行交易依然会初始化一个用idx0创建的地址，如果Coinbase服务器上idx0的私钥泄露了，这些其它链的资金依然会受到威胁。
+
+我意识到这个问题的同时也查到 Ethereum/EVM 社区对此已经有了设想的解决方案 [Keystore Rollup](https://safefoundation.org/blog/keystore-rollup-smart-account-interoperability)，不过和本文无关了，大致就是把公钥状态只存在一条链上，其它链上的钱包验证签名的时候就去读它。不过没有广泛应用的样子。传统的EOA钱包<C>Externally Owned Account，传统以太坊账户，由私钥控制</C>其实没有这个问题，账户抽象(AA)为了用户友好还是妥协了不少，AA的资金安全首先要依赖合约本身没有bug，再有这种在我看来极其不能接受的状态同步缺陷。所以总而言之还是传统钱包好。
