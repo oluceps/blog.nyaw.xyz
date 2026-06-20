@@ -1,0 +1,62 @@
+[
+  {
+    "date": "2026-01-29T18:05:33.692Z",
+    "content": "它把我关了。改用SMTP2GO了，好用无需多言",
+    "postTitle": "使用 SMTP Relay 和 Email Routing 架空 Stalwart",
+    "postPath": "stalwart-smtprelay-cfmailrouting-selfhost-jmap-mailbox"
+  },
+  {
+    "date": "2025-09-16T17:55:57.000Z",
+    "content": "三个月前把最后一颗拔了，出于 symmetry 考虑。这会坑都长平了。不知道是不是错觉拔智齿貌似还真有瘦脸的效果，虽然也不一定更好看什么的。\n还有个现象不知道有没有联系，疑似出现酒窝了；当然也可能是我以前从没对着镜子傻乐所以从没发现。",
+    "postTitle": "智齿",
+    "postPath": "wisdom-tooth"
+  },
+  {
+    "date": "2025-04-16T21:05:47.000Z",
+    "content": "重制版 e14\n\n  ![spice_and_wolf_14](snw_14_0.png)\n\n  <div class=\"h-2\"/>\n\n  ![spice_and_wolf_14](snw_14_1.png)\n\n  [在这儿等着我呢](/smell-memory)",
+    "postTitle": "马车座驾的宽度",
+    "postPath": "spicy-n-wolf-AfterRead"
+  },
+  {
+    "date": "2024-08-15T00:34:16.000Z",
+    "content": "邻居有人去世了，请人来做法，忽然听到了类似NatuNatu的声音。在bilibili上搜了一下，现在有新昌调腔目连戏《调无常》的录像，当中有几段目连嗐头的声音，奇像。",
+    "postTitle": "无常",
+    "postPath": "wuchang"
+  },
+  {
+    "date": "2023-06-03T08:43:43.000Z",
+    "content": "“如果你们坚持，我就找找看吧。不过，我还是觉得留在这里是最好的选择。\n留在小宇宙中有两种可能的未来：如果回归运动成功了，大宇宙坍缩为奇点并发生新的创世大爆炸，\n你们就可以到新宇宙去；如果回归运动失败了，大宇宙死了，你们还可以在这里度过一生，这个小宇宙也不错的。”\n“如果所有小宇宙中的人都这么想，那大宇宙肯定死了。”程心说。\n智子无言地看着程心，对于她的思维速度而言，这段时间可能有几个世纪那么长。很难想象软件算法能够产生这样复杂的目光和表情，\n显然，智子的A.I.软件把与与程心相识以来的所有记忆数据都检索出来了，这数据有近两千万年的跨度，这所有的记忆都凝结在她的目光中，\n悲哀、敬佩、惊奇、责备、惋惜……种种复杂的感情混杂在一起。“你还是在为责任活着。”智子对程心说。",
+    "postTitle": "阶梯",
+    "postPath": "3-body-prob-afteread"
+  },
+  {
+    "date": "2023-01-11T15:00:00.000Z",
+    "content": "我的一生，就是在攀登一道责任的阶梯。\n\n小时候，我的责任是好好学习，做一个好孩子，不要让爸爸妈妈失望。\n\n以后在中学和大学，我的责任仍然是努力学习，使自己成为一个有能力的优秀的人，不要让社会失望。\n\n从读博士开始，我的责任变得具体了。我要为运载火箭的进步做出自己的贡献，要制造出推力更大、更可靠的火箭，把很少的人和物资送到地球轨道上。\n\n后来进入PIA,我的责任变成把一个探测器送到一光年以外的太空中，与入侵的三体舰队相会。这个距离，是我以前参与研制的运载火箭飞行距离的百亿倍。\n\n然后，我得到了一颗星星，在新纪元，它给我带来了以前难以想象的责任，我成为黑暗森林威慑的执剑人。现在看来，说那时自己掌握着人类的命运有些言过其实，但我确实掌握着两个文明历史的走向。\n\n后来，责任变得复杂起来，我想让人类插上光速飞行的翅膀，却又不得不做相反的事:制止由此引发的战争。\n\n我不知道那些灾难和太阳系最后的毁灭与我有多大关系，这是永远无法证实的，但肯定与我有关系，与我的责任有关系。\n\n现在，我将登上责任的顶峰，要为宇宙的命运负责了。当然，要为此负责的不止我们两个人，但这责任有我们的一份，这样的责任，在以前是绝对无法想象的。\n\n我要对相信上帝存在的人们说，我不是它选定的;我也要对唯物主义者们说，我不是创造历史的人。我只是一个普通人，不幸的是没有能够走过一个普通人的生活道路，我的经历其实是一个文明的历程。\n\n现在我们知道，每个文明的历程都是这样:从一个狭小的摇篮世界中觉醒，蹒跚地走出去，飞起来，越飞越快，越飞越远，最后与宇宙的命运融为一体。\n\n对于智慧文明来说，它们最后总变得和自己的思想一样大。",
+    "postTitle": "阶梯",
+    "postPath": "3-body-prob-afteread"
+  },
+  {
+    "date": "2021-09-16T07:22:00.000Z",
+    "content": "When connecting to a remote system from an Alacritty terminal, for instance over SSH, it can occur that the system does not have an entry for Alacritty in its terminfo database (/usr/share/terminfo/a/alacritty\\*). Therefore, all interactive terminal functionality does not work. This can be fixed by copying the terminfo for Alacritty to the remote server [reference](https://wiki.archlinux.org/title/Alacritty#:~:text=When%20connecting%20to,the%20remote%20server)\n\nOn the local host, using Alacritty:\n\n```\n$ infocmp > alacritty.terminfo  # export Alacritty's Terminfo\n$ scp alacritty.terminfo user@remote-host:~/  # or any other method to copy to the remote host\n```\n\nOn the remote host, in the directory where you copied alacritty.terminfo:\n\n```\n$ tic -x alacritty.terminfo  # import Terminfo for current user\n$ rm alacritty.terminfo  # optional: remove Terminfo file\n```",
+    "postTitle": "终端模拟器 terminfo 缺失",
+    "postPath": "backspace-become-space-in-ssh"
+  },
+  {
+    "date": "2021-09-15T14:31:00.000Z",
+    "content": "经archlinux-cn群友指导，发现问题没有那么复杂（或者说简单）  \n远程连接中键盘输入错误的原因很可能是因为远端并不支持我所用的终端模拟器 **Alacritty** 的 **Terminfo** ，故出现此种情况。  \n后续解决方案待补，似乎服务端安装上面的包就可以解决，其中最新版包含A的terminfo",
+    "postTitle": "终端模拟器 terminfo 缺失",
+    "postPath": "backspace-become-space-in-ssh"
+  },
+  {
+    "date": "2020-03-23T07:40:00.000Z",
+    "content": "大宇宙对超膜进行广播需要几乎一个银河系的质量转换为能量，而广播之后能量（信息）已经传递到了超膜之上（根据三体的理论，所有宇宙都是超膜上的空泡），\n和小宇宙对物质的侵吞一样是不可逆的损失。所以质量归还的前提几乎是不存在的。\n\n好比宴请全村来通知粮仓见底。",
+    "postTitle": "阶梯",
+    "postPath": "3-body-prob-afteread"
+  },
+  {
+    "date": "2020-03-06T15:28:00.000Z",
+    "content": "# 有生之年\n\nhttps://twitter.com/Spicy_Wolf_Prj\n\n『狼と香辛料』完全新作アニメ制作決定",
+    "postTitle": "马车座驾的宽度",
+    "postPath": "spicy-n-wolf-AfterRead"
+  }
+]

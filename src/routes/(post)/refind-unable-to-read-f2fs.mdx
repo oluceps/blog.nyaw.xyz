@@ -1,0 +1,106 @@
+---
+date: '2021-07-08T12:36:50.000Z'
+title: Refind 兼容性踩坑
+tags:
+- Refind
+- ArchLinux
+- Linux
+categories:
+- 记录
+draft: true
+---
+
+在头几次安装linux的时候，我一般使用refind套娃引导grub再引导linux内核，启动过程极为繁琐且用时冗长，主要原因归根于懒得配置refind的直接引导，但是我也纳闷为啥没有直接检测linux内核进行引导，而只在启动选项中显示grub引导。那时我还没意识到问题的复杂性
+
+近期我安装Arch Linux的时候因为其提供了更为细节的安装方式，打算彻底用 refind 替代grub，于是按照Arch Wiki上的安装方式安装了多次，都未能正常启动。全部提示vmlinuz not found。这是在我编辑refind.conf后强制指定根目录CUID和内核路径、启动图标的情况下出现的，如果不进行指定，启动选择上压根不会出现Arch Linux的标志。
+
+---
+
+我将 1TB 硬碟约700G分为windows的C盘，除去300M的efi分区还余约300G为Linux使用，64G为根目录分区及167G为/home分区。efi分区挂载在/boot/efi下。内核及微碼文件放置在/boot文件夹下。
+
+## 初版refind.conf配置文件段落：
+
+```
+menuentry "Arch Linux" {
+    icon     /EFI/refind/themes/rEFInd-minimal/icons/os_arch.png
+    volume   90DF9FD9-023A-1C46-8BB2-48129AE1384A
+    loader   /boot/vmlinuz-linux
+    initrd   /boot/initramfs-linux.img
+    options  "root=PARTUUID=90df9fd9-023a-1c46-8bb2-48129ae1384A initrd=/boot/amd-ucode.img rw quiet add_efi_memmap"
+    submenuentry "Boot using fallback initramfs" {
+        initrd /boot/initramfs-linux-fallback.img
+    }
+    submenuentry "Boot to terminal" {
+        add_options "systemd.unit=multi-user.target"
+    }
+
+}
+```
+
+- volume指定了root分区的PARTUUID，并且指定roader为根目录相对路径的linux内核文件启动，顺便指定微碼，天衣无缝。  
+  按理说应该在启动过程显示arch图标，选中回车后直接加载linux内核进入系统，然而并没有
+  我卡了
+
+在live启动并Arch-chroot /mnt调试无数次之后，我回想起Arch wiki上的一句话：
+
+rEFInd ships with UEFI drivers that implement read-only support for ReiserFS, Ext2, Ext4, Btrfs, ISO-9660 and HFS+. Additionally rEFInd can access any file system that UEFI itself can, that includes FAT (as mandated by the UEFI specification), HFS+ on Macs and ISO-9660 on some systems.
+[来源](<https://wiki.archlinux.org/title/REFInd#:~:text=rEFInd%20ships%20with%20UEFI%20drivers%20that%20implement%20read-only%20support%20for%20ReiserFS%2C%20Ext2%2C%20Ext4%2C%20Btrfs%2C%20ISO-9660%20and%20HFS%2B.%20Additionally%20rEFInd%20can%20access%20any%20file%20system%20that%20UEFI%20itself%20can%2C%20that%20includes%20FAT%20(as%20mandated%20by%20the%20UEFI%20specification)%2C%20HFS%2B%20on%20Macs%20and%20ISO-9660%20on%20some%20systems.>)
+
+我看了两遍，没有看见F2FS的字样，我开始慌了。原来这东西它不能读fffs
+
+我尝试把内核及微碼从/boot复制到efi分区中，以下为修改后efi/EFI/Arch结构：
+
+```
+➜  Arch tree
+.
+|-- amd-ucode.img
+|-- initramfs-linux-fallback.img
+|-- initramfs-linux.img
+`-- vmlinuz-linux
+```
+
+而后将refind.conf修改为：
+
+```
+menuentry "Arch Linux" {
+    icon     /EFI/refind/themes/rEFInd-minimal/icons/os_arch.png
+    #volume   90DF9FD9-023A-1C46-8BB2-48129AE1384A
+    loader   /EFI/Arch/vmlinuz-linux
+    initrd   /EFI/Arch/initramfs-linux.img
+    options  "root=PARTUUID=90df9fd9-023a-1c46-8bb2-48129ae1384A initrd=/EFI/Arch/amd-ucode.img rw quiet add_efi_memmap"
+    submenuentry "Boot using fallback initramfs" {
+        initrd /EFI/Arch/initramfs-linux-fallback.img
+    }
+    submenuentry "Boot to terminal" {
+        add_options "systemd.unit=multi-user.target"
+    }
+
+}
+```
+
+即默认efi分区为refind的根目录，相对路径指明efi分区中的arch linux内核（因为efi分区是FAT32格式，为refind所支持）
+故修改后启动流程由：
+
+**refind直接读取f2fs格式根目录中的boot文件夹中的内核等文件并进行init流程**
+
+更改为：
+
+**refind直接启动 FAT32格式的efi分区 中的linux内核等文件，加载后linux启动**
+
+由于Linux内核支持f2fs, 所以启动过程可以正常。
+
+# 其实还有另一种解决方案：
+
+在系统分区的时候划分出独立的boot分区，并格式化其为 **ReiserFS, Ext2, Ext4, Btrfs, ISO-9660 and HFS+**
+中的任意一种。挂载分区boot于root分区的/boot文件夹，再把efi分区挂载到root分区的/efi或/boot/efi,再执行pacstrap命令安装linux内核等文件，这样linux内核自动安装进/boot文件夹的时候就是安装进了独立的boot分区，无论根目录文件系统是啥都没有影响，但就是麻烦。
+
+PS: 回想起安装pop！OS的经历，其强制要求efi分区大于512M。想必也是出于避免这个问题的考虑做出了不人性化的要求。了解到refind可以手动指定和添加驱动，我尝试了grub的f2fs驱动，发现并不适用。
+
+另：如果使用第一种方法，后续更新内核必须在更新完成后把/boot下的  
+amd-ucode.img  
+initramfs-linux-fallback.img  
+initramfs-linux.img  
+vmlinuz-linux  
+手动移动到efi/EFI/Arch分区内（即在refind.conf中标注的Kernel parameters路径)
+
+8 Jul 17:35 2021

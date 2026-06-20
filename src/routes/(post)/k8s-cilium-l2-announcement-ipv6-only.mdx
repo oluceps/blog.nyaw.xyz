@@ -1,0 +1,99 @@
+---
+date: 2026-03-23T23:40:10.820835450+08:00
+description:
+categories:
+  - 记录
+tags:
+  - k8s
+  - cluster
+  - cilium
+title: k8s-cilium-l2-announcement-ipv6-only
+draft: true
+---
+
+
+```
+# kubeadm.yaml
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: "fd00:1::2"
+  bindPort: 6443
+nodeRegistration:
+  kubeletExtraArgs:
+    # declare dual-stack node ip explicitly. replace with your actual interface ips
+    node-ip: "fd00:1::2,192.168.0.39" 
+---
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+kubernetesVersion: "1.35.3"
+controlPlaneEndpoint: "fd00:1::100"
+networking:
+  # ipv6 must be first to define ipv6 as primary
+  podSubnet: "fd00:10:244::/64,10.244.0.0/16"
+  serviceSubnet: "fd00:10:96::/112,10.96.0.0/16"
+```
+
+```
+sudo kubeadm init --config kubeadm.yaml --skip-phases=addon/kube-proxy
+```
+
+
+```
+cp /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+```
+helm install cilium cilium/cilium --version 1.19.1 \
+ --namespace kube-system \
+ --set ipv6.enabled=true \
+ --set ipv4.enabled=true \
+ --set routingMode=native \
+ --set autoDirectNodeRoutes=true \
+ --set ipv6NativeRoutingCIDR="fd00:10:244::/64" \
+ --set ipv4NativeRoutingCIDR="10.244.0.0/16" \
+ --set kubeProxyReplacement=true \
+ --set k8sServiceHost="fd00:1::100" \
+ --set k8sServicePort=6443 \
+ --set l2announcements.enabled=true \
+ --set externalIPs.enabled=true \
+ --set devices="enp6s0" \
+ --set directRoutingDevice="enp6s0" \
+ --set enableIPv6Masquerade=true \
+ --set enableIPv4Masquerade=true \
+ --set k8sClientRateLimit.qps=50 \
+ --set k8sClientRateLimit.burst=100
+```
+
+
+```
+# l2-policy.yaml
+apiVersion: "cilium.io/v2"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: "api-server-pool"
+spec:
+  blocks:
+    - start: "fd00:1::100"
+      stop: "fd00:1::100"
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: "api-server-l2-policy"
+spec:
+  externalIPs: true
+  loadBalancerIPs: true
+  interfaces:
+    - ^enp6s0$
+  nodeSelector:
+    matchLabels:
+      node-role.kubernetes.io/control-plane: ""
+```
+
+
+```
+kubectl apply -f l2-policy.yaml
+kubectl patch svc kubernetes -n default -p '{"spec":{"externalIPs":["fd00:1::100"]}}'
+```

@@ -1,0 +1,145 @@
+---
+date: 2024-12-15T02:17:38.678293908+08:00
+description: 即使身处果壳之中，仍自以为无限空间之王
+categories:
+  - 记录
+tags:
+  - nixos
+  - 安装
+  - 墙内
+title: NixOS 墙内小记
+toc: true
+---
+
+> 本文主要介绍一些在受限网络中安装和使用NixOS的实用技巧。面向初次安装NixOS的有一定Linux基础的大陆用户或外宾。
+
+# 名词解释
+
++ Channel
+
+  狭义指 [nix channels](https://nixos.wiki/wiki/Nix_channels)，属于旧的 nix- 系列命令。引申为 nixpkgs 的所有branch<C>master, nixos-unstable 等</C>。在某些镜像站的文档中，可能与二进制缓存（见下）混淆。<C>如 [ustc镜像站](https://mirrors.ustc.edu.cn/help/nix-channels.html)，使用不同path区分channel和二进制缓存（/nixos-unstable 和 /store）。</C>
+
++ Binary Cache (二进制缓存)
+
+  用于储存预先编译的二进制的服务。如果 cache 无法正常访问，且 Channel 能够正常访问，nix就会开始在本地进行大量编译。
+
+幸运的是，在部分国家或地区，cache和channel**都无法**保证正常访问。
+
+# 两个解决途径
+
+两种解法，翻墙和镜像。翻墙是一劳永逸之道，而使用镜像通常会面临缓存镜像时不时同步滞后而无法命中的问题，这种情况下同样会造成本地大量重新构建。
+
+## 翻
+
+### 初次安装NixOS
+
+我无法翻墙，如何能安装翻墙软件？鸡蛋问题困扰着许多人。你可以选择以下方法：
+
++ 安卓VPN共享
+
+  部分安卓手机可以直接通过USB或者热点分享本机的VPN代理。或者获取root权限的手机通过应用 `VPN hotspot` 来进行配置。对于 livecd 场景，临时代理热点通常是可以接受的。
+
++ 从国内镜像站抠出代理软件
+
+  如果你有现成的翻墙软件配置，建议选择此方法。代理软件多数使用golang，具备静态链接的天然优势，
+  所以这个方案可以作为Linux系统在墙内获取翻墙软件的通用方案。
+
+```bash
+# 或者 pkgs.sing-box / pkgs.mihomo 等
+nix-build -E '{pkgs ? import <nixpkgs> {}}: pkgs.dae' --option substituters "https://mirrors.ustc.edu.cn/nix-channels/store"
+```
+
+然后在 `result` 目录中取用。
+
+值得一提的是Nix Daemon 一般不吃环境变量<C>如果你使用root用户执行nix命令，则一般不调用daemon</C>，如果你不开透明代理<C>如TUN或者基于eBPF或者tproxy的代理</C>，那需要额外的配置使nix走代理：
+
+你可以参考 [issue](https://github.com/NixOS/nixpkgs/issues/27535#issuecomment-1178444327)，
+
+```bash
+sudo mkdir /run/systemd/system/nix-daemon.service.d/
+cat << EOF >/run/systemd/system/nix-daemon.service.d/override.conf  
+[Service]
+Environment="http_proxy=socks5h://localhost:7891" # 假设是你的socks代理端口
+Environment="https_proxy=socks5h://localhost:7891"
+Environment="all_proxy=socks5h://localhost:7891"
+EOF
+```
+
+或者使用 `sudo systemctl edit --runtime nix-daemon` 进行同样更改。
+
+最后应用更改使nix吃代理环境变量，就可以正常执行安装步骤，无需考虑网络环境问题。
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart nix-daemon
+```
+
++ 构建自带翻墙软件的livecd（不推荐）
+
+  这个方法相比从镜像下载软件不会更方便，而且要求预先存在一个nix环境和正常的网络以构建livecd。你可以参考[wiki](https://wiki.nixos.org/wiki/Creating_a_NixOS_live_CD)和[我的livecd配置](https://github.com/oluceps/nixos-config/tree/3bc3d7215d43e66f8f8bdfed42b7d2cb087ca672/hosts/bootstrap)构建自带翻墙设施的image，flake下使用以下命令构建：
+
+```bash
+nix build .#nixosConfigurations.LIVECD.config.system.build.isoImage
+```
+
+### 日常使用时
+
+nixpkgs已经包含大量相关工具和设施，详见[tracking issue](https://github.com/NixOS/nixpkgs/issues/287770)。使用 [nix search](https://search.nixos.org/options?) 搜索相关选项并开启服务。如果你有能力，尽量使用无图形界面的工具，因为GUI相比其实际生效的功能部件并没有提高更多效率，并且容易出现问题<C>如GUI的选项无法开箱即用(仅在nixos的语境下)，如各种GUI层出不穷的安全漏洞</C>。
+
+如果你已经对相关工具有了解，请自行选择，如果没有，请考虑以下：
+
++ dae: 基于 eBPF 的透明代理。有完善的社区支持，见[flake](https://github.com/daeuniverse/flake.nix)
+
++ sing-box: 有nixos模块，支持大部分协议，支持透明代理
+
++ mihomo (clash-meta): 广泛兼容的订阅格式。和singbox坐一桌
+
+## 镜像
+
+[flake](https://wiki.nixos.org/wiki/Flakes) 是一种实验性<C>实验了好几年发展了好多生态但不影响它依然是实验性</C>方案，作用是更好地锁定版本以支持可复现。它通过 flake inputs 获取 nixpkgs 等仓库的源码，起到和channel近似的功能。
+
+<Emph type="note">如果你使用flake构建配置，则无法正常使用channel镜像，但是由于它支持所有git仓库url作为inputs，你可以指定任意国内的nixpkgs git repo镜像地址。如[此文档所述](https://nixos-cn.org/tutorials/installation/Networking.html#_2-%E4%BD%BF%E7%94%A8%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F%E5%9C%B0%E5%9D%80%E5%8A%A0%E9%80%9F-flakes-inputs-%E7%9A%84%E4%B8%8B%E8%BD%BD)</Emph>
+
+### 初次安装NixOS
+
+出于上述原因，我们先假定你不使用flake。
+
+参考 [ustc镜像站](https://mirrors.ustc.edu.cn/help/nix-channels.html) 的添加流程。你也可以选择国内的 sjtu、tuna、bfsu 的镜像，看地区和个人喜好来。
+
+<Emph type="note">比较古旧的 中间连着连字符的nix命令（如`nix-shell`, `nix-build`）都会在执行时请求 nix channel，
+而新的实验性的nix command没有channel这一层抽象，都可以々某种方式直接指定仓库的url地址（如 `nix build`，`nix develop`，`nix profile`）。</Emph>
+
+```
+sudo -i
+nix-channel --add https://mirrors.ustc.edu.cn/nix-channels/nixos-unstable nixos # nixos 是安装默认使用的channel
+nix-channel --update  # 更新并解包频道
+```
+
+然后继续进行安装步骤。在 `nixos-install` 的步骤，请添加额外的命令行参数：
+
+```bash
+--option extra-substituters "https://mirror.sjtu.edu.cn/nix-channels/store"
+```
+
+<Emph type="note">有些教程中可能会使用 `substituters` 而不是 `extra-*`，前者会删除nix official自带的二进制缓存，在只有国内镜像缓存且不命中的情况下会执行大量本地编译。</Emph>
+
+### 日常使用时
+
+进入系统后，需要重复上述安装时的步骤。确保你创建的用户没有 `nix channel --list` 输出，以防止和root的channel混淆。
+
+# 常见问题
+
+如果使用代理软件透明代理遇到问题，请先：
+
+- 查看dmesg有无异常
+  - 出现大量refuse某一网络设备的消息
+
+    nixos 默认开启防火墙，关掉防火墙再尝试
+    如关掉防火墙后问题解决，依次尝试：将tun device添加到 [trustedInterfaces](https://search.nixos.org/options?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=trustedInterfaces)，关掉 [checkReversePath](https://search.nixos.org/options?channel=unstable&show=networking.firewall.checkReversePath&from=0&size=50&sort=relevance&type=packages&query=checkReversePath)。
+
+  - 出现大量refuse某一端口通讯的消息
+
+    如果用的是dae，放行(默认) `12345` tproxy端口，其它使用tproxy的方案同理。
+- dmesg 无异常
+
+  检查代理软件日志，然后进nixos群在线debug

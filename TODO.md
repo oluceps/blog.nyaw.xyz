@@ -1,0 +1,5 @@
+- [x] mobile view, apply the design style
+- [x] make all text size bigger
+- [x] taxonomy page, the timeline width could be responsible, since horizontal gaps between blocks is too wide in a wide screen now.
+- [x] hover in the timelime block, right bottom of timeline should show the article, like what design style did (candidate).
+- [x] the top of article page, which shows `2024.05.12 · 有趣` the block, category text should be clickable and jump to taxonomy page and select corresponding cate, like the tag text at the bottom of page.
