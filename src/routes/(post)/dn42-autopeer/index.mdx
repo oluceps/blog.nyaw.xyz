@@ -1,0 +1,116 @@
+---
+date: 2026-09-13T10:00:00.000000000+00:00
+description: DN42 Autopeer Service
+categories:
+  - 网络
+tags:
+  - dn42
+  - bgp
+  - wireguard
+  - peering
+title: DN42 Autopeer
+toc: true
+---
+
+import Autopeer from "./Autopeer"
+
+Welcome to the DN42 Autopeer service. This dashboard creates, updates, or removes a BGP peer on my DN42 node. You can skip guide to [Peering](#peering).
+
+欢迎使用 DN42 Autopeer 服务。这个面板可在我的 DN42 节点上创建、更新或删除 BGP peer。你可以点击跳过引导直达 [Peering](#peering)。
+
+The supported tunnel type is WireGuard®. You can sign a request with OpenSSH or OpenPGP.
+
+支持的隧道类型是 WireGuard®。你可以使用 OpenSSH 或 OpenPGP 签名请求。
+
+## How to generate the challenge 如何生成应答验证码
+
+To prove ownership of your ASN, sign the request with a key from **your** DN42 Registry maintainer object. For example, examine [SECIRIAN-MNT](https://git.dn42.dev/dn42/registry/src/branch/master/data/mntner/SECIRIAN-MNT):
+
+为了证明你的 ASN 所有权，请使用**你的** DN42 注册表 maintainer 对象中的密钥对请求进行签名。例如，检查 [SECIRIAN-MNT](https://git.dn42.dev/dn42/registry/src/branch/master/data/mntner/SECIRIAN-MNT)：
+
+```yaml
+mntner:             SECIRIAN-MNT
+admin-c:            SECIRIAN-DN42
+tech-c:             SECIRIAN-DN42
+mnt-by:             SECIRIAN-MNT
+source:             DN42
+auth:               ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMDcYqby4TnhKV6xGyuZUtxOmTtXjKYp8r+uCxbGph65 # [!code highlight]
+auth:               sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIKzRx/a3GL2GZCTo/xU54m5eaRruWYErCAXnttg+YJFzAAAADnNzaDoxNzg5MDg4ODQz
+```
+
+First, the form requests a five-minute, single-use nonce from the server. Then, it builds a message from the operation, ASN, peer name, WireGuard key, endpoint, nonce, and expiration time.
+
+表单首先从服务器获取一个五分钟有效、一次性的 nonce。然后，它通过操作类型、ASN、peer 名称、WireGuard 密钥、端点、nonce 和过期时间构建一条消息。
+
+Each peer name identifies one machine under your ASN. Use a different name for each machine, and reuse that name for updates or deletion.
+
+每个 peer 名称标识你的 ASN 下的一台机器。请为不同机器使用不同名称，并在更新或删除时复用原名称。
+
+If you change a signed field, the challenge in the form becomes invalid. Request a new challenge, run the generated command, and paste the detached signature.
+
+如果你更改已签名的字段，表单中的应答验证码将变为无效。请请求一个新的应答验证码，运行生成的命令，并粘贴分离的签名。
+
+For an update, an empty endpoint keeps the current value. To remove the current endpoint, select **Clear the current endpoint**.
+
+在更新操作中，如果端点为空，将保留当前值。若要移除当前端点，请选择 **Clear the current endpoint**。
+
+The create response shows the actual WireGuard listen port. If another peer already uses the preferred port, the service increments the port number.
+
+创建响应会显示实际的 WireGuard 监听端口。如果另一个 peer 已经使用了首选端口，该服务会递增端口号。
+
+## Peering
+
+<div class="h-auto min-h-[65vh] py-8">
+  <Autopeer />
+</div>
+
+---
+
+## Agent-Native Peering 智能体友好型对等连接
+
+
+Install the bundled [`nyaw-dn42-autopeer` skill](skills/nyaw-dn42-autopeer/SKILL.md) from GitHub:
+
+从 GitHub 安装 [`nyaw-dn42-autopeer` skill](skills/nyaw-dn42-autopeer/SKILL.md):
+
+```bash
+npx skills add oluceps/dn42-autopeer
+```
+
+Select your coding agent and installation scope when the CLI asks.
+The skill reads the live [OpenAPI specification](https://dn42.nyaw.xyz/api-docs/openapi.json), gets a single-use challenge, and prepares the signed request.
+Supply your ASN, peer name, public endpoint, and the path to a registered maintainer signing key.
+The agent can generate a WireGuard key pair locally and return the exact WireGuard and BGP settings from the API.
+Private keys stay on your system.
+
+和安装指引谈话直到安装完成。
+skill 将读取 [OpenAPI specification](https://dn42.nyaw.xyz/api-docs/openapi.json)，获取单次应答验证码，并准备签署请求。
+提供你的 ASN、peer 名称、公开端点，以及维护者签名私钥的路径。
+agent 会在本地生成一个 WireGuard 密钥对并从 API 返回确切的 WG 和 BGP 配置参数。
+私钥始终不离开你的系统。
+
+Example prompt:
+
+```text
+Use $nyaw-dn42-autopeer to peer AS4242421234 with Nyaw.
+Use peer name fra1 for this machine.
+My endpoint is 198.51.100.1:51820, and my registered SSH key is ~/.ssh/id_ed25519.
+Save the new WireGuard key pair under ./secrets/nyaw-peer/.
+```
+
+See [documentation](https://github.com/oluceps/dn42-autopeer#agent-native-peering).
+
+
+## API Documentation
+
+Automation tools must call `POST /api/challenges` before each peer change. A challenge cannot authorize a different operation or a second request.
+
+自动化工具在每次更改 peer 之前，必须调用 `POST /api/challenges`。一个应答验证码不能用于授权不同的操作，也不能用于第二次请求。
+
+Use these links to examine the request schemas and test the API:
+
+使用这些链接来检查请求模式并测试 API：
+
+- **[OpenAPI Specification](https://dn42.nyaw.xyz/api-docs/openapi.json)**: The raw OpenAPI v3 JSON specification to integrate with your clients.
+
+[Backend repo](https://github.com/oluceps/dn42-autopeer)

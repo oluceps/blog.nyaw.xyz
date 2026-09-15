@@ -1,0 +1,206 @@
+---
+date: 2025-02-03T18:29:07.365386195+08:00
+description: 最后一跳还没着落
+categories:
+  - 记录
+tags:
+  - wireguard
+title: "[未解决] 双wg子网互联"
+toc: true
+draft: true
+---
+
+<Emph type="warn">本文所述方案不完善，可用的解决方案见[这里](/wg-babel-dyn-routing)</Emph>
+
+我有若干机器在公网，少数不在公网<C>即后文内网机器，处于无法穿透的CGNAT下</C>，我想让在公网的机器实现 full mesh 互联，不在公网的通过公网机器进行中转实现互相连接。由于是一次性工作所以忽略掉配置复杂度。
+
+为了实现:
+1. 避免单点故障
+2. 在内网机器上可以通过指定地址选择中继路由到其它内网机器
+3. 任意公网机器可选通过指定地址从其它公网机器中转访问内网机器<C>故障转移的需要</C>
+
+我尝试使用如下最小拓扑：
+
++ 两个公网机器，通过wireguard互为对等节点，形成 full mesh。
++ 一个内网机器，单个网络接口具备两个wg内网地址，分别与两个公网机器peer，**形成两个wg子网**。
+
+两个公网机器用 A,B 表示，一个内网机器用 O 表示(?。
+
+
+目前已经实现上述预期的1、2两点，但第三点未能实现，以下是最小配置：
+
+主机对应的ip:
+
++ A: 10.0.4.1
++ B: 10.0.3.1
++ O: 10.0.4.2 和 10.0.3.2
+
+# A
+
+## 接口配置
+
+```
+> cat wg0.netdev 
+[NetDev]
+Kind=wireguard
+MTUBytes=1300
+Name=wg0
+
+[WireGuard]
+ListenPort=51820
+PrivateKeyFile=/run/vaultix/wgy
+
+# peer O
+[WireGuardPeer]
+AllowedIPs=10.0.4.2/32
+PersistentKeepalive=15
+PublicKey=BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=
+
+# ...
+
+
+# peer B
+[WireGuardPeer]
+AllowedIPs=10.0.3.0/24
+Endpoint=172.234.92.148:51820
+PersistentKeepalive=15
+PublicKey=jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=
+```
+
+## 网络配置
+
+```
+> cat 10-wg0.network 
+[Match]
+Name=wg0
+
+[Network]
+IPMasquerade=ipv4
+IPv4Forwarding=true
+Address=10.0.4.1/24
+
+[Route]
+Destination=10.0.3.0/24
+```
+
+# B
+
+## 接口配置
+
+```
+> cat wg0.netdev 
+[NetDev]
+Kind=wireguard
+MTUBytes=1300
+Name=wg0
+
+[WireGuard]
+ListenPort=51820
+PrivateKeyFile=/run/vaultix/wgab
+
+[WireGuardPeer]
+AllowedIPs=10.0.3.2/32
+PersistentKeepalive=15
+PublicKey=BCbrvvMIoHATydMkZtF8c+CHlCpKUy1NW+aP0GnYfRM=
+
+# peer A
+[WireGuardPeer]
+AllowedIPs=10.0.4.0/24
+PersistentKeepalive=15
+PublicKey=V3J9d8lUOk4WXj+dIiAZsuKJv3HxUl8J4HvX/s4eElY=
+
+```
+
+## 网络配置
+
+```
+> cat 10-wg0.network
+[Match]
+Name=wg0
+
+[Network]
+IPMasquerade=ipv4
+IPv4Forwarding=true
+Address=10.0.3.1/24
+
+[Route]
+Destination=10.0.4.0/24
+```
+
+# O
+## 接口配置
+
+```
+> cat wg0.netdev 
+[NetDev]
+Kind=wireguard
+MTUBytes=1300
+Name=wg0
+
+[WireGuard]
+PrivateKeyFile=/run/vaultix/wg
+
+[WireGuardPeer]
+AllowedIPs=10.0.3.0/24
+Endpoint=172.234.92.148:51820
+PersistentKeepalive=15
+PublicKey=jQGcU+BULglJ9pUz/MmgOWhGRjpimogvEudwc8hMR0A=
+
+[WireGuardPeer]
+AllowedIPs=10.0.4.0/24
+Endpoint=102.111.0.1:41822
+PersistentKeepalive=15
+PublicKey=V3J9d8lUOk4WXj+dIiAZsuKJv3HxUl8J4HvX/s4eElY=
+```
+## 网络配置
+
+```
+> cat 10-wg0.network
+[Match]
+Name=wg0
+
+[Network]
+DHCP=no
+IPMasquerade=ipv4
+IPv4Forwarding=true
+Address=10.0.3.2/24
+Address=10.0.4.2/24
+```
+
+# Blocking
+
+如上所示,
+
+AO，BO 已经成功组网并且能够正常使用，但是从A(10.0.4.1) ping O在BO子网的地址(10.0.3.2)并不联通，反之亦然。具体体现在：
+
+
+当 `10.0.4.1` ping `10.0.3.2`，`10.0.3.1`的wg接口抓包显示出入站流量，但是诡异地有两个一组的ICMP Echo Request, 预期应该是一个ICMP Req 一个 Reply？
+
+
+```
+# 10.0.3.1 抓包
+> sudo tcpdump -i wg0 icmp
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on wg0, link-type RAW (Raw IP), snapshot length 262144 bytes
+19:04:09.460114 IP 10.0.4.1 > 10.0.3.2: ICMP echo request, id 37, seq 8, length 64
+19:04:09.460126 IP 10.0.4.1 > 10.0.3.2: ICMP echo request, id 37, seq 8, length 64
+# 空行我自己加的
+19:04:10.484178 IP 10.0.4.1 > 10.0.3.2: ICMP echo request, id 37, seq 9, length 64
+19:04:10.484189 IP 10.0.4.1 > 10.0.3.2: ICMP echo request, id 37, seq 9, length 64
+
+19:04:11.508106 IP 10.0.4.1 > 10.0.3.2: ICMP echo request, id 37, seq 10, length 64
+19:04:11.508117 IP 10.0.4.1 > 10.0.3.2: ICMP echo request, id 37, seq 10, length 64
+^C
+6 packets captured
+6 packets received by filter
+0 packets dropped by kernel
+```
+
+因为预期是 4.1 -> 3.1 -> 3.2，但是数据在3.1就出现了异常，3.2上抓包没有任何结果。孩子被卡了两天了呜呜
+
+以下是正常的 10.0.3.1 的子网机器ping它的抓包流量，作为对照：
+
+```
+19:08:25.054781 IP 10.0.3.3 > abhoth: ICMP echo request, id 4, seq 5, length 64
+19:08:25.054798 IP abhoth > 10.0.3.3: ICMP echo reply, id 4, seq 5, length 64
+```

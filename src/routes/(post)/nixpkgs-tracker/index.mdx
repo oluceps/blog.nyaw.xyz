@@ -1,0 +1,131 @@
+---
+date: 2024-08-07T14:32:44.102070998+00:00
+description: Where the pr goes
+categories:
+  - 工具
+tags:
+  - nixpkgs
+  - tracker
+  - pr
+title: Nixpkgs Pull Request Tracker
+---
+
+import Cpn from "./PrStat"
+
+<div class="h-[45vh]">
+  <Cpn />
+</div>
+
+---
+
+You could also use RESTful API, uri encoding follows RFC6570:
+
+```bash
+# if changes entered common branches ?
+curl https://blog.nyaw.xyz/api/pr-stat?pr=114514
+```
+
+```bash
+# if changes entered specific branches ?
+# [!code word:branch]
+...?pr=11451&branch=nixos-24.11&branch=staging-next
+```
+
+```bash
+# if changes entered, specific repo, and branch
+# [!code word:repo=daeuniverse/flake.nix]
+...?repo=daeuniverse/flake.nix&pr=116&branch=unstable'
+```
+
+```bash
+# ...?pr=123&branch=master&branch=nixos-24.11&token=xxxxyyyy&repo=xx/yy
+curl https://blog.nyaw.xyz/api/pr-stat{?pr,branch*,token,repo}
+```
+
+## OpenAPI Spec
+
+```yaml
+openapi: 3.0.3
+info:
+  title: PR Status API
+  version: 1.0.0
+  description: API to fetch the status of a pull request for different branches
+
+paths:
+  /api/pr-stat:
+    get:
+      summary: Get PR Status
+      description: Retrieve the status of a pull request across multiple branches
+      parameters:
+        - name: pr
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: The pull request number
+        - name: token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: API token that used in server query (to github)
+        - name: repo
+          in: query
+          required: false
+          schema:
+            type: string
+          description: repository, formated as nixos/nixpkgs, optional
+        - name: branch
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+          description: Branches to check the PR status against. Leave empty to query common branches
+      responses:
+        '200':
+          description: Successful response with the PR status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: The title of the pull request
+                    example: "insync: 3.9.1.60010 -> 3.9.3.60019"
+                  state:
+                    type: string
+                    description: The state of the pull request (e.g., open, closed, merged)
+                    example: "merged"
+                  user:
+                    type: string
+                    description: The username of the person who created the pull request
+                    example: "hellwolf"
+                  merge_commit_sha:
+                    type: string
+                    description: The commit sha
+                    example: "xyxxc3e6d7fb989b63c4db1f76c01c1138930704"
+                  merge:
+                    type: object
+                    description: Merge status for various branches
+                    additionalProperties:
+                      type: boolean
+                    example:
+                      staging-next: true
+                      master: true
+                      nixos-unstable-small: true
+                      nixpkgs-unstable: true
+                      nixos-unstable: true
+        '400':
+          description: Invalid request parameters
+        '404':
+          description: PR not found
+        '500':
+          description: Sth else. Describe in body, maybe
+```
+
+---
+
+Based on ocfox' [project](https://github.com/ocfox/nixpkgs-tracker) Thanks~
