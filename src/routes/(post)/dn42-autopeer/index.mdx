@@ -1,0 +1,193 @@
+---
+date: 2026-09-13T10:00:00.000000000+00:00
+description: DN42 Autopeer Service
+categories:
+  - 网络
+tags:
+  - dn42
+  - bgp
+  - wireguard
+  - peering
+title: DN42 Autopeer
+toc: true
+---
+
+import Autopeer from "./Autopeer"
+
+Welcome to the DN42 Autopeer service. This dashboard creates, updates, or removes a BGP peer on my DN42 node. You can skip guide to [Peering](#peering).
+
+欢迎使用 DN42 Autopeer 服务。这个面板可在我的 DN42 节点上创建、更新或删除 BGP peer。你可以点击跳过引导直达 [Peering](#peering)，或使用 [手动 Peering](#Manually)
+
+---
+
+The supported tunnel type is WireGuard®. You can sign a request with OpenSSH or OpenPGP.
+
+支持的隧道类型是 WireGuard®。你可以使用 OpenSSH 或 OpenPGP 签名请求。
+
+# How to generate the challenge - 如何生成应答验证码
+
+To prove ownership of your ASN, sign the request with a private key (corresponding to the pubkey from **your** DN42 Registry maintainer object), and fill into the form. For example, examine [SECIRIAN-MNT](https://git.dn42.dev/dn42/registry/src/branch/master/data/mntner/SECIRIAN-MNT):
+
+为了证明你的 ASN 所有权，请使用**你的** DN42 注册表 maintainer 文件中填写的公钥的对应私钥 对即将生成的请求进行签名，并填入表单。查看 [SECIRIAN-MNT](https://git.dn42.dev/dn42/registry/src/branch/master/data/mntner/SECIRIAN-MNT)：
+
+```yaml
+mntner:             SECIRIAN-MNT
+# ...
+auth:               ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMDcYqby4TnhKV6xGyuZUtxOmTtXjKYp8r+uCxbGph65 # [!code highlight]
+# ...
+```
+
+Each peer name identifies one machine under your ASN. Use a different name for each machine, and reuse that name for updates or deletion.
+
+每个 peer name 标识你的 ASN 中的一台机器。请为不同机器使用不同名称，并在更新或删除时指定对应名称。
+
+
+# Peering
+
+<div class="h-auto min-h-[65vh] py-8">
+  <Autopeer />
+</div>
+
+
+If you change a signed field, the challenge in the form becomes invalid. Request a new challenge, run the generated command, and paste the detached signature.
+
+如果你更改已签名的字段，表单中的应答验证码将变为无效。请请求一个新的应答验证码，重新运行生成的命令，并粘贴签名。
+
+---
+
+For an update, an empty endpoint keeps the current value. To remove the current endpoint, select **Clear the current endpoint**.
+
+在 `Update` 操作中，如果 `Endpoint` 为空，将保留当前值。若要移除当前端点，请选择 **Clear the current endpoint**。
+
+---
+
+The create response shows the actual WireGuard listen port. If another peer already uses the preferred port, the service increments the port number.
+
+创建响应会显示实际的 WireGuard 监听端口。如果另一个 peer 已经使用了首选端口，该服务会递增端口号。
+
+---
+
+# Agent-Friendly Peering - 智能体友好型对等连接
+
+
+Install the bundled [`nyaw-dn42-autopeer` skill](skills/nyaw-dn42-autopeer/SKILL.md) from GitHub:
+
+从 GitHub 安装 [`nyaw-dn42-autopeer` skill](skills/nyaw-dn42-autopeer/SKILL.md):
+
+```bash
+npx skills add oluceps/dn42-autopeer
+```
+
+Select your coding agent and installation scope when the CLI asks.
+The skill reads the live [OpenAPI specification](https://dn42.nyaw.xyz/api-docs/openapi.json), gets a single-use challenge, and prepares the signed request.
+Supply your ASN, peer name, public endpoint, and the path to a registered maintainer signing key.
+The agent can generate a WireGuard key pair locally and return the exact WireGuard and BGP settings from the API.
+Private keys stay on your system.
+
+和安装指引谈话直到安装完成。
+skill 将读取 [OpenAPI specification](https://dn42.nyaw.xyz/api-docs/openapi.json)，获取单次应答验证码，并准备签署请求。
+提供你的 ASN、peer 名称、公开端点，以及维护者签名私钥的路径。
+agent 会在本地生成一个 WireGuard 密钥对并从 API 返回确切的 WG 和 BGP 配置参数。
+私钥始终不离开你的系统。
+
+Example prompt:
+
+```text
+Use $nyaw-dn42-autopeer to peer AS4242421234 with Nyaw.
+Use peer name fra1 for this machine.
+My endpoint is 198.51.100.1:51820, and my registered SSH key is ~/.ssh/id_ed25519.
+Save the new WireGuard key pair under ./secrets/nyaw-peer/.
+```
+
+See [documentation](https://github.com/oluceps/dn42-autopeer#agent-native-peering).
+
+
+# API Documentation
+
+Automation tools must call `POST /api/challenges` before each peer change. A challenge cannot authorize a different operation or a second request.
+
+自动化工具在每次更改 peer 之前，必须调用 `POST /api/challenges`。一个应答验证码不能用于授权不同的操作，也不能用于第二次请求。
+
+Use these links to examine the request schemas and test the API:
+
+使用这些链接来检查请求模式并测试 API：
+
+- **[OpenAPI Specification](https://dn42.nyaw.xyz/api-docs/openapi.json)**: The raw OpenAPI v3 JSON specification to integrate with your clients.
+
+[Backend repo](https://github.com/oluceps/dn42-autopeer)
+
+# Manually
+
+## About My Network - 关于我的网络
+
+Below provides the necessary information to establish a peering connection with the SECIRIAN-AS (AS4242420291) network within DN42.
+
+以下提供了在 DN42 网络中与 SECIRIAN-AS (AS4242420291) 建立 Peering（对等连接）所需的必要信息。
+
+## Peering Requests
+
+If you would like to manually peer with me, please reach out via email at dn42@nyaw.xyz, or contact me on Matrix at @sec:nyaw.xyz, more contact info could be found in [info page](/me). When requesting a peering, please provide your ASN, node endpoint address, and WireGuard public key.
+
+如果您希望手动与我建立 Peering，请通过电子邮件联系 dn42@nyaw.xyz，或者通过 Matrix @sec:nyaw.xyz 联系我，其它联系方式可见 [博客信息页](/me)。在申请 Peering 时，请提供您的 ASN、节点端点地址以及 WireGuard 公钥。
+
+
+## Peering Requirements - Peering 要求
+
+To peer with my network, you must meet the following baseline requirements:
+
+- You must have a valid DN42 ASN and your registry contact information must be up to date.
+
+- You must support IPv6 and Multiprotocol BGP (MP-BGP).
+
+- You should implement Route Origin Authorisation (ROA) checks.
+
+要与我的网络建立 Peering，您必须满足以下基准要求：
+
+- 您必须拥有有效的 DN42 ASN，并且您的注册表联系信息必须保持最新。
+
+- 您必须支持 IPv6 以及多协议 BGP (MP-BGP)。
+
+- 建议您实施路由源授权 (ROA) 检查。
+
+## Supported Tunnel Types & BGP IPs - 支持的隧道类型与 BGP IP
+
+Autopeer creates WireGuard tunnels and uses deterministic IPv6 link-local addresses for BGP.
+
+- Configure `fe80::fcde:3243` as the Nyaw BGP neighbor address.
+- Configure your WireGuard interface with `fe80::{(ASN >> 16)}:{(ASN & 0xffff)}`.
+- For AS4242421234, your address is `fe80::fcde:35f2`.
+
+The create response returns both values.
+
+
+Autopeer 使用 WireGuard 隧道和确定性的 IPv6 链路本地地址建立 BGP 会话。
+
+- 在 BGP 配置中将 `fe80::fcde:3243` 作为 Nyaw 邻居地址。
+- 在你的 WireGuard 接口配置 `fe80::{(ASN >> 16)}:{(ASN & 0xffff)}`。
+- AS4242421234 的地址为 `fe80::fcde:35f2`。
+
+创建响应会返回这两个地址。
+
+
+
+## BGP Configuration & Route Filtering - BGP 配置与路由过滤
+
+My network applies strict ROA filtering to all received and exported routes. Any advertised route that does not have a corresponding valid route object in the DN42 registry will be dropped.
+
+我的网络会对所有接收和导出的路由进行严格的 ROA 过滤。任何在 DN42 注册表中没有对应有效路由对象的宣告路由都会被丢弃。
+
+## Network & Registry Information - 网络与注册表信息
+
+See [dn42 explorer](https://explorer.dn42.dev/?#/person/SECIRIAN-DN42)
+
+## Authentication Keys - 认证密钥
+
+For registry maintenance purposes, my maintainer object is secured with the following SSH keys. These can also be used to verify my identity:
+
+出于注册表维护的目的，我的 Maintainer 对象由以下 SSH 密钥进行安全保护。这些密钥也可用于验证我的身份：
+
+```
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMDcYqby4TnhKV6xGyuZUtxOmTtXjKYp8r+uCxbGph65
+sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIH+HwSzDbhJOIs8cMuUaCsvwqfla4GY6EuD1yGuNkX6QAAAADnNzaDoxNjg5NTQzMzc1
+sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIKzRx/a3GL2GZCTo/xU54m5eaRruWYErCAXnttg+YJFzAAAADnNzaDoxNzg5MDg4ODQz
+```

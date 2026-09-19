@@ -1,0 +1,248 @@
+---
+date: 2025-06-07T22:55:47.714940274+08:00
+description: 一个功能丰富的、可能也是目前最靠谱的nix配置框架
+categories:
+  - 记录
+tags:
+  - flake
+  - flake-parts
+  - nix
+  - nixos
+title: flake-parts 初见
+toc: true
+---
+
+本文假设读者对以下内容有基础认识：
+
++ nix 语法，见 Nix Pills [04](https://nixos.org/guides/nix-pills/04-basics-of-language.html),[05](https://nixos.org/guides/nix-pills/05-functions-and-imports.html)
++ flakes 的作用和语法，见 [nixos wiki](https://wiki.nixos.org/wiki/Flakes)
++ [nix module system](https://nix.dev/tutorials/module-system/index.html)
+
+讲述 flake-parts 所解决的问题和基础的使用方法。
+
+# 避免重复
+
+Nix Flakes 的形制如下所示：
+
+```nix
+{
+  inputs = ...;
+  outputs = {...}: {
+  # ...
+  };
+}
+```
+
+outputs 是一个函数，它的输出就是flake最后的`output`，我们可以通过在任意一个 flake 仓库使用 `nix flake show` 来观察：
+
+```console
+> nix flake show
+git+file:///home/my/nixos
+├───allSystems: unknown
+├───packages
+│   ├───aarch64-linux
+│   │   └───a omitted (use '--all-systems' to show)
+│   └───x86_64-linux
+│       └───a: derivation 'a package, declared in flake'
+├───debug: unknown
+#...
+```
+
+一部分 output attribute 如 `checks`, `packages`的形式[^1]类似 `checks.system.name`, `packages.system.name`，
+这部分的属性在flake声明的时候，通常采用如下方式：
+
+```nix
+# pure nix flake way
+{
+  outputs = {nixpkgs, ...}: {
+    packages.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.callPackage ./package.nix {
+      some-special-arg = ...;
+    };
+    packages.aarch64-linux.default = nixpkgs.legacyPackages.aarch64-linux.callPackage ./package.nix {
+      some-special-arg = ...;
+    };
+  };
+}
+```
+
+在 flake-parts 出现前大家通常使用 [flake-utils](https://github.com/numtide/flake-utils) 来简化对多架构声明的工作：
+
+```nix
+# flake-utils way
+{
+  outputs = {nixpkgs, flake-utils, ...}: flake-utils.lib.eachSystem ["x86_64-linux" "aarch64-linux"] (system: {
+    packages.default = nixpkgs.legacyPackages.${system}.callPackage = ./package.nix {
+      some-special-arg = ...;
+    };
+  });
+}
+```
+
+细心的小伙伴可能会发现，flake-utils 定义的 `eachSystem` 函数实际上就是一个简单的 `lib.genAttrs`，-utils 所带来的功能完全没有必要通过引入一个input来解决，
+而且它实际上带来了一些问题，例如你写坏了但是它**没有类型检查**，
+导致你的flake能 pass eval 但悄咪咪地坏了。此部分在[ayats的博客](https://ayats.org/blog/no-flake-utils)中亦有记载，这章节的一部分示例也来自这篇文章[^2]。
+
+
+当你开始使用 flake-parts，`perSystem`将代替这部分产生每个架构的配置的工作，并检查你写的东西是否合乎最基本的类型规定：
+
+```nix
+# -parts way
+{
+  outputs = inputs@{nixpkgs, flake-parts, ...}: flake-parts.lib.mkFlake {inherit inputs;} {
+    systems = [
+      "x86_64-linux"
+      "aarch64-linux"
+    ];
+
+    perSystem = {pkgs, system, ...}: {
+      packages.default = pkgs.callPackage ./package.nix {};
+
+      # ↓ flake-parts will reject this, hooray!
+      nixosConfigurations.nixos = ...;
+    };
+  };
+}
+```
+
+你要是问 `nixosConfigurations`<C>不需要对多个架构声明的、自身之内包含着架构的</C> 或者 `nixosModules`<C>作为定义了架构信息的 nixos 的一部分，架构将通过 `config` 或 `pkgs` 参数传入</C> 这类attribute怎么办？当然是直接放 `flake` 里面就好了：
+
+```nix
+# -parts way
+{
+  outputs = inputs@{nixpkgs, flake-parts, ...}: flake-parts.lib.mkFlake {inherit inputs;} {
+    systems = [ ];
+    perSystem = {pkgs, system, ...}: { };
+
+    flake = { nixosConfigurations.foo = { }; };
+  };
+}
+```
+
+`flake-parts.lib.mkFlake` 这个函数**最后**产生的配置和以上提到的 pure nix flake way 和 flake-utils way 的配置是等价的。
+
+`perSystem` 在功能上基本超越了 flake-utils 并额外提供了一定程度的类型安全。而这是 flake-parts 其中一个feature的一部分。
+
+还有一些零碎但是比较能提升幸福感的小功能，比如 `perSystem` 的函数输入中默认提供了一个 `self'`，你可以在 `perSystem` 中将 `self.packages.x86_64-linux.hello` 简写为 `self'.packages.hello` 等等。 
+
+
+# 模块化的flake
+
+nix 的模块系统[^3]声名远扬，一言概之其作用就是：
+
+1. `options` 定义选项，包括类型、默认值等
+2. `config` 写实际配置，连同 `options` 丢进 module system 经过计算合并等操作得出结果
+
+在 flake-parts 之前 nix flake 本身是没有 module 的，在flake toplevel定义的东西都只能遵循flake schema本身然后以flake的方式解析，
+例如你不能在 flake toplevel import 任何东西、定义任何option，最直观的影响就是你的 `nixosConfigurations`, `packages` 等等只能写在 `flake.nix` 中，
+然后写错了你自己也难以发现，因为没有 module system 和其能够附带的任何检查。
+
+这部分玩法比较多样，但熟悉nix module 的用户能够很快上手。通过 flake-parts 你可以像使用 nixos module 一样使用flake，通过在`flake.nix`中修改nix风味的配置项来定制它。可以参考 flake-parts Reference Documentation 那一节[^5]的应用，既然有了 module system 就可以进行更进一步的包装，关于它可以将一些功能的使用简化到什么程度，可参考nix-topology的文档[^4]。
+
+
+
+# 杂七杂八小功能
+
+## easyOverlay
+
+可以通过 `overlayAttrs` 来直接导出本地flake已经定义的packages来作为overlay outputs，节省了很多字数：
+
+### before
+
+```nix
+packages.x86_64-linux.foo =
+  (import inputs.nixpkgs {system = "x86_64-linux";}).callPackage ./foo.nix {};
+packages.x86_64-linux.bar =
+  (import inputs.nixpkgs {system = "x86_64-linux";}).callPackage ./bar.nix {};
+
+overlays.foo = prev: final: prev.callPackage ./foo.nix {};
+overlays.bar = prev: final: prev.callPackage ./bar.nix {};
+```
+
+### after
+
+```nix
+perSystem = {pkgs,...}: {
+  packages.foo = pkgs.callPackage ./foo.nix {};
+  packages.bar = pkgs.callPackage ./bar.nix {};
+}
+flake.overlayAttrs = config.packages;
+```
+
+不过这个特性可能将来会有变动。
+
+## partition
+
+[原文档](https://flake.parts/options/flake-parts-partitions.html?highlight=partition#opt-partitions)
+
+作用是拆分flake(A)的一部分input到另外一个独立的分区flake(B)，以便独立eval，
+在项目(A)被用户作为 flake input 导入使用时，
+避免一并引入flake(B) input的内容<C>在用户的flake lock中也不会出现flake(B) input的内容</C>，
+从使用上表现为可以只eval `packages` 而避免eval `check`之类develop相关的input。
+
+## 将 nixosModules 拆分
+
+
+可以用[更优雅的方式](https://flake.parts/define-module-in-separate-file.html)在flake定义的 `nixosModules.*` 中访问flake本身的attribute等。
+
+### before
+
+```nix
+outputs = {inputs, self, ...}: {
+
+    nixosModules.default = import ./nixos-module.nix self;
+
+    # packages.x86_64-linux.foo = #...
+}
+```
+
+```nix
+# ./nixos-module.nix
+self: # passed the outer flake self in
+{
+  config,
+  pkgs,
+  # config and pkgs, pass from nixos module, contains system archetecture info
+}: {
+  options.services.foo.package = mkOption {
+    type = lib.types.package;
+    default = self.packages.${pkgs.system}.default;
+    defaultText = lib.literalMD "`packages.default` from the foo flake";
+  };
+  config = { };
+}
+```
+
+### after
+
+```nix
+# Flake module
+{ withSystem, ... }: {
+  flake.nixosModules.default = { pkgs, ... }: {
+    imports = [ ./nixos-module.nix ];
+    services.foo.package = withSystem pkgs.stdenv.hostPlatform.system ({ config, ... }:
+      config.packages.default
+    );
+  };
+}
+```
+
+```nix
+# nixos-module.nix
+{ lib, config, ... }: {
+  options = {
+    services.foo = {
+      package = mkOption {
+        defaultText = lib.literalMD "`packages.default` from the foo flake";
+      };
+    };
+  };
+  config = { };
+}
+```
+
+
+[^1]: 见nixpkgs的部分[文档](https://github.com/NixOS/nix/blob/master/src/nix/flake-check.md#evaluation-checks)，以及未通过的rfc
+[^2]: https://ayats.org/blog/no-flake-utils
+[^3]: [nix module system](https://nix.dev/tutorials/module-system/index.html)
+[^4]: nix-topology 配置中 flake 与 flake-parts 的[对比](https://github.com/oddlama/nix-topology/blob/main/README.md?plain=1#L80-L147)
+[^5]: https://flake.parts/options/flake-parts.html

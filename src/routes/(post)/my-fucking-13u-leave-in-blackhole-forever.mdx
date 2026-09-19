@@ -1,0 +1,96 @@
+---
+date: 2026-09-14T15:40:00+08:00
+description: 续集，删除托管私钥的代价，AA钱包多链状态不同步的完美死锁案例
+categories:
+  - 记录
+tags:
+  - web3
+  - crypto
+  - 账户抽象
+title: 价值13U的AA跨链死锁实验
+toc: true
+---
+
+在[之前的一篇文章](/manufacture-a-error-base-wallet)中，我把 Coinbase Smart Wallet 链上的 `idx0`（官方托管公钥）给删了，成功将它从一个偷换概念的账户抽象钱包变成了一个只认我 Passkey 的错版纯自托管 AA 钱包。
+
+当时我还在结尾的后话里探讨了 AA 钱包跨链状态无法同步的隐患，万万没想到，回旋镖这么快就打到了我自己身上。
+
+# 幽灵资产
+
+起因是我突然发现，我这个错版钱包地址在 Polygon 链上竟然还有 13 刀的 USDT 和一点点 POL <C>之前测试的时候不知道什么时候打进去的，一直忘了</C>。
+因为 Base 和 Polygon 算得上是同宗同源的 EVM 链，地址也是完全一样的，我满心欢喜地打开网页端准备把它们 sell 掉。
+
+结果点击确认后，UI 百分百复现了一个极其敷衍的错误提示：`Unable to sign transaction, try again`。无论是 iOS 端还是 Web 端，换了所有注册上去的 passkey，全部复现。但是 Base 链和 ETH 链的交易却完全没问题。
+
+顺手看了下控制台，发现一片血红：
+
+```text
+api.wallet.coinbase.com/rpc/v3/scw/prepareReplayCall:1  Failed to load resource: the server responded with a status of 400
+Uncaught (in promise) t: failed to build replay user operation: failed to build replay user op: useroperation reverted: destination transaction reverted during cross-chain quote
+```
+
+Coinbase 后端的跨链 API 直接 400 报错了，而且伴随着一堆 401 和 403 的 CSP 错误。
+
+# 死因：CREATE2 与跨链 Quote
+
+结合控制台的 Payload 分析了一下，我的钱包在 Polygon 上其实**根本还没有部署**<C>反事实地址，只收了钱还没实例化</C>。
+
+在 AA 钱包的设计中，为了在所有 EVM 链上保持地址不变，依赖的是 `CREATE2` 操作码。而 `CREATE2` 的盐值（Salt）包含了 `initCode`，`initCode` 里又包含了调用 `CoinbaseSmartWalletFactory` 部署时的初始 `owners` 数组。
+
+当我在 Polygon 发起转账时，Coinbase 的前端向后端发送了 `prepareReplayCall`，试图让后端构建一个 `UserOperation`：**在 Polygon 上部署合约，并执行转账**。
+但 Coinbase 后端在做跨链 Quote 预演的时候直接 Revert 了，原因很简单：我在 Base 链上已经把 Coinbase 的服务器权限（`idx0`）给超度了。后端读取不到它该有的权限，导致跨链状态机的同步逻辑直接罢工。
+
+# 探索
+
+既然官方的 Backend 已经完全废了，我想尝试能不能绕过它。
+
+查阅了一下 CoinbaseSmartWallet 的源码，我发现了一个非常友好的“后门”：
+```solidity
+function execute(address target, uint256 value, bytes calldata data) external payable virtual onlyEntryPointOrOwner
+```
+它的 `execute` 方法带有一个 `onlyEntryPointOrOwner` 修饰符，这意味着，如果我能用我的那组 **13 phases 恢复短语** 导出一个 EOA 账号（因为这个账号也是 Owner 之一），我就可以直接连接 Polygonscan，用 EOA 身份调用 `execute` 把钱转走，完全抛弃 UserOp 和 EntryPoint。
+
+计划非常完美：
+1. 找出当年在 Base 链建号时的原始 `owners` 数组。
+2. 拿个有 POL 的普通钱包，去 Polygon 上的 Factory 手动调用 `createAccount(owners, 0)` 把钱包激活。
+3. 把恢复短语导入 MetaMask，直接调用 Polygonscan 上的 `execute` 把钱顺走。
+
+# 绝望的 initCode
+
+为了拿到初始的 `owners` 数组，我去看了看 Jiffyscan 上这笔交易的 JSON 结构。
+
+```json
+{
+  "sender": "0x2F6b3F6A8f022813Fa8784142BA6590420bbdFb5",
+  "nonce": "0",
+  "initCode": "0xba5ed110efdba3d005bfc882d75358acbbb858423ffba36f00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000...
+```
+
+对着 ABI 剥开 `initCode`，我提取出了原始的 `owners` 数组。然而，解码出来的两个 Owner 值给我吓死了：
+
+1. `0x0000...d59a4fa4999513a003c235189b6dfb5e610ff4a8` <C>这显然是 Coinbase AWS Nitro Enclave 的服务器公钥，也就是那个死掉的 idx0</C>
+2. `0xb818df8cfe7902724f166ed0a1daa38500eb7262e15b0a8c44ecad456533d011` <C>一个 32 字节的未知特征值，也许是某个内部设备指纹</C>
+
+这里面根本没有我的 13 phases 恢复短语，也没有我的 Passkey。
+
+我突然想起了上一篇文章中我写下的话：“*在过程中我发现可以支付 Gas 费触发智能合约然后**添加**一个 13 phases 的恢复码*”。
+
+是的，由于我的恢复短语和 Passkey 都是在钱包“创世”之**后**才添加的，它们根本就不在初始的 `owners` 数组里，全部完蛋，全剧终。
+
+# 完美的死锁
+
+这可以说是一个在密码学上无解的 Catch-22 死局，
+
+- 想要在 Polygon 上拿回这笔钱，我必须在 Polygon 上部署这个合约。
+- 为了保证地址一致，部署时必须且只能传入 `[idx0, 未知idx1]`。
+- 一旦手动部署成功，Polygon 上的崭新合约**只认 Coinbase 的 `idx0`**，它根本不认识我后来才加的 Passkey。
+- 能够打破僵局的唯一方法，是让 Coinbase 用 `idx0` 发一笔交易，把我的 Passkey 同步到 Polygon 上。
+- 但是，因为我在 Base 上强行删除了 `idx0`，Coinbase 后端判定我的账户已经损坏，直接拒绝为我提供任何签名服务。
+
+至此线索全部断裂。13 刀的 USDT 依然安静地躺在 Polygon 链上那个属于我、又不属于我的反事实地址里，大概永远拿不出来了。
+
+这算是我为 Web3 账户抽象（ERC-4337）极其割裂的多链状态同步机制缴纳的一笔不算昂贵但十分深刻的学费。在 Keystore Rollup 这种真正的大一统方案落地之前，折腾多链 AA 钱包真的要三思而后行。
+
+其实在开始自己折腾之前我询问过 Coinbase 的客服 <C>还钱！</C>，它们的答复是：「注意哦！我们是自托管钱包」「还是要提醒你注意哦！我们是自托管钱包」，叭叭的跟谁不知道似的，一个账户抽象钱包还给自己标榜上了，纯偷换概念。
+
+另外这种半成熟的反早期 Web3 精神的方案能被端上桌，还是 Coinbase 这种大厂，最后做出这么一坨吞币的玩意儿，这个行业大抵也是要完蛋了。
