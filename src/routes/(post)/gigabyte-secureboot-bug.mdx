@@ -1,0 +1,54 @@
+---
+date: 2026-04-24T21:23:44.315238296+08:00
+description: 技嘉B850的BIOS超难用!
+categories:
+  - 吐槽
+tags:
+  - 技嘉
+  - bug
+title: GIGABYTE B850 SECUREBOOT DAMN BUG
+---
+
+GIGABYTE 的 B850M 芯片组 BIOS 有着血妈难用的 user-mode SecureBoot 配置方式，当你需要 enroll 用户自己的CA的时候，必须确保 BIOS 里的 secureboot 配置的初始状态是secureboot处于关闭状态
+
+然后严格进行以下步骤：
+
+- 将 secureboot 改为开启
+- reset factory keys，并No掉弹出来的让你saving并重启的弹框  
+- reset to setup mode, 并No掉弹出来的让你saving并重启的弹框
+- 观察最顶上 Secureboot 的 Value 变成了 (Setup)
+- 这时不能saving reset，必须去 boot tab 那里从 boot option 直接 enter 你的系统，然后在系统里面才能观察到处于 setup mode
+- 进入系统后立即enroll，enroll完用 `bootctl status` 查看会发现又变成了disable，纯折磨人的，但是别担心，这时候再重启回BIOS然后什么都不用做直接开启SecureBoot就好了，enroll其实已经完成。
+
+根本就是反逻辑的操作，每一步都是大坑。我一开始天真地以为最直觉最普通的<C>which和华硕超微什么什么一样地</C>enable一下再reset to setup重启就行，结果发现重启居然直接denied我的自签名的efi启动；还试了改成disable再重启回bios再enable再reset setup再启动；从disable改成enable并reset setup再直接回boot options启动；等等等等，
+
+Disable secureboot，Enable secureboot, Reset to setup mode, Reset factory keys, boot from boot options 五个items排列组合弄了半个晚上，太蠢了。啊啊啊啊啊！！
+
+另外关于 [Measured boot](https://github.com/nix-community/lanzaboote/blob/master/docs/how-to-guides/enable-measured-boot.md)，如果遇到[问题](https://github.com/systemd/systemd/issues/40381) 将 TPM mode 从 ASP fTPM 切换到 Pluton 和从 Pluton fTPM 切换回来俩都试试可能有效果，因为这个硬件是有点不规范，只能说有变化而且目前来看有效吧。。
+
+在 NixOS lanzaboote measuredboot (pcr 4+0+7) 的场景下，上述BIOS步骤中的最后一步换成在系统中
+
+```
+# measuredboot 相关nix配置见官方文档
+sudo rm /var/lib/systemd/pcrlock.json
+sudo rm -rf /var/lib/pcrlock.d/
+sudo systemd-cryptenroll --wipe-slot=tpm2 /dev/nvmexxxx # 以上三步清除原来的系统中的pcr记录和luks中存储的tpm密钥，取决于你设置的directory。如果第一次配置则不用
+
+sudo sbctl enroll-keys -m # enroll 带微软密钥的凭据到tpm
+
+# 重启进入bios 开启自动disable的secureboot
+
+# 然后进行一次 nixos-rebuild boot
+# ...
+
+# enroll 产生的 pcrlock
+sudo systemd-cryptenroll \
+        --tpm2-device=auto \
+        --tpm2-pcrlock=/var/lib/systemd/pcrlock.json \ # 这行加不加都无所谓，因为它新版本会 `Automatically using pcrlock policy '/var/lib/systemd/pcrlock.json'.`
+        /dev/xxxx
+
+
+# 理想状态下这时候再次执行 nixos-rebuild 不会报错
+# cryptenroll 需要在secureboot已经开启的情况下enroll，以固定sb开启的状态。
+
+```

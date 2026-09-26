@@ -1,0 +1,7 @@
+{
+  "useRustVersion": "0.0.38",
+  "framework": "SolidJS",
+  "packageManager": "pnpm",
+  "gitignoreCompiled": true,
+  "typeScript": true
+}
