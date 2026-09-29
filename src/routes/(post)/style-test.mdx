@@ -1,0 +1,101 @@
+---
+date: 2025-02-10T22:04:33.024934795+08:00
+description:
+categories:
+  - 记录
+draft: true
+title: style-test
+---
+
+> 电幕上的声音仍在没完没了地报告俘虏、战利品、杀戮的故事，但是外面的欢呼声已经减退了一些。服务员们又回去工作了。温斯顿飘飘然坐在那里，也没有注意到酒杯里又斟满了酒。他现在不在跑，也不在叫了。他又回到了友爱部，一切都已原谅，他的灵魂洁白如雪。
+
+下面这个预期在支持houdini paintWorklet的浏览器上是G2连续的圆角，有自动fallback：
+
+<div class="h-10 w-20 squircle rounded-md bg-sprout-300"/>
+
++ `someloooooooooooooooongtexthere--herehereherehereherehereherehereherehereherehereherehereherehere`
+
+```
+someloooooooooooooooongtexthere--herehereherehereherehereherehereherehereherehereherehereherehere`
+```
+
+# Title
+## Title2
+### Title3
+#### Title4
+##### Title5
+###### Title6
+
+# 标题
+## 标题2
+### 标题3
+#### 标题4
+##### 标题5
+###### 标题6
+
+
+<div class="flex">this is typst show: $ L = 1/2 rho v^2 S C_L $</div>
+and
+
+```math
+C_L &= 1 / 2 rho v^2 A C_D
+&= 1 / 2 rho v^2 A C_D
+```
+
+```abc
+X: 1
+T: Nokia Tune
+M: 3/4
+L: 1/8
+K: Amaj
+| e'd' f2 g2 | c'b d2 e2 | ba c2 e2 | a6 |
+```
+
+```yaml
+keys:
+  - &admin_bob age12zlz6lvcdk6eqaewfylg35w0syh58sm7gh53q5vvn7hd7c6nngyseftjxl
+  - &server_nosaxa age1rgffpespcyjn0d8jglk7km9kfrfhdyev6camd3rck6pn8y47ze4sug23v3
+creation_rules:
+  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      age:
+      - *admin_bob
+      - *server_nosaxa
+```
+
+word highlight
+```ts
+// [!code word:Hello]
+const message = 'Hello World'
+console.log(message) // prints Hello World
+```
+
+diff
+```ts
+console.log('hewwo') // [!code --]
+console.log('hello') // [!code ++]
+console.log('goodbye')
+```
+
+
+highlight
+```ts
+console.log('Not highlighted')
+console.log('Highlighted') // [!code highlight]
+console.log('Not highlighted')
+```
+
+focus
+```ts
+console.log('Not focused');
+console.log('Focused') // [!code focus]
+console.log('Not focused');
+```
+
+err/warn
+```ts
+console.log('No errors or warnings')
+console.error('Error') // [!code error]
+// some
+console.warn('Warning') // [!code warning]
+```
