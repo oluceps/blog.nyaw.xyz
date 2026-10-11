@@ -1,0 +1,150 @@
+---
+date: 2024-09-24T22:55:15.362367717+08:00
+categories:
+  - 记录
+tags:
+  - matrix
+  - bridge
+  - mautrix
+  - conduit
+  - telegram
+description: 使用 mautrix 桥接 telegram 和 conduit
+title: mautrix telegram bridge conduit
+---
+
+# Prerequisits
+
++ 有一个自己的 matrix server
+
+# 目标
+
+大概就是给已有的 telegram room 创建 matrix room 镜像，然后以自己的matrix账号发信可以在telegram用对应的telegram账号发信[^1]。
+
+应该是可以实现的吧？本文边实践边记录的。
+
+# 配置
+
+[source](https://github.com/oluceps/nixos-config/blob/trival/repack/mautrix-telegram.nix)
+
+参考了nickcao的[配置](https://github.com/NickCao/flakes)
+
+```nix title="nixos module"
+systemd.services = {
+  mautrix-telegram.serviceConfig.RuntimeMaxSec = 86400;
+};
+services.mautrix-telegram = {
+  enable = true;
+  environmentFile = config.age.secrets.mautrix-tg.path;
+  serviceDependencies = [ "conduit.service" ];
+  settings = {
+    homeserver = {
+      address = "http://127.0.0.1:${toString config.services.matrix-conduit.settings.global.port}";
+      domain = config.services.matrix-conduit.settings.global.server_name;
+    };
+    appservice = {
+      address = "http://127.0.0.1:21389";
+      database = "postgres:///mautrix-telegram?host=/run/postgresql";
+      hostname = "127.0.0.1";
+      port = 21389;
+      provisioning.enabled = false;
+    };
+    bridge = {
+      displayname_template = "{displayname}";
+      public_portals = true;
+      delivery_error_reports = true;
+      incoming_bridge_error_reports = true;
+      bridge_matrix_leave = false;
+      relay_user_distinguishers = [ ];
+      create_group_on_invite = false;
+      animated_sticker = {
+        target = "webp";
+        convert_from_webm = true;
+      };
+      state_event_formats = {
+        join = "";
+        leave = "";
+        name_change = "";
+      };
+      permissions = {
+        "*" = "relaybot";
+        "@sec:nyaw.xyz" = "admin";
+      };
+      relaybot = {
+        authless_portals = false;
+      };
+    };
+    telegram = {
+      # 抄 tdesktop 的
+      api_id = 611335;
+      api_hash = "d524b414d21f4d37f08684c1df41ac9c";
+      device_info = {
+        app_version = "3.5.2";
+      };
+      force_refresh_interval_seconds = 3600;
+    };
+    logging = {
+      loggers = {
+        mau.level = "WARNING";
+        telethon.level = "WARNING";
+      };
+    };
+  };
+};
+```
+
+运行一次 mautrix server 之后 在 `/var/lib/mautrix-telegram` 会生成一个 `telegram-registration.yaml`。把 `as_token` `hs_token` 填回配置或作为环境变量导入mautrix-tg。
+
+
+```
+# mautrix-telegram 的环境变量，示例，一下两个是从telegram-registration.yaml取的
+MAUTRIX_TELEGRAM_APPSERVICE_AS_TOKEN=tQSnxXhRBG726zqmtzt21DS7PDNR4LMIO3aI6ncGNjoXJZi1YX1Du2m5v4mV8iwB
+MAUTRIX_TELEGRAM_APPSERVICE_HS_TOKEN=KtAGywnou2F/q7j2emtmGKZOeReO7xDg1HMmWAgVcKdg8neVBIMCPj5pjo2sr33v
+
+# 以下是自己生成的
+MAUTRIX_TELEGRAM_DOUBLE_PUPPET_SECRETS=json::{"nyaw.xyz":"as_token:VVEazouQjhWoL4jRVtNimKFrUTkH/7CK6H"}
+
+# 以下是从tg拿的，作为userbot的登录凭据
+MAUTRIX_TELEGRAM_TELEGRAM_BOT_TOKEN=1234578:YYRYT7t53EjiTGsX4WReGfEbkqgRJ8CII
+```
+
+再将 telegram AppService 注册至实例，conduit 的话在 admin room 里面操作，其余见官方教程[^2]。
+
+我的操作方式：
+
+````
+@conduit@nyaw.xyz appservices register
+```
+</var/lib/mautrix-telegram/telegram-registration.yaml 的内容>
+```
+````
+
+然后注册doublepuppet appservice[^3]
+
+````
+@conduit@nyaw.xyz appservices register
+```
+# The ID doesn't really matter, put whatever you want.
+id: doublepuppet
+# The URL is intentionally left empty (null), as the homeserver shouldn't
+# push events anywhere for this extra appservice. If you use a
+# non-spec-compliant server, you may need to put some fake URL here.
+url:
+# Generate random strings for these three fields. Only the as_token really
+# matters, hs_token is never used because there's no url, and the default
+# user (sender_localpart) is never used either.
+as_token: VVEazouQjhWoL4jRVtNimKFrUTkH/7CK6H
+hs_token: randomstring
+sender_localpart: randomstring
+# Bridges don't like ratelimiting. This should only apply when using the
+# as_token, normal user tokens will still be ratelimited.
+```
+````
+
+注册成功后在自己的 matrix client 私聊 `@telegrambot:domain.com` 再发help, 查看后续攻略。
+
+可以直接对其发送 `login` 登陆 telegram 账号，使其作为 userbot 来辅助 doublepuppet 和群组消息同步。
+到达基本使用的步骤基本就这些，但是文档一大堆东西混在一起混乱不堪，令人费解。
+
+[^1]: https://docs.mau.fi/bridges/general/double-puppeting.html
+[^2]: https://docs.mau.fi/bridges/general/registering-appservices.html
+[^3]: https://docs.mau.fi/bridges/general/double-puppeting.html

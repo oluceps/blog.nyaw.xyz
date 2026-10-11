@@ -1,0 +1,221 @@
+---
+date: 2024-12-17T00:51:17.894870858+08:00
+description: 虽然说是canary的但是对yk5适用
+categories:
+  - 记录
+tags:
+  - 证书
+title: Canokey Canary 与权威证书机构
+toc: true
+---
+
+> 以nixos环境为例。
+
+分为三个部分，
+
+1. 生成 CA root key 和 root crt，并(可选)导入硬件密钥A
+2. 在硬件密钥B上生成cert, 并生成证书签名请求(csr)
+3. 使用第一步生成的 root CA 签名第二步生成的csr，以生成crt
+4. 在硬件密钥B上导入第三步生成的crt，完成
+
+硬件密钥A不是必须，B上储存的证书是作为Intermediate CA存在，第一步的CA可以不用硬件密钥生成，并妥善保存。
+
+
+# 准备
+
+需要openssl加载 `pkcs11` engine。添加以下包到环境:
+
+```nix
+(openssl.override {
+              conf = pkgs.writeText "openssl.conf" ''
+                openssl_conf = openssl_init
+                [openssl_init] 
+                engines = engine_section
+                ssl_conf = ssl_module 
+                [engine_section] 
+                pkcs11 = pkcs11_section 
+                [pkcs11_section] 
+                engine_id = pkcs11 
+                dynamic_path = ${pkgs.libp11}/lib/engines/libpkcs11.so 
+                MODULE_PATH = ${pkgs.opensc}/lib/opensc-pkcs11.so
+                init = 0 
+              '';
+            })
+```
+
+正确加载的结果为：
+
+```bash
+> openssl engine -t
+(rdrand) Intel RDRAND engine
+     [ available ]
+(dynamic) Dynamic engine loading support
+     [ unavailable ]
+(pkcs11) pkcs11 engine
+     [ available ]
+```
+
+# 生成 root CA
+
+*-ca.conf 文件可以从[这里](https://github.com/samngms/yubikey-ca)找到 或见[附录](#附录)
+
+```bash
+$ openssl req -x509 -newkey ed25519 -days 10000 -config root-ca.conf -keyout root.key -out root.crt
+```
+
+导入key（可选）
+
+```bash
+# import key and certificate into yubike, in here I use slot 9c, which is Digital Signature
+$ yubico-piv-tool -a import-key -s 9c -i root.key
+$ yubico-piv-tool -a import-certificate -s 9c -i root.crt
+$ yubico-piv-tool -a status -s 9c
+# to view the content of the ca-cert
+$ openssl x509 -text -in root.crt
+```
+
+# Intermediate CA & CSR 生成
+
+生成公钥
+
+```bash
+$ c(y)kman piv keys generate -a ED25519 --pin-policy ONCE --touch-policy CACHED 9c ./9c.pem
+```
+
+生成签名请求
+
+```bash
+$ yubico-piv-tool -a verify-pin -a request-certificate -s 9c -S '/CN=digi_sign/OU=test/O=nyaw.xyz/' -i
+ ./9c.pem -o csr.pem -r canokey
+```
+
+# 用 ROOT CA 签名
+
+<Emph type="warn">截止 17 Dec 02:29:29 canokey canary 3.0.0 于此方案存在问题，CSR被签名会出现报错且不成功，见[discuss](https://github.com/canokeys/canokey-product/discussions/28)。Yubikey 5 NFC 经测试没有问题。</Emph>
+
+不存在硬件密钥A的情况，使用文件CA签：
+
+```bash
+$ openssl x509 -CAkey root.key -CA root.crt -CAcreateserial -req -days 3650 -in csr.pem -out inter.crt -extfile root-ca.conf -extensions inter_ca
+```
+
+使用密钥A, PIV签：
+
+```bash
+$ openssl x509 -engine pkcs11 -CAkeyform engine -CAkey id_2 -sha256 -CA root.crt -CAcreateserial -req -days 3650 -extfile root-ca.conf -extensions inter_ca -in inter.csr -out inter.crt
+```
+
+
+---
+
+附 canokey canary 3.0.0 的报错:
+
+```
+Warning: CSR self-signature does not match the contents
+Certificate request self-signature did not match the contents
+40172E747B7E0000:error:06880006:asn1 encoding routines:ASN1_item_verify_ctx:EVP lib:crypto/asn1/a_verify.c:218:
+40172E747B7E0000:error:06880006:asn1 encoding routines:ASN1_item_verify_ctx:EVP lib:crypto/asn1/a_verify.c:218:
+```
+
+# 导入Intermediate CA证书
+
+```bash
+yubico-piv-tool -a import-certificate -s 9c -i inter.crt
+```
+
+
+---
+
+# 附录
+
+```
+# root-ca.conf
+[req]
+x509_extensions=root_ca
+distinguished_name=req_distinguished_name
+prompt=no
+
+[req_distinguished_name]
+O=Milieuim
+CN=Milieuim Root CA
+
+# see https://www.openssl.org/docs/manmaster/man5/x509v3_config.html
+[root_ca]
+subjectKeyIdentifier=hash
+# the root CA has pathlen:1, inter CA has pathlen:0
+basicConstraints=critical,CA:true,pathlen:1
+keyUsage=critical,keyCertSign,cRLSign
+
+# sign intermedia CA cert with the following extension, the only diff is pathlen
+[inter_ca]
+subjectKeyIdentifier=hash
+# the root CA has pathlen:1, inter CA has pathlen:0
+basicConstraints=critical,CA:true,pathlen:0
+keyUsage=critical,keyCertSign,cRLSign
+```
+
+
+```
+# inter-ca.conf
+
+[req]
+req_extensions=inter_ca
+distinguished_name=req_distinguished_name
+prompt=no
+
+[req_distinguished_name]
+O=Milieuim
+CN=Milieuim Intermediate CA 0
+
+# see https://www.openssl.org/docs/manmaster/man5/x509v3_config.html
+[inter_ca]
+subjectKeyIdentifier=hash
+basicConstraints=critical,CA:true,pathlen:0
+keyUsage=critical,keyCertSign
+
+
+# signing server certs with the following extensions
+[server_cert]
+subjectKeyIdentifier=hash
+basicConstraints=critical,CA:false
+keyUsage=critical,digitalSignature,keyEncipherment
+extendedKeyUsage=serverAuth,clientAuth
+
+
+[client_cert]
+subjectKeyIdentifier=hash
+basicConstraints=critical,CA:false
+keyUsage=critical,digitalSignature,keyEncipherment
+extendedKeyUsage=clientAuth,emailProtection
+
+[code_signing_cert]
+subjectKeyIdentifier=hash
+basicConstraints=critical,CA:false
+keyUsage=critical,digitalSignature
+extendedKeyUsage=codeSigning
+```
+
+顺便，如果要签署终端server域名证书，参考：
+
+```
+# domain.conf
+
+[ req ]
+req_extensions = v3_ext
+distinguished_name = dn
+prompt = no
+default_md = sha256
+
+[ dn ]
+CN = *.nyaw.xyz
+
+[ v3_ext ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @subject_alt_name
+extendedKeyUsage = serverAuth, clientAuth
+
+[subject_alt_name]
+DNS.1 = nyaw.xyz
+DNS.2 = *.nyaw.xyz
+```
