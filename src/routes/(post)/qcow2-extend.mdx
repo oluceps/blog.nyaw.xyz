@@ -1,0 +1,76 @@
+---
+title: 预安装镜像的根扩容
+date: '2023-07-05T18:22:05.000Z'
+draft: true
+tags:
+- virt
+- qemu
+categories:
+- 记录
+---
+
+(担心哪天忘了 先水一篇
+
+qemu-nbd 是 QEMU 的一个工具，它允许在主机上将磁盘镜像文件挂载为网络块设备（Network Block Device，NBD）。它使您能够通过网络访问磁盘镜像，就像访问本地块设备一样。
+
+安装 `qemu-utils` 并增大块设备体积
+
+```sh
+> nix-shell -p qemu-utils
+~ ❄️  impure shell
+> qemu-img resize IMAGE_PATH +100G
+```
+
+挂载磁盘镜像
+
+```sh
+doas qemu-nbd -c /dev/nbd0 /var/lib/libvirt/images/lunar-server-cloudimg-amd64.img
+```
+
+设备信息
+
+```sh
+~ ❄️  impure shell
+> doas fdisk -l
+...
+Disk /dev/nbd0: 103.5 GiB, 111132278784 bytes, 217055232 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: gpt
+Disk identifier: 7E5BA652-979F-46D6-88EE-4889F0F1BBC1
+
+Device        Start     End Sectors  Size Type
+/dev/nbd0p1  227328 7339998 7112671  3.4G Linux filesystem
+/dev/nbd0p14   2048   10239    8192    4M BIOS boot
+/dev/nbd0p15  10240  227327  217088  106M EFI System
+
+Partition table entries are not in disk order.
+```
+
+上文中`/dev/nbd0p1`为rootfs, 把它用新增的磁盘空间弄大就行了，但如果新增的空间和rootfs中间隔了其它分区，需要把其它分区往后挪再resize，这样的话由于改变了分区起始位置，操作系统可能会认不出设备从而无法启动，需要另外挂载rootfs后手工修改fstab
+
+```
+root in /home/riro ❄️  impure shell 5s
+> gparted /dev/nbd0
+GParted 1.5.0
+configuration --enable-online-resize
+libparted 3.6
+```
+
+![1](20230706021418.png)  
+ubuntu这块prebuild镜像还挺好的 rootfs放在最后面了，不需要做额外的改动
+
+![2](20230706021453.png)  
+拖到最大就好
+
+```
+@ubt-lunar ~> df
+Filesystem     1K-blocks    Used Available Use% Mounted on
+tmpfs            3182176    1040   3181136   1% /run
+/dev/vda1      105036532 3146236 101873912   3% /
+tmpfs           15910864       0  15910864   0% /dev/shm
+tmpfs               5120       0      5120   0% /run/lock
+/dev/vda15        106858    6182    100677   6% /boot/efi
+tmpfs            3182172       4   3182168   1% /run/user/1000
+```
