@@ -1,0 +1,110 @@
+---
+date: '2022-09-05T16:58:43.000Z'
+draft: false
+title: canokey nrf52 小试
+tags:
+- 硬件密钥
+- 安全
+categories:
+- 记录
+---
+
+canokey出了一个nrf52的支持，不过作正经用途还是不能用这个，安全性自然也比不上商业产品。
+
+[项目链接](https://github.com/canokeys/canokey-nrf52)
+
+[bootloader](https://github.com/adafruit/Adafruit_nRF52_Bootloader)
+
+```nix
+with import <nixpkgs> { };
+pkgs.stdenv.mkDerivation {
+  name = "envForCanokey";
+  nativeBuildInputs =
+    let
+      mach-nix = import
+        (builtins.fetchGit {
+          url = "https://github.com/DavHau/mach-nix";
+          ref = "refs/tags/3.5.0";
+        })
+        { };
+    in
+    [
+      #    nrf-command-line-tools
+      (
+        mach-nix.mkPython {
+          requirements = ''
+            adafruit-nrfutil
+            intelhex
+
+          '';
+        }
+      )
+      gcc-arm-embedded
+      cmake
+      pkg-config
+      newlib-nano
+      pyocd
+    ];
+  buildInputs = [
+    zeromq
+    newlib-nano
+    nrf5-sdk
+  ];
+}
+```
+
+[nrf5_sdk](https://www.nordicsemi.com/Products/Development-software/nRF5-SDK/Download#infotabs)
+
+
+![Pasted image 20221130221923.png](20221130221923.png)  
+![Pasted image 20221130221942.png](20221130221942.png)  
+![Pasted image 20221130221950.png](20221130221950.png)  
+
++ Click on the ‘+’ next to each download you want, and we’ll .zip them into one archive for you.  
+unzip to `canokey-nrf52/nrf_sdk`  
+
+![Pasted image 20221130222344.png](20221130222344.png)
+
+```
+ export NRF5_SDK_DIR=/home/riro/Projects/canokey-nrf52/nrf_sdk/nRF5_SDK_17.1.0_ddde560
+```
+
+Create & enter ./build dir
+
+```
+ls /nix/store | rg gcc-arm-embedded
+```
+
+![Pasted image 20221130222716.png](20221130222716.png)  
+replace path in:
+
+```
+$ cmake -DCROSS_COMPILE=<path-to-toolchain>/bin/arm-none-eabi- \
+    -DCMAKE_TOOLCHAIN_FILE=../toolchain.cmake \
+    -DCMAKE_BUILD_TYPE=Release ..
+```
+
+finally seen as:
+
+```
+$ cmake -DCROSS_COMPILE=/nix/store/5kvc19hsy58fba2jzl4d06x7zz9l3jnn-gcc-arm-embedded-10.3.1/bin/arm-none-eabi- \
+    -DCMAKE_TOOLCHAIN_FILE=../toolchain.cmake    \
+    -DCMAKE_BUILD_TYPE=Release ..
+```
+
+```
+$ nrfutil pkg generate --hw-version=52 --sd-req=0 --application-version=1 --application-version=1 --application=canokey.hex --key-file opensk/opensk.key canokey_signed.zip
+```
+
+```
+nrfutil dfu usb-serial --package=canokey_signed.zip -p /dev/ttyACM0
+```
+
+```
+./deploy.py --board=nrf52840_dongle_dfu --programmer=nordicdfu --no-app --clear-storage
+```
+
+deploy complete.
+
+
+<Emph type="warn">之前刷过OpenSK之类其它软件的可能需要使用调试器清除全部缓存，再重新刷bootloader进行全部步骤。不然canokey刷入后初始化会失败。</Emph>

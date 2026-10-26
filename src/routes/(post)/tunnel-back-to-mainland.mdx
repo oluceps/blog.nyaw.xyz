@@ -1,0 +1,294 @@
+---
+date: 2025-09-18T21:10:18.382414015+08:00
+categories:
+  - 记录
+toc: true
+tags:
+  - proxy
+  - VPN
+  - network
+description: including AI-generated content
+title: Tunneling Back to Mainland
+---
+
+This guide details how to route traffic from a server abroad through a home network in mainland China. This allows you to use your home IP address for specific applications running on the foreign server.
+
+Here is our setup:
+
+**Host A:**
+
+  + Located in China.
+  + Behind a restrictive NAT (NAT traversal is not possible).
+  + WAN IP: `10.255.0.1` (Internal IP from the ISP(me)).
+  + WireGuard IP: `10.10.10.1`.
+
+**Host B:**
+
+  + Publicly accessible IP address `<Host B IP>`.
+  + WireGuard IP: `10.10.10.2`.
+
+On both hosts, IP forwarding is enabled: `net.ipv6.conf.all.forwarding` and `net.ipv4.ip_forward` are set to `1`.
+
+The goal is to establish a tunnel to Host B. Traffic entering this tunnel will be routed to Host A and exit from its network, effectively using Host A's IP address.
+
+Due to the Great Firewall (GFW), the overlay network (WireGuard) must be built on top of an anti-censorship underlay tunnel. For this purpose, we'll use **Hysteria2**, as its client supports the necessary port forwarding.
+
+-----
+
+# Step 1: Build the Hysteria2 Underlay Tunnel
+
+First, we need to create a secure and robust tunnel to bypass censorship.
+
+## Generate a CA and Sign the Server Certificate
+
+We need to generate a self-signed certificate for the Hysteria2 server using Host B's public IP address.
+
+On **Host B**, run the following script:
+
+```sh
+#!/bin/sh
+
+# Replace with Host B's actual public IP
+ip="<Host B IP>"
+
+# Generate the Certificate Authority (CA)
+openssl genrsa -out hysteria.ca.key 2048
+openssl req -new -x509 -days 3650 -key hysteria.ca.key -subj "/CN=Hysteria Root CA" -out hysteria.ca.crt
+
+# Generate the server key and certificate signing request (CSR)
+openssl req -newkey rsa:2048 -nodes -keyout hysteria.server.key -subj "/CN=$ip" -out hysteria.server.csr
+
+# Sign the server certificate with our CA, including the IP in the Subject Alternative Name
+openssl x509 -req -extfile <(printf "subjectAltName=IP:$ip") -days 3650 -in hysteria.server.csr -CA hysteria.ca.crt -CAkey hysteria.ca.key -CAcreateserial -out hysteria.server.crt
+```
+
+The files `hysteria.ca.crt`, `hysteria.server.crt`, and `hysteria.server.key` will be needed later.
+
+## Set Up the Hysteria2 Server
+
+On **Host B**, create the Hysteria2 server configuration:
+
+```yaml
+# /etc/hysteria/config.yaml
+listen: :4432
+tls:
+  cert: /home/debian/hysteria.server.crt # The server certificate generated in the previous step
+  key: /home/debian/hysteria.server.key  # The server key generated in the previous step
+auth:
+  type: userpass
+  userpass:
+    <USERNAME>: <PASSWORD> # Replace with your own credentials
+quic:
+  maxIncomingStreams: 8192
+ignoreClientBandwidth: true
+```
+
+## Implement Port Hopping
+
+To make the connection more resilient, we can use [port hopping](https://v2.hysteria.network/docs/advanced/Port-Hopping/). Add the following `nftables` rule on **Host B** to redirect traffic from a wide range of UDP ports to the Hysteria2 server port.
+
+```nft
+define INGRESS_INTERFACE="eth0" # Your WAN interface
+define PORT_RANGE=20000-50000
+define HYSTERIA_SERVER_PORT=4432 # Hysteria's listening port
+
+table inet hysteria_porthopping {
+  chain prerouting {
+    type nat hook prerouting priority dstnat; policy accept;
+    iifname $INGRESS_INTERFACE udp dport $PORT_RANGE counter redirect to :$HYSTERIA_SERVER_PORT
+  }
+}
+```
+
+## Configure the Hysteria2 Client
+
+On **Host A**, create the Hysteria2 client configuration. This setup will forward the local port `127.0.0.1:51700` on Host A to the same port on Host B, which is where our WireGuard server will listen.
+
+```yaml
+# /var/lib/hy/config.yml 
+server: hysteria2://<USERNAME>:<PASSWORD>@<Host B IP>:20000-50000 # Use the credentials and port range from the server config
+tls:
+  sni: <Host B IP>
+  ca: /var/lib/hy/hysteria.ca.crt # The CA certificate generated on Host B
+fastOpen: true
+lazy: false
+transport:
+  udp:
+    hopInterval: 15s
+udpForwarding:
+- listen: 127.0.0.1:51700
+  remote: 127.0.0.1:51700
+  timeout: 120s
+```
+
+-----
+
+# Step 2: Establish the WireGuard Overlay Tunnel
+
+Now, we'll configure the WireGuard tunnel that runs *inside* the Hysteria2 tunnel. We'll focus only on the specific settings for this scenario.
+
+## Configure WireGuard on Host B (Server)
+
+On **Host B**, create the WireGuard configuration. Note the `Table = off` and `MTU` settings.
+
+```ini
+# /etc/wireguard/wg0.conf
+[Interface]
+Address = 10.10.10.2/24
+SaveConfig = false
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+ListenPort = 51700 # Listens on the port forwarded by Hysteria2
+PrivateKey = <Host B Private Key>
+MTU = 1380
+Table = off # Important: Prevents wg-quick from creating routing rules
+
+[Peer]
+PublicKey = <Host A Public Key>
+AllowedIPs = 0.0.0.0/0 # Allows all traffic from Host A to be routed
+```
+
+## Configure WireGuard on Host A (Client)
+
+On **Host A**, create the WireGuard configuration. The `Endpoint` will be the local port forwarded by Hysteria2.
+
+```ini
+# /etc/wireguard/wg0.conf
+[Interface]
+Address = 10.10.10.1/24
+PrivateKey = <Host A Private Key>
+# No ListenPort is needed since Host A is behind NAT.
+# No Table=off is needed.
+# ...
+
+[Peer]
+PublicKey = <Host B Public Key>
+Endpoint = 127.0.0.1:51700 # Connects to the local Hysteria2 forwarder
+AllowedIPs = 10.10.10.2/32
+PersistentKeepalive = 25
+```
+
+Start the Hysteria2 tunnel first, then bring up the WireGuard interfaces on both hosts. The WireGuard connection should now be established. Host A should be able to ping `10.10.10.2`. Host B will not be able to ping Host A, which is expected because Host B has no route to A.
+
+-----
+
+# Step 3: Configure Source NAT on Host A
+
+To make traffic from Host B appear as if it originates from Host A, we need to apply Source NAT (SNAT) on **Host A**.
+
+Add the following rule using `nftables`:
+
+```nft
+table inet nat {
+  chain postrouting {
+    type nat hook postrouting priority srcnat; policy accept;
+    # NAT traffic from Host B (10.10.10.2) coming through wg0 and going out the main interface
+    iifname { wg0 } oifname enp0s4 ip saddr 10.10.10.2 snat to 10.255.0.1
+  }
+}
+```
+
+Alternatively, you can use `masquerade` for a more dynamic SNAT rule.
+
+-----
+
+# Step 4: Route Traffic with Sing-box
+
+Finally, on **Host B**, we'll use a tool like `sing-box` to direct application traffic into the WireGuard tunnel.
+
+Create the following `sing-box` configuration on **Host B**:
+
+```json
+{
+  "log": {
+    "disabled": false,
+    "level": "debug",
+    "timestamp": false
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "cmcc",
+        "type": "udp",
+        "server": "local ISP dns",
+        "detour": "into"
+      },
+      {
+        "tag": "google",
+        "type": "udp",
+        "server": "8.8.8.8"
+      }
+    ],
+
+    "rules": [
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "rule_set": "geosite-geolocation-!cn",
+            "invert": true
+          },
+          {
+            "domain": ["ip.sb"],
+            "ip_cidr": ["104.26.13.31/32", "172.67.75.172/32"],
+            "rule_set": ["geoip-cn", "geosite-cn"]
+          }
+        ],
+        "server": "cmcc"
+      }
+    ],
+    "strategy": "ipv4_only",
+    "final": "google",
+    "independent_cache": true
+  },
+  "inbounds": [
+    {
+      "type": "socks",
+      "tag": "socks-in",
+      // edit me
+      "listen": "127.0.0.1",
+      "listen_port": 1700
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "direct",
+      "tag": "into",
+      "bind_interface": "wg0",
+      "inet4_bind_address": "10.10.10.2"
+    }
+  ],
+  "route": {
+    "auto_detect_interface": true,
+    "final": "into",
+    "default_domain_resolver": "cmcc",
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "geoip-cn",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-cn",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-geolocation-!cn",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs"
+      }
+    ]
+  }
+}
+```
+
+Now, any SOCKS5 traffic sent to `localhost:1700` on Host B will be routed through the WireGuard interface (`wg0`), exit from Host A's network, and use its public IP. The SOCKS inbound can be replaced with any other protocol supported by `sing-box`. Setup is complete.
