@@ -1,0 +1,64 @@
+---
+date: '2020-08-07T20:55:06.000Z'
+title: Wayland in KDE-plasma
+tags:
+- Wayland-KDE进度
+categories:
+- 有趣
+---
+
+## 什么是Wayland？？
+
+Wayland 是一个被认为有机会替代X11成为Linux主要窗口系统的轻量显示服务协议和IPC库，但是Wayland不是X协议的继承者，它不遵循X协议的设计，该显示服务直接传输到绘制器（在这里即为KWin），客户端通过一个Unix socket接口与其连接。
+
+## 为什么Plasma需要Wayland？
+
+X协议实在是太老了，而且它还有一些严重的问题，X协议是依据三十年前的使用需求而设计的，在过去的时间里，越来越多功能被从X移动到Linux内核或绘制器中，X或多或少地变为仅仅是一个夹在内核、绘制器和X客户端之间的代理。
+
+现在一般由绘制器（compositor）处理过去属于X服务的任务，直到现在还是有一些特性到现在还没有被移动到绘图器（比如输入处理）但是这些功能将在绘图器中发挥其最大的意义。
+
+最好的情况将会是使绘制器直接与内核一同工作，内核负责渲染和输入处理以及直接管理客户端，这意味着移除中间代理，这就是Wayland所要做的。更多关于Wayland 的信息请看[FAQ](https://wayland.freedesktop.org/faq.html)。
+
+在Plasma中我们需要Wayland的支持以突破X无时不刻的限制。Wayland将会简化我们的架构，允许我们以我们认为最高效的方式绘制屏显。
+
+## Plasma的Wayland支持度
+
+KDE Plasma的Wayland支持性还处于技术试验阶段，这个工作空间曾经为X11而开发，很多功能性依赖于X11,为了使Wayland发挥合适用处，这些部分必须被重新编写。
+
+## 为什么不直接开发一个新的绘图器？
+
+~~大致意思看看就好~~
+
+- KWin开发团队没有足够能力同时开发 X11窗口管理器 和 Wayland绘制器。
+- KWin很完善了，十多年的努力使它变得完善，也使它看起来很难被从头开始编写。
+- 涉及的工作太多，牵涉的依赖太广。
+
+总而言之不建议现阶段使用KDE with wayland。
+
+{/* 翻译自<https://community.kde.org/KWin/Wayland> */}
+
+---
+
+What is Wayland?
+Wayland is a small display server protocol and IPC library which is considered to have the chance to replace X11 as primary windowing system. But Wayland is not a direct successor of X and does not follow the design of X. The display server is directly moved into the Compositor (that is KWin) and clients connect to this server through a Unix socket.
+
+Why Plasma needs Wayland?
+X has some serious issues and is rather old. The protocol is designed for the usecases three decades ago. Over the last years more and more functionality has been moved from X either into the kernel or into the compositors. The X server is more or less only a proxy between kernel, compositor and the X clients.
+
+Today the compositor does everything the X server used to do. There are some remaining features not yet moved into the compositor (e.g. input handling) but those would make most sense in the compositor. The best situation would be to let the compositor directly work together with the kernel for rendering and input handling and manage the clients directly, which means to remove the Proxy. This is what Wayland is about. More reasons for Wayland in the FAQ.
+
+In Plasma we need Wayland support as we are hitting the limitations of X all the time. Wayland will simplify our architecture and allow us to composite the screen in the way we consider as most useful.
+
+Wayland Support in Plasma
+Wayland support in the KDE Plasma Workspaces is in a tech-preview state. The workspaces have been developed for X11 and much functionality relies on X11. To be able to make proper use of Wayland these bits have to be rewritten.
+
+The most complex task is to implement Wayland support in KWin, KDE Plasma's Compositor and Window Manager. Since 5.4 KWin is able to manage Wayland clients and this allows to start a Plasma session on Wayland.
+
+Why not a new Compositor?
+Given that KWin was designed as a X11 Window Manager and later as a X11 compositor the question is valid, why not to implement a new Wayland compositor from scratch. Most parts of KWin are X11 independent. E.g. the Desktop Effect system is able to integrate Wayland clients without any change, the same is true for Window Decorations and other parts.
+
+Another reason is that the KWin development team does not have the manpower to maintain an independent X11 window manager and a Wayland compositor. Starting a new Wayland compositor would mean to stop the work on the X11 window manager, which would be a bad move as we cannot know yet whether Wayland will succeed and will be supported on all hardware. Also in future KDE will have to provide an X11 window manager.
+
+KWin is known as one of the most feature complete and most stable window managers. More than a decade of development effort has gone into this Window Manager. Reaching feature parity in a new Wayland compositor seems hardly possible if rewritten from scratch.
+
+Writing a new Wayland Compositor would require to rewrite the complete X11 workspace in one go. This includes not only the Window Manager, but also parts of Plasma, Screen Locker and many, many more. This would take a long development time and the transition would not be smooth, very likely buggy and with regressions like the 4.0 introduction. We do not want to break the desktop!

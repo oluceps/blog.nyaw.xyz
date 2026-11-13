@@ -1,0 +1,113 @@
+---
+date: '2024-03-29T06:40:51.000Z'
+description: ''
+draft: false
+title: Remote System Rescue
+tags:
+- rescue
+- Linux
+categories:
+- 记录
+---
+
+放在家里的机器反复掉盘，用着发现很不对劲 再看内核日志里面全是错误
+
+![1](err.png)
+
+应该是硬件实现有问题导致flush的时候出错了，但是平常scrub也没出问题，很突然。
+
+心想这下完蛋了 因为我离它200km，作为家用PC它没有 hypervisor, 咖喱人也没有会修的。后来想到假设硬件没变，可以利用 NixOS 的特性构建对应机器的 rescue livecd, 让人插上启动以后自动组网再远程操作。组网可以通过已有的 wireguard 网络配置。
+
+理想情况下只需要对方拿着准备好的U盘插到电脑里，然后选择一下启动顺序。当然这是在硬件没有不可恢复的错误的前提下。
+
+---
+
+这台机器原本的[配置](https://github.com/oluceps/nixos-config/tree/trival/hosts/hastur) 对于livecd来说过于冗长，考虑到网络传输的速度应构建一个[最小版本](https://github.com/oluceps/nixos-config/tree/trival/hosts/resq)。
+
+## 关键选项
+
+### 导入 nixos livecd 的最小配置:
+
+```nix
+{
+  imports = [
+    (inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal-new-kernel-no-zfs.nix")
+  ];
+}
+```
+
+### 镜像压缩相关的配置
+
+```nix
+{
+  isoImage = {
+    compressImage = true;
+    squashfsCompression = "zstd -Xcompression-level 6";
+  };
+}
+```
+
+### ssh 相关的设置
+
+```nix
+{
+  users.users.root.openssh.authorizedKeys.keys = with data.keys; [
+    sshPubKey
+    skSshPubKey
+  ];
+  services.openssh.enable=true;
+}
+```
+
+### 应付中国特殊网络环境的配置
+
+```nix
+{
+services.sing-box = {
+      enable = true;
+      configFile = lib.readToStore /run/agenix/sing;
+};
+}
+```
+
+值得注意的是定义了一个 [readToStore](https://github.com/oluceps/nixos-config/blob/a2a429a5e7773bcf57e8c17716049aa8890861e5/hosts/lib.nix#L75) 函数并expand到了nixpkgs的lib中。
+
+```nix
+{
+  readToStore = p:
+    toString (
+      pkgs.writeTextFile {
+        name = builtins.baseNameOf p;
+        text = builtins.readFile p;
+      }
+    );
+}
+```
+
+由于我的密码凭据通过agenix管理，以达到明文凭据「不上传到公开仓库」和「不全局可读」的效果，但是在救援系统中配置agenix非常麻烦，所以临时采用这种impure的方式从flake仓库以外(agenix 的明文密钥文件夹）读取密钥凭据并写入全局可读的nix store, 方法比较危险但是不得已的取舍。
+
+### 网络配置
+
+继承自机器原来的完整配置, 对 wireguard private key 做了 readToStore 的处理。
+
+[code](https://github.com/oluceps/nixos-config/blob/trival/hosts/resq/hastur-network-compatible.nix)
+
+**需要特别注意NixOS默认开启的防火墙，这里默认继承了原配置有对wg接口的放行**
+
+## 构建rescue image
+
+使用
+
+```
+nix build .#nixosConfigurations.resq.config.system.build.isoImage --impure
+```
+
+进行iso的构建。
+
+## 救援
+
+完成之后将镜像上传至公开储存，让我娘下载后放到已经装有 ventoy 的U盘中，输入bios密码关闭安全启动，调整启动livecd。
+
+然后我就成功ssh登录了。
+
+后续除了不得不品尝的网络环境造成的阻碍，还算顺利地按照标准的步骤完成了备份和重装。

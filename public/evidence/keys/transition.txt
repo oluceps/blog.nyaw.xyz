@@ -1,0 +1,27 @@
+Key transition statement
+
+Identity: oluceps
+Prepared: 2026-11-10
+Effective condition: publication of this statement with valid signatures from both keys.
+
+Legacy certificate (OpenPGP v4):
+ED9B8F88BD92824FF96A22135E45FB643F7092CF
+
+Legacy signing subkey:
+4F070283023D49D11FC52D16ECBE55269336CCCD
+
+Successor certificate (OpenPGP v6):
+9F164A1AA6437ED91E85C721AAE71AD1DA532B733DC9AD8B776BB034802CB740
+
+Historical commit:
+https://github.com/NixOS/nixpkgs/commit/405977f9064aab729d10ed950a52c024d8aeae28
+
+I replace the legacy certificate with the successor certificate for future identity statements and signatures.
+
+The legacy signing subkey above signed the historical commit. Its signature must verify against the legacy certificate.
+
+This is a planned key replacement. This statement declares retirement from future signing. It does not revoke the legacy OpenPGP certificate.
+
+Keep the legacy public certificate to verify historical signatures.
+
+Both signing keys sign this exact file.
